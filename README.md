@@ -1,2 +1,2 @@
 # emaki
-Emaki shares your slides on premise
+Emaki shares your slides.

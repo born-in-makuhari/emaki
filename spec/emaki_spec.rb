@@ -16,7 +16,7 @@ describe 'Emaki' do
       it 'returns 200' do
         expect(last_response).to be_ok
       end
-      it 'contains <form>' do
+      it 'contains form#newSlide' do
         expect(@html.at_css('form#newSlide')).not_to be nil
       end
       it 'contains <input type="text" name="username">' do

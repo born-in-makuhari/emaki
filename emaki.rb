@@ -4,3 +4,6 @@ require 'slim'
 get '/' do
   slim :index
 end
+
+get '/new' do
+end

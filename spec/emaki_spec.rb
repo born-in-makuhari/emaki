@@ -20,10 +20,10 @@ describe 'Emaki' do
         expect(@html.at_css('form#newSlide')).not_to be nil
       end
       it '         form#newSlide action="/slides"' do
-        expect(@html.at_css('form#newSlide').get(:action)).to be '/slides'
+        expect(@html.at_css('form#newSlide').get(:action)).to eq '/slides'
       end
       it '         form#newSlide method="post"' do
-        expect(@html.at_css('form#newSlide').get(:method)).to be 'post'
+        expect(@html.at_css('form#newSlide').get(:method)).to eq 'post'
       end
       it 'contains <input type="text" name="username">' do
         pending 'not yet'

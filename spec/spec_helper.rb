@@ -1,5 +1,6 @@
 require 'rack/test'
 require 'rspec'
+require 'oga'
 
 require File.expand_path '../../emaki.rb', __FILE__
 

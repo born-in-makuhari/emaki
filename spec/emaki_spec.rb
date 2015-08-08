@@ -8,21 +8,26 @@ describe 'Emaki' do
     end
   end
   describe 'GET /new' do
-    before { get '/new' }
-    it 'returns 200' do
-      expect(last_response).to be_ok
+    before do
+      get '/new'
+      @html = Oga.parse_html(last_response.body)
     end
-    it 'contains <form>' do
-      pending 'not yet'
-    end
-    it 'contains <input type="text" name="username">' do
-      pending 'not yet'
-    end
-    it 'contains <input type="text" name="slidename">' do
-      pending 'not yet'
-    end
-    it 'contains <input type="submit">' do
-      pending 'not yet'
+    describe 'then' do
+      it 'returns 200' do
+        expect(last_response).to be_ok
+      end
+      it 'contains <form>' do
+        expect(@html.at_css('form#newSlide')).not_to be nil
+      end
+      it 'contains <input type="text" name="username">' do
+        pending 'not yet'
+      end
+      it 'contains <input type="text" name="slidename">' do
+        pending 'not yet'
+      end
+      it 'contains <input type="submit">' do
+        pending 'not yet'
+      end
     end
   end
   describe 'POST /slides' do

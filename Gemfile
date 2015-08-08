@@ -7,4 +7,5 @@ group :test do
   gem 'rack'
   gem 'rack-test'
   gem 'rspec'
+  gem 'oga'
 end

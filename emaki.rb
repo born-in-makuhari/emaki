@@ -30,6 +30,7 @@ class Slide
       FileUtils.mkdir_p path
     rescue => e
       logger.error(e.message)
+      logger.error(e.backtrace)
       return false
     end
     path
@@ -43,6 +44,7 @@ class Slide
       FileUtils.rmdir path
     rescue => e
       logger.error(e.message)
+      logger.error(e.backtrace)
       return false
     end
 
@@ -62,6 +64,7 @@ class Slide
       puts "tmpsave! #{tmppath}/#{key}"
     rescue => e
       logger.error(e.message)
+      logger.error(e.backtrace)
       return nil
     end
     key
@@ -76,6 +79,7 @@ class Slide
       puts "[save_slide] tmpremove error"
       logger.error('tmpremove failed.')
       logger.error(e.message)
+      logger.error(e.backtrace)
     end
   end
 
@@ -158,13 +162,16 @@ def convert_pdf_to_png(un, sn, srcfilepath, destpath)
     puts "[save_slide] #{srcfilepath} -> #{destpath}/#.png"
     images = Magick::Image.read(srcfilepath)
     puts "[save_slide] images.length: #{images.length}"
-    images.each_with_index {
-      |image, i| image[i].write("#{destpath}/#{i}.png")
+    images.each_with_index { |image, i|
+      destfile = "#{destpath}/#{i}.png"
+      image.write(destfile)
     }
     return true
   rescue => e
     puts "[save_slide] convert error #{e.message}"
+    puts e.backtrace
     logger.error(e.message)
+    logger.error(e.backtrace)
     Slide.rmdir(un, sn, logger)
     return false
   end

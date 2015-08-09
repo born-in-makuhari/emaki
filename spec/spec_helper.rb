@@ -16,3 +16,6 @@ end
 
 # For RSpec 2.x
 RSpec.configure { |c| c.include RSpecMixin }
+
+UN = 'testuser'
+SN = 'testslide'

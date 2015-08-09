@@ -99,16 +99,19 @@ describe 'Emaki' do
   # POST /slides はつまるところ 個別スライドページを返却するので
   # /username/slidename のテストケースを読み込んでます。
   describe 'POST /slides' do
-    context 'with { username: testuser, slidename: testslide }' do
+    context "with { username: '#{UN}', slidename: '#{SN}' }" do
       before do
-        data = { username: 'testuser', slidename: 'testslide' }
-        Slide.rmdir data[:username], data[:slidename]
-        @path = Slide.makepath data[:username], data[:slidename]
-        post '/slides'
+        @d = { username: UN, slidename: SN }
+        @path = Slide.makepath @d[:username], @d[:slidename]
+        post '/slides', @d
       end
-      it 'redirects to /testuser/testslide'
-      it 'creates directory "slides/testuser/testslide"' do
-        puts @path
+
+      after do
+        Slide.rmdir @d[:username], @d[:slidename]
+      end
+
+      it "redirects to /#{UN}/#{SN}"
+      it "creates directory slides/#{UN}/#{SN}" do
         expect(FileTest.exist? @path).to be true
       end
       it 'creates png images in the directory'

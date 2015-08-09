@@ -51,6 +51,10 @@ end
 
 # スライド画像の返却
 get '/:username/:slidename/:number.png' do
+  content_type :png
+  path = Slide.makepath(params[:username], params[:slidename]) +
+    "/#{params[:number]}.png"
+  send_file path
 end
 
 # ----------------------------------------------------------------

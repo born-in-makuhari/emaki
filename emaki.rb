@@ -29,8 +29,7 @@ class Slide
     begin
       FileUtils.mkdir_p path
     rescue => e
-      logger.error(e.message)
-      logger.error(e.backtrace)
+      logger.error(e.message + e.backtrace[0])
       return false
     end
     path
@@ -43,8 +42,7 @@ class Slide
     begin
       FileUtils.rmdir path
     rescue => e
-      logger.error(e.message)
-      logger.error(e.backtrace)
+      logger.error(e.message + e.backtrace[0])
       return false
     end
 
@@ -61,10 +59,8 @@ class Slide
     key = maketmpkey(file[:filename])
     begin
       File.open(tmppath + '/' + key, 'wb') { |f| f.write file[:tempfile].read }
-      puts "tmpsave! #{tmppath}/#{key}"
     rescue => e
-      logger.error(e.message)
-      logger.error(e.backtrace)
+      logger.error(e.message + e.backtrace[0])
       return nil
     end
     key
@@ -72,14 +68,11 @@ class Slide
 
   def self.tmpremove(key, logger = self.logger)
     path = tmppath + '/' + key
-    puts "[save_slide] tmpremove #{path}"
     begin
       FileUtils.remove path
     rescue => e
-      puts "[save_slide] tmpremove error"
       logger.error('tmpremove failed.')
-      logger.error(e.message)
-      logger.error(e.backtrace)
+      logger.error(e.message + e.backtrace[0])
     end
   end
 
@@ -117,7 +110,6 @@ post '/slides' do
   file = params[:slide]
 
   result = save_slide un, sn, file
-  puts "[save_slide] result: #{result}"
   if result
     redirect to("/#{un}/#{sn}")
   else
@@ -134,44 +126,31 @@ end
 # Routesの処理代行
 #
 def save_slide(un, sn, file)
-  puts "[save_slide] #{un}, #{sn}, #{file}"
   # 一時保存
   key = Slide.tmpsave(file, logger)
-  puts "[save_slide] key is #{key}"
   return false unless key
 
   # ディレクトリないことを確認
   return false if Slide.exist?(un, sn)
 
-  puts "[save_slide] dir doesnot exist"
   # 作成失敗なら後処理は不要
   return false unless Slide.mkdir(un, sn, logger)
 
-  puts "[save_slide] convert start"
-
   # PDFファイルを変換
-  result = convert_pdf_to_png(un, sn, Slide.tmppath + '/' + key, Slide.makepath(un, sn))
-  puts "convert_pdf_to_png returns #{result}"
+  result = convert_pdf_to_png(un, sn,
+                              Slide.tmppath + '/' + key, Slide.makepath(un, sn))
   Slide.tmpremove(key, logger)
-  return result
+  result
 end
 
 def convert_pdf_to_png(un, sn, srcfilepath, destpath)
   begin
-    puts "[save_slide] #{un}/#{sn}"
-    puts "[save_slide] #{srcfilepath} -> #{destpath}/#.png"
-    images = Magick::Image.read(srcfilepath)
-    puts "[save_slide] images.length: #{images.length}"
-    images.each_with_index { |image, i|
-      destfile = "#{destpath}/#{i}.png"
-      image.write(destfile)
-    }
+    Magick::Image.read(srcfilepath).each_with_index do |image, i|
+      image.write("#{destpath}/#{i}.png")
+    end
     return true
   rescue => e
-    puts "[save_slide] convert error #{e.message}"
-    puts e.backtrace
-    logger.error(e.message)
-    logger.error(e.backtrace)
+    logger.error(e.message + e.backtrace[0])
     Slide.rmdir(un, sn, logger)
     return false
   end

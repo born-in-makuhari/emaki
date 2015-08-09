@@ -41,12 +41,17 @@ describe 'Emaki' do
   # 共通テストケース
   #
 
-  # 普通のページ。ヘッダ、タイトル、などなど
-  shared_examples_for 'an emaki page' do
+  # ヘッダ、タイトル
+  shared_examples_for 'common header' do
     it 'displays "emaki" as a link to "/"' do
       expect(html).to desplay 'a#toTop', 'emaki'
       expect(html).to desplay 'a#toTop', 'href', '/'
     end
+  end
+
+  # 普通のページ
+  shared_examples_for 'an emaki page' do
+    it_behaves_like 'common header'
     it 'returns 200' do
       expect(last_response).to be_ok
     end
@@ -144,7 +149,7 @@ describe 'Emaki' do
     end
 
     context 'if target does not exist,' do
-      it_behaves_like 'an emaki page'
+      it_behaves_like 'common header'
 
       before :all do
         get '/testuser/testslide'

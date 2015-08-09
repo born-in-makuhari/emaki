@@ -61,7 +61,8 @@ get '/:username/:slidename' do
     @page_urls = Slide.page_urls @un, @sn
     slim :slide, layout: :layout
   else
-    redirect to('/')
+    status 404
+    slim :slide_not_found
   end
 end
 

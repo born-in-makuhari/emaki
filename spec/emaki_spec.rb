@@ -68,9 +68,7 @@ describe 'Emaki' do
     before do
       get '/'
     end
-    it 'links to "/new"' do
-      expect(html).to desplay 'a#toNew', 'href', '/new'
-    end
+    it { expect(html).to desplay 'a#toNew', 'href', '/new' }
   end
 
   #
@@ -78,38 +76,24 @@ describe 'Emaki' do
   #
   describe 'GET /new' do
     it_behaves_like 'an emaki page'
-    before do
+    before :all do
       get '/new'
     end
-    describe 'then' do
-      it 'contains form#newSlide' do
-        expect(html).to desplay 'form#newSlide'
-      end
-      it 'form#newSlide action="/slides"' do
-        expect(html).to desplay 'form#newSlide', :action, '/slides'
-      end
-      it 'form#newSlide method="post"' do
-        expect(html).to desplay 'form#newSlide', :method, 'post'
-      end
-      it 'form#newSlide enctype="multipart/form-data"' do
-        expect(html).to desplay 'form#newSlide', :enctype, 'multipart/form-data'
-      end
-      it 'contains <input id="username" type="text" name="username">' do
-        expect(html).to desplay 'input#username', :type, 'text'
-        expect(html).to desplay 'input#username', :name, 'username'
-      end
-      it 'contains <input id="slidename" type="text" name="slidename">' do
-        expect(html).to desplay 'input#slidename', :type, 'text'
-        expect(html).to desplay 'input#slidename', :name, 'slidename'
-      end
-      it 'contains <input id="slide" type="file" name="slide">' do
-        expect(html).to desplay 'input#slide', :type, 'file'
-        expect(html).to desplay 'input#slide', :name, 'slide'
-      end
-      it 'contains <input type="submit">' do
-        expect(html).to desplay 'input[type="submit"]'
-      end
-    end
+    form = 'form#newSlide'
+    uninput = 'input#username'
+    sninput = 'input#slidename'
+    slinput = 'input#slide'
+    it { expect(html).to desplay form }
+    it { expect(html).to desplay form, :action, '/slides' }
+    it { expect(html).to desplay form, :method, 'post' }
+    it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
+    it { expect(html).to desplay uninput, :type, 'text' }
+    it { expect(html).to desplay uninput, :name, 'username' }
+    it { expect(html).to desplay sninput, :type, 'text' }
+    it { expect(html).to desplay sninput, :name, 'slidename' }
+    it { expect(html).to desplay slinput, :type, 'file' }
+    it { expect(html).to desplay slinput, :name, 'slide' }
+    it { expect(html).to desplay 'input[type="submit"]' }
   end
 
   #
@@ -119,7 +103,6 @@ describe 'Emaki' do
   describe 'GET /username/slidename' do
     it_behaves_like 'an emaki page'
     it_behaves_like 'a slide page'
-    let(:html) { @html }
 
     before do
       pdf_path = SPEC_ROOT + '/test.pdf'
@@ -128,7 +111,6 @@ describe 'Emaki' do
       @path = Slide.makepath @d[:username], @d[:slidename]
       post '/slides', @d
       get '/testuser/testslide'
-      @html = Oga.parse_html(last_response.body)
     end
 
     after do
@@ -174,6 +156,9 @@ describe 'Emaki' do
       it 'cleanup /tmp' do
         puts Slide.tmppath
         expect(Dir.entries(Slide.tmppath).join).to eq '...'
+      end
+
+      describe 'html' do
       end
     end
   end

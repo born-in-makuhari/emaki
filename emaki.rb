@@ -16,7 +16,8 @@ end
 # Routes
 #
 get '/' do
-  # FIXME: DBがないので、ひとまずリスト表示する
+
+  # FIXME: DBがないので、ゴリ押しリスト表示する
   @slides = {}
   if FileTest.exist?(EMAKI_ROOT + '/slides')
     users = Dir.entries(EMAKI_ROOT + '/slides')
@@ -62,6 +63,7 @@ get '/:username/:slidename' do
     slim :slide, layout: :layout
   else
     status 404
+    @slide_name = "#{params[:username]}/#{params[:slidename]}"
     slim :slide_not_found
   end
 end

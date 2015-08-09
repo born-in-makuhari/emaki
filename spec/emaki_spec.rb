@@ -156,7 +156,12 @@ describe 'Emaki' do
       end
 
       it { expect(last_response.status).to eq 404 }
-      it { expect(html).to desplay '#slideNotFound' }
+      it do
+        expect(html).to desplay(
+          '#slideNotFound',
+          '"testuser/testslide" Not Found.'
+        )
+      end
     end
   end
 

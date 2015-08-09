@@ -7,9 +7,10 @@ def mkdir_slides(un, sn)
   return false if un.nil? || sn.nil?
 
   begin
-    Dir.mkdir("slides/#{un}/#{sn}")
+    logger.info File.expand_path('.', __FILE__) + "slides/#{un}/#{sn}"
+    #Dir.mkdir File.expand_path('.', __FILE__) + "slides/#{un}/#{sn}"
   rescue => e
-    puts(e)
+    logger.error e
     return false
   end
 

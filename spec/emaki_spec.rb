@@ -99,15 +99,17 @@ describe 'Emaki' do
   # POST /slides はつまるところ 個別スライドページを返却するので
   # /username/slidename のテストケースを読み込んでます。
   describe 'POST /slides' do
-    before do
-      # TODO: refresh slides/ directory
-      post '/slides'
-    end
-    it 'redirects to /testuser/testslide' do
-    end
-    it 'creates directory "slides/testuser/testslide"' do
-    end
-    it 'creates png images in the directory' do
+    context 'with { username: testuser, slidename: testslide }' do
+      before do
+        # TODO: refresh slides/ directory
+        post '/slides'
+      end
+      it 'redirects to /testuser/testslide'
+      it 'creates directory "slides/testuser/testslide"' do
+        path = File.expand_path('..', __FILE__) + '/slides/testuser/testslide'
+        expect(Dir.exist? path).to be true
+      end
+      it 'creates png images in the directory'
     end
   end
 end

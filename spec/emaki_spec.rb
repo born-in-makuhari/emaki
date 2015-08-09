@@ -125,7 +125,7 @@ describe 'Emaki' do
     it_behaves_like 'an emaki page'
     it_behaves_like 'a slide page'
 
-    before do
+    before :all do
       pdf_path = SPEC_ROOT + '/test.pdf'
       @d = { username: UN, slidename: SN,
         slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
@@ -134,8 +134,9 @@ describe 'Emaki' do
       get '/testuser/testslide'
     end
 
-    after do
-      Slide.rmdir UN, SN
+    after :all do
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
     end
   end
 
@@ -144,7 +145,7 @@ describe 'Emaki' do
   #
   describe 'POST /slides' do
     context "{ username: '#{UN}', slidename: '#{SN}', file: './test.pdf' }" do
-      before do
+      before :all do
         pdf_path = SPEC_ROOT + '/test.pdf'
         @d = { username: UN, slidename: SN,
           slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
@@ -152,8 +153,9 @@ describe 'Emaki' do
         post '/slides', @d
       end
 
-      after do
-        Slide.rmdir UN, SN
+      after :all do
+        FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
+        FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
       end
 
       it "redirects to /#{UN}/#{SN}" do
@@ -174,6 +176,30 @@ describe 'Emaki' do
       it 'cleanup /tmp' do
         puts Slide.tmppath
         expect(Dir.entries(Slide.tmppath).join).to eq '...'
+      end
+    end
+  end
+  # ---------------------------------------------------------
+  # スライド画像へのルーティング
+  #
+  describe 'GET /:username/:slidename/:number.png' do
+    before :all do
+      pdf_path = SPEC_ROOT + '/test.pdf'
+      @d = { username: UN, slidename: SN,
+        slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
+      @path = Slide.makepath @d[:username], @d[:slidename]
+      post '/slides', @d
+    end
+
+    after :all do
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
+    end
+
+    3.times do |number|
+      context "page #{number}" do
+        before { get "/#{UN}/#{SN}/#{number}.png" }
+        it { expect(last_response).to be_ok }
       end
     end
   end

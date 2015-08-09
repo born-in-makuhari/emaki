@@ -16,7 +16,7 @@ class Slide
     @internal_logger ||= Rack::NullLogger.new nil
   end
 
-  def self.makepath(un, sn)
+  def self.makepath(un, sn, logger = self.logger)
     File.expand_path('../', __FILE__) + "/slides/#{un}/#{sn}"
   end
 
@@ -101,14 +101,14 @@ end
 post '/slides' do
   un = params[:username]
   sn = params[:slidename]
-  file = params[:file]
+  file = params[:slide]
 
   result = save_slide un, sn, file
   redirect to("/#{un}/#{sn}") if result
   redirect to('/new')
 end
 
-# 最終的に
+# マッチしなかったらスライドだと判断
 get '/:username/:slidename' do
 end
 
@@ -127,10 +127,10 @@ def save_slide(un, sn, file)
   return false if Slide.mkdir(un, sn, logger)
 
   # PDFファイルを変換
-  convert_pdf_to_png(Slide.tmppath + '/' + key, Slide.makepath(un, sn))
+  convert_pdf_to_png(un, sn, Slide.tmppath + '/' + key, Slide.makepath(un, sn))
 end
 
-def convert_pdf_to_png(srcfilepath, destpath)
+def convert_pdf_to_png(un, sn, srcfilepath, destpath)
   begin
     images = Magick::Imagge.read(srcfilepath)
     images.each_with_index { |image, i| image[i].write("#{destpath}/#{i}.png") }

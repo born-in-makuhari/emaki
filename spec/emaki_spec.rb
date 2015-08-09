@@ -123,7 +123,7 @@ describe 'Emaki' do
 
       it "redirects to /#{UN}/#{SN}" do
         expect(last_response.redirect?).to be true
-        expect(last_response.url).to eq "/#{UN}/#{SN}"
+        expect(last_response['Location']).to eq "http://example.org/#{UN}/#{SN}"
       end
 
       it "creates directory slides/#{UN}/#{SN}" do

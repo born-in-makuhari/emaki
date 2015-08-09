@@ -5,6 +5,7 @@ EMAKI_ROOT = File.expand_path('../', __FILE__)
 
 require EMAKI_ROOT + '/lib/slide.rb'
 
+enable :sessions
 configure :production, :development do
   enable :logging
   file = File.new("#{settings.root}/logs/#{settings.environment}.log", 'a+')
@@ -48,7 +49,13 @@ post '/slides' do
 
   # slugは正当か？
   unless Slide.valid_slugs?(un, sn)
-    session[:result] = slim :slug_rule
+    session[:attention] = slim :slug_rule, layout: false
+    redirect to('/new')
+    return
+  end
+
+  unless file
+    session[:attention] = slim :no_file, layout: false
     redirect to('/new')
     return
   end

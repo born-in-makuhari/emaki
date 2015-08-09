@@ -178,11 +178,18 @@ describe 'Emaki' do
         post '/slides', @d
       end
 
-      it 'redirects to "/new" with slug_rule' do
+      it 'redirects to "/new"' do
         expect(last_response.redirect?).to be true
         expect(last_response['Location']).to eq 'http://example.org/new'
-        follow_redirect!
-        expect(html).to desplay '#attention #slugRule'
+      end
+
+      context 'follow redirect,' do
+        let(:html) { Oga.parse_html(last_response.body) }
+        before { follow_redirect! }
+
+        it 'with slug rules' do
+          expect(html).to desplay '#attention #slugRule'
+        end
       end
     end
 
@@ -194,11 +201,18 @@ describe 'Emaki' do
         post '/slides', @d
       end
 
-      it 'redirects to "/new" with slug_rule' do
+      it 'redirects to "/new"' do
         expect(last_response.redirect?).to be true
         expect(last_response['Location']).to eq 'http://example.org/new'
-        follow_redirect!
-        expect(html).to desplay '#attention #slugRule'
+      end
+
+      context 'follow redirect,' do
+        let(:html) { Oga.parse_html(last_response.body) }
+        before { follow_redirect! }
+
+        it 'with slug rules' do
+          expect(html).to desplay '#attention #slugRule'
+        end
       end
     end
 
@@ -211,8 +225,14 @@ describe 'Emaki' do
       it 'redirects to "/new" with no_file' do
         expect(last_response.redirect?).to be true
         expect(last_response['Location']).to eq 'http://example.org/new'
-        follow_redirect!
-        expect(html).to desplay '#attention #noFile'
+      end
+
+      context 'follow redirect,' do
+        let(:html) { Oga.parse_html(last_response.body) }
+        before { follow_redirect! }
+        it 'with no file attention' do
+          expect(html).to desplay '#attention #noFile'
+        end
       end
     end
 

@@ -54,6 +54,25 @@ describe 'Emaki' do
 
   # スライドページ。
   shared_examples_for 'a slide page' do
+    before :all do
+      @slide_css = 'div#slideView'
+      @page_css = []
+      @img_css = []
+      @img_href = []
+      3.times do
+        @page_css << "#{@slide_css} section#page#{@page_css.length}"
+        @img_css  << "#{@page_css[@img_css.length]} img"
+        @img_href << "/#{UN}/#{SN}/#{@img_href.length}.png"
+      end
+    end
+
+    it { expect(html).to desplay @slide_css }
+    it 'desplays all pages, as <img>' do
+      3.times do |i|
+        expect(html).to desplay @page_css[i]
+        expect(html).to desplay @img_css[i], :href, @img_href[i]
+      end
+    end
   end
 
   # ---------------------------------------------------------
@@ -79,21 +98,23 @@ describe 'Emaki' do
     before :all do
       get '/new'
     end
-    form = 'form#newSlide'
-    uninput = 'input#username'
-    sninput = 'input#slidename'
-    slinput = 'input#slide'
-    it { expect(html).to desplay form }
-    it { expect(html).to desplay form, :action, '/slides' }
-    it { expect(html).to desplay form, :method, 'post' }
-    it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
-    it { expect(html).to desplay uninput, :type, 'text' }
-    it { expect(html).to desplay uninput, :name, 'username' }
-    it { expect(html).to desplay sninput, :type, 'text' }
-    it { expect(html).to desplay sninput, :name, 'slidename' }
-    it { expect(html).to desplay slinput, :type, 'file' }
-    it { expect(html).to desplay slinput, :name, 'slide' }
-    it { expect(html).to desplay 'input[type="submit"]' }
+    describe 'html' do
+      form = 'form#newSlide'
+      uninput = 'input#username'
+      sninput = 'input#slidename'
+      slinput = 'input#slide'
+      it { expect(html).to desplay form }
+      it { expect(html).to desplay form, :action, '/slides' }
+      it { expect(html).to desplay form, :method, 'post' }
+      it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
+      it { expect(html).to desplay uninput, :type, 'text' }
+      it { expect(html).to desplay uninput, :name, 'username' }
+      it { expect(html).to desplay sninput, :type, 'text' }
+      it { expect(html).to desplay sninput, :name, 'slidename' }
+      it { expect(html).to desplay slinput, :type, 'file' }
+      it { expect(html).to desplay slinput, :name, 'slide' }
+      it { expect(html).to desplay 'input[type="submit"]' }
+    end
   end
 
   #
@@ -121,9 +142,6 @@ describe 'Emaki' do
   #
   # /slides
   #
-
-  # TODO: POST /slides は成功したら個別スライドページを返却するので
-  # /username/slidename のテストケースを読み込んで使う予定
   describe 'POST /slides' do
     context "{ username: '#{UN}', slidename: '#{SN}', file: './test.pdf' }" do
       before do
@@ -156,9 +174,6 @@ describe 'Emaki' do
       it 'cleanup /tmp' do
         puts Slide.tmppath
         expect(Dir.entries(Slide.tmppath).join).to eq '...'
-      end
-
-      describe 'html' do
       end
     end
   end

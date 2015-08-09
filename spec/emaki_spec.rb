@@ -200,6 +200,7 @@ describe 'Emaki' do
       context "page #{number}" do
         before { get "/#{UN}/#{SN}/#{number}.png" }
         it { expect(last_response).to be_ok }
+        it { expect(last_response['Content-Type']).to eq 'image/png' }
       end
     end
   end

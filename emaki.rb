@@ -59,6 +59,7 @@ class Slide
     key = maketmpkey(file[:filename])
     begin
       File.open(tmppath + '/' + key, 'wb') { |f| f.write file[:tempfile].read }
+      puts "tmpsave! #{tmppath}/#{key}"
     rescue => e
       logger.error(e.message)
       return nil
@@ -66,10 +67,16 @@ class Slide
     key
   end
 
-  def self.tmpremove(key)
+  def self.tmpremove(key, logger = self.logger)
     path = tmppath + '/' + key
     puts "[save_slide] tmpremove #{path}"
-    FileUtils.rm(path)
+    begin
+      FileUtils.remove path
+    rescue => e
+      puts "[save_slide] tmpremove error"
+      logger.error('tmpremove failed.')
+      logger.error(e.message)
+    end
   end
 
   def self.tmppath
@@ -85,7 +92,7 @@ class Slide
   def self.maketmpkey(base)
     (0...8).map { (65 + rand(26)).chr }.join +
     '_' +
-    Date.today.strftime('%Y%m%d%H%M%S') +
+    Time.now.strftime('%Y%m%d%H%M%S') +
     base
   end
 end
@@ -106,6 +113,7 @@ post '/slides' do
   file = params[:slide]
 
   result = save_slide un, sn, file
+  puts "[save_slide] result: #{result}"
   if result
     redirect to("/#{un}/#{sn}")
   else
@@ -138,20 +146,26 @@ def save_slide(un, sn, file)
   puts "[save_slide] convert start"
 
   # PDFファイルを変換
-  convert_pdf_to_png(un, sn, Slide.tmppath + '/' + key, Slide.makepath(un, sn))
+  result = convert_pdf_to_png(un, sn, Slide.tmppath + '/' + key, Slide.makepath(un, sn))
+  puts "convert_pdf_to_png returns #{result}"
+  Slide.tmpremove(key, logger)
+  return result
 end
 
 def convert_pdf_to_png(un, sn, srcfilepath, destpath)
   begin
+    puts "[save_slide] #{un}/#{sn}"
+    puts "[save_slide] #{srcfilepath} -> #{destpath}/#.png"
     images = Magick::Image.read(srcfilepath)
-    images.each_with_index { |image, i| image[i].write("#{destpath}/#{i}.png") }
+    puts "[save_slide] images.length: #{images.length}"
+    images.each_with_index {
+      |image, i| image[i].write("#{destpath}/#{i}.png")
+    }
     return true
   rescue => e
     puts "[save_slide] convert error #{e.message}"
     logger.error(e.message)
     Slide.rmdir(un, sn, logger)
-  ensure
-    puts "[save_slide] ensure, remove tmpfile"
-    Slide.tmpremove(key)
+    return false
   end
 end

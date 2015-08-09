@@ -131,9 +131,9 @@ describe 'Emaki' do
       end
 
       it 'creates png images in the directory' do
+        expect(FileTest.exist? @path + '/0.png').to be true
         expect(FileTest.exist? @path + '/1.png').to be true
         expect(FileTest.exist? @path + '/2.png').to be true
-        expect(FileTest.exist? @path + '/3.png').to be true
       end
     end
   end

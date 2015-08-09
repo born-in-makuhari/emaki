@@ -73,15 +73,35 @@ describe 'Emaki::Slide' do
     # control tmp/
     #
     describe 'Slide manipulates tmp/' do
+
       describe '.tmpsave' do
         context 'with file' do
-          it 'saves tmpfile'
-          it 'returns tmpfile name'
+          before do
+            pdf_path = SPEC_ROOT + '/test.pdf'
+            slide = {
+              filename: 'test.pdf',
+              tempfile:
+                Rack::Test::UploadedFile.new(pdf_path, 'application/pdf')
+            }
+            @key = Slide.tmpsave slide
+          end
+
+          after { FileUtils.rm_rf(EMAKI_ROOT + '/tmp') }
+
+          it 'saves tmpfile' do
+            expect(FileTest.exist?(EMAKI_ROOT + '/tmp/' + @key)).to be true
+          end
         end
         context 'without file' do
-          it 'returns nil'
+          it 'does not save tmpfile' do
+            expect(FileTest.exists?(EMAKI_ROOT + '/tmp')).to be false
+          end
+          it 'returns nil' do
+            expect(@key).to be nil
+          end
         end
       end
+
       describe '.tmpremove' do
         context 'with key' do
           it 'removes tmpfile'
@@ -91,15 +111,30 @@ describe 'Emaki::Slide' do
           it 'returns nil'
         end
       end
+
       describe '.tmppath' do
-        it "returns #{EMAKI_ROOT}/tmp"
+        it { expect(Slide.tmppath).to eq "#{EMAKI_ROOT}/tmp" }
       end
       describe '.tmp' do
-        it 'creates tmp/ directory'
+        before do
+          FileUtils.rm_rf(EMAKI_ROOT + '/tmp')
+          Slide.tmp
+        end
+        it 'creates tmp/ directory' do
+          expect(FileTest.exist?(EMAKI_ROOT + '/tmp')).to be true
+        end
       end
       describe '.maketmpkey' do
-        it 'returns random+time+filename string'
-        it 'provides strings not duplicated each other (sample 10000)'
+        context 'when same key provided,' do
+          it 'provides strings not duplicated each other (sample 10000)' do
+            count = {}
+            10_000.times.map do
+              key = Slide.maketmpkey('duplicated.pdf')
+              count[key] = true
+            end
+            expect(count.keys.length).to be 10_000
+          end
+        end
       end
     end
   end

@@ -1,8 +1,9 @@
 require 'sinatra'
 require 'slim'
-EMAKI_ROOT = File.expand_path('../', __FILE__)
-require EMAKI_ROOT + '/lib/slide.rb'
 
+EMAKI_ROOT = File.expand_path('../', __FILE__)
+
+require EMAKI_ROOT + '/lib/slide.rb'
 
 configure :production, :development do
   enable :logging
@@ -26,6 +27,7 @@ post '/slides' do
   un = params[:username]
   sn = params[:slidename]
   file = params[:slide]
+  puts "file.class: #{file.class}"
 
   result = save_slide un, sn, file
   if result

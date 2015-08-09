@@ -30,7 +30,30 @@ describe 'Emaki::Slide' do
     # safety
     #
     describe '.valid_slugs?' do
-      it 'calls ".valid_slug?" with each parameter.'
+      context 'when it called by 3 parameters,' do
+        before do
+          Slide.stub(:valid_slug?).and_return(true)
+          Slide.should_receive(:valid_slug?).exactly(3).times
+        end
+        it 'calls ".valid_slug?" with each parameter.' do
+          Slide.valid_slugs?('a', 'b', 'c')
+        end
+      end
+
+      context 'when all ok' do
+        before { Slide.stub(:valid_slug?).and_return(true) }
+        it { expect(Slide.valid_slugs?('a', 'b', 'c')).to be true }
+      end
+
+      context 'when all NG' do
+        before { Slide.stub(:valid_slug?).and_return(false) }
+        it { expect(Slide.valid_slugs?('a', 'b', 'c')).to be false }
+      end
+
+      context 'when one NG' do
+        before { Slide.stub(:valid_slug?).and_return(true, true, false) }
+        it { expect(Slide.valid_slugs?('a', 'b', 'c')).to be false }
+      end
     end
 
     describe '.valid_slug?' do

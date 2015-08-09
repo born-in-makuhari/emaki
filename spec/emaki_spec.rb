@@ -20,7 +20,6 @@ describe 'Emaki' do
 
   # スライドページ。
   shared_examples_for 'a slide page' do
-    pending
   end
 
   # ---------------------------------------------------------
@@ -73,6 +72,11 @@ describe 'Emaki' do
         expect(target.get(:type)).to eq 'text'
         expect(target.get(:name)).to eq 'slidename'
       end
+      it 'contains <input id="slide" type="file" name="slide">' do
+        target = @html.at_css('input#slide')
+        expect(target.get(:type)).to eq 'file'
+        expect(target.get(:name)).to eq 'slide'
+      end
       it 'contains <input type="submit">' do
         target = @html.at_css('input[type="submit"]')
         expect(target).not_to be nil
@@ -85,7 +89,8 @@ describe 'Emaki' do
   # /username/slidename
   #
   describe 'GET /username/slidename' do
-    pending
+    it_behaves_like 'an emaki page'
+    it_behaves_like 'a slide page'
     before do
       # TODO: refresh slides/ directory
       get '/testuser/testslide'
@@ -96,8 +101,8 @@ describe 'Emaki' do
   # /slides
   #
 
-  # POST /slides はつまるところ 個別スライドページを返却するので
-  # /username/slidename のテストケースを読み込んでます。
+  # TODO: POST /slides は成功したら個別スライドページを返却するので
+  # /username/slidename のテストケースを読み込んで使う予定
   describe 'POST /slides' do
     context "with { username: '#{UN}', slidename: '#{SN}' }" do
       before do
@@ -110,11 +115,20 @@ describe 'Emaki' do
         Slide.rmdir @d[:username], @d[:slidename]
       end
 
-      it "redirects to /#{UN}/#{SN}"
+      it "redirects to /#{UN}/#{SN}" do
+        expect(last_response).to be_redirect
+      end
+
       it "creates directory slides/#{UN}/#{SN}" do
         expect(FileTest.exist? @path).to be true
       end
-      it 'creates png images in the directory'
+
+      it 'creates png images in the directory' do
+        expect(FileTest.exist? @path + "/1.png").to be true
+        expect(FileTest.exist? @path + "/2.png").to be true
+        expect(FileTest.exist? @path + "/3.png").to be true
+      end
     end
   end
+
 end

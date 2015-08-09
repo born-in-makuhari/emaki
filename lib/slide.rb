@@ -19,6 +19,12 @@ class Slide
     EMAKI_ROOT + "/slides/#{un}/#{sn}"
   end
 
+  def self.page_number(un, sn)
+    return 0 unless exist? un, sn
+    path = makepath un, sn
+    Dir.entries(path).length - 2 # Ignore . & ..
+  end
+
   def self.mkdir(un, sn, logger = self.logger)
     # TODO: It is too danger, I need another way
     # mkdir -p slides/#{un}/#{sn}

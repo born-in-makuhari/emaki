@@ -44,22 +44,28 @@ describe 'Emaki::Slide' do
     end
 
     describe '.page_number' do
-      before :all do
-        FileUtils.mkdir_p(@sn_path)
-        @dummy_files = []
-        @page_number = 5
-        @page_number.times do |i|
-          dummy_file = @sn_path + "/#{i}_dummy.txt"
-          FileUtils.touch(dummy_file)
-          @dummy_files << dummy_file
+      context 'if pages exist,' do
+        before :all do
+          FileUtils.mkdir_p(@sn_path)
+          @dummy_files = []
+          @page_number = 5
+          @page_number.times do |i|
+            dummy_file = @sn_path + "/#{i}_dummy.txt"
+            FileUtils.touch(dummy_file)
+            @dummy_files << dummy_file
+          end
         end
-      end
-      after :all do
-        @dummy_files.each do |file|
-          FileUtils.remove(file)
+        after :all do
+          @dummy_files.each do |file|
+            FileUtils.remove(file)
+          end
         end
+        it { expect(Slide.page_number(@un, @sn)).to be @page_number }
       end
-      it { expect(Slide.page_number(@un, @sn)).to be @page_number }
+
+      context 'if slide doesnot exist,' do
+        it { expect(Slide.page_number(@un, @sn)).to be 0 }
+      end
     end
 
     # ---------------------------------------------------------------

@@ -31,6 +31,8 @@ end
 #
 
 describe 'Emaki' do
+  let(:html) { Oga.parse_html(last_response.body) }
+
   before :all do
     FileUtils.rm_rf(Slide.tmppath) if Slide.tmppath != '/'
   end
@@ -63,14 +65,11 @@ describe 'Emaki' do
   #
   describe 'GET /' do
     it_behaves_like 'an emaki page'
-    let(:html) { @html }
     before do
       get '/'
-      @html = Oga.parse_html(last_response.body)
     end
     it 'links to "/new"' do
-      target = @html.at_css('a#toNew')
-      expect(target.get(:href)).to eq '/new'
+      expect(html).to desplay 'a#toNew', 'href', '/new'
     end
   end
 
@@ -79,43 +78,36 @@ describe 'Emaki' do
   #
   describe 'GET /new' do
     it_behaves_like 'an emaki page'
-    let(:html) { @html }
     before do
       get '/new'
-      @html = Oga.parse_html(last_response.body)
     end
     describe 'then' do
       it 'contains form#newSlide' do
-        expect(@html.at_css('form#newSlide')).not_to be nil
+        expect(html).to desplay 'form#newSlide'
       end
-      it '         form#newSlide action="/slides"' do
-        expect(@html.at_css('form#newSlide').get(:action)).to eq '/slides'
+      it 'form#newSlide action="/slides"' do
+        expect(html).to desplay 'form#newSlide', :action, '/slides'
       end
-      it '         form#newSlide method="post"' do
-        expect(@html.at_css('form#newSlide').get(:method)).to eq 'post'
+      it 'form#newSlide method="post"' do
+        expect(html).to desplay 'form#newSlide', :method, 'post'
       end
-      it '         form#newSlide enctype="multipart/form-data"' do
-        expect(@html.at_css('form#newSlide').get(:enctype))
-          .to eq 'multipart/form-data'
+      it 'form#newSlide enctype="multipart/form-data"' do
+        expect(html).to desplay 'form#newSlide', :enctype, 'multipart/form-data'
       end
       it 'contains <input id="username" type="text" name="username">' do
-        target = @html.at_css('input#username')
-        expect(target.get(:type)).to eq 'text'
-        expect(target.get(:name)).to eq 'username'
+        expect(html).to desplay 'input#username', :type, 'text'
+        expect(html).to desplay 'input#username', :name, 'username'
       end
       it 'contains <input id="slidename" type="text" name="slidename">' do
-        target = @html.at_css('input#slidename')
-        expect(target.get(:type)).to eq 'text'
-        expect(target.get(:name)).to eq 'slidename'
+        expect(html).to desplay 'input#slidename', :type, 'text'
+        expect(html).to desplay 'input#slidename', :name, 'slidename'
       end
       it 'contains <input id="slide" type="file" name="slide">' do
-        target = @html.at_css('input#slide')
-        expect(target.get(:type)).to eq 'file'
-        expect(target.get(:name)).to eq 'slide'
+        expect(html).to desplay 'input#slide', :type, 'file'
+        expect(html).to desplay 'input#slide', :name, 'slide'
       end
       it 'contains <input type="submit">' do
-        target = @html.at_css('input[type="submit"]')
-        expect(target).not_to be nil
+        expect(html).to desplay 'input[type="submit"]'
       end
     end
   end

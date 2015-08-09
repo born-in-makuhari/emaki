@@ -10,6 +10,7 @@ configure :production, :development do
 end
 
 # ----------------------------------------------------------------
+# TODO: ファイルを分割。
 class Slide
   def self.logger
     @internal_logger ||= Rack::NullLogger.new nil
@@ -105,6 +106,10 @@ post '/slides' do
   result = save_slide un, sn, file
   redirect to("/#{un}/#{sn}") if result
   redirect to('/new')
+end
+
+# 最終的に
+get '/:username/:slidename' do
 end
 
 # ----------------------------------------------------------------

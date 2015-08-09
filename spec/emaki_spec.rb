@@ -62,6 +62,10 @@ describe 'Emaki' do
       it '         form#newSlide method="post"' do
         expect(@html.at_css('form#newSlide').get(:method)).to eq 'post'
       end
+      it '         form#newSlide enctype="multipart/form-data"' do
+        expect(@html.at_css('form#newSlide').get(:enctype))
+          .to eq 'multipart/form-data'
+      end
       it 'contains <input id="username" type="text" name="username">' do
         target = @html.at_css('input#username')
         expect(target.get(:type)).to eq 'text'
@@ -104,9 +108,11 @@ describe 'Emaki' do
   # TODO: POST /slides は成功したら個別スライドページを返却するので
   # /username/slidename のテストケースを読み込んで使う予定
   describe 'POST /slides' do
-    context "with { username: '#{UN}', slidename: '#{SN}' }" do
+    context "{ username: '#{UN}', slidename: '#{SN}', file: './test.pdf' }" do
       before do
-        @d = { username: UN, slidename: SN }
+        pdf_path = File.expand_path('../', __FILE__) + '/test.pdf'
+        @d = { username: UN, slidename: SN,
+          slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
         @path = Slide.makepath @d[:username], @d[:slidename]
         post '/slides', @d
       end
@@ -116,7 +122,8 @@ describe 'Emaki' do
       end
 
       it "redirects to /#{UN}/#{SN}" do
-        expect(last_response).to be_redirect
+        expect(last_response.redirect?).to be true
+        expect(last_response.url).to eq "/#{UN}/#{SN}"
       end
 
       it "creates directory slides/#{UN}/#{SN}" do
@@ -124,9 +131,9 @@ describe 'Emaki' do
       end
 
       it 'creates png images in the directory' do
-        expect(FileTest.exist? @path + "/1.png").to be true
-        expect(FileTest.exist? @path + "/2.png").to be true
-        expect(FileTest.exist? @path + "/3.png").to be true
+        expect(FileTest.exist? @path + '/1.png').to be true
+        expect(FileTest.exist? @path + '/2.png').to be true
+        expect(FileTest.exist? @path + '/3.png').to be true
       end
     end
   end

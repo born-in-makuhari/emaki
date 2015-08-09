@@ -15,6 +15,13 @@ class Slide
     @internal_logger ||= Rack::NullLogger.new nil
   end
 
+  def self.valid_slugs?(*slugs)
+    slugs.each do |slug|
+      return false unless valid_slug? slug
+    end
+    true
+  end
+
   def self.valid_slug?(slug)
     valid = slug.match(/\A([a-z]|\-|_){1,50}\Z/i) &&
       !slug.match(/\A(\-|_)/i) &&

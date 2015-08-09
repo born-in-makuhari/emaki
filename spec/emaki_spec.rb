@@ -5,6 +5,8 @@ describe 'Emaki' do
   # ---------------------------------------------------------
   # 共通テストケース
   #
+
+  # ヘッダ、タイトル、などなど
   shared_examples_for 'an emaki page' do
     it 'displays "emaki" as a link to "/"' do
       target = html.at_css 'a#toTop'
@@ -14,6 +16,10 @@ describe 'Emaki' do
     it 'returns 200' do
       expect(last_response).to be_ok
     end
+  end
+
+  shared_examples_for 'a slide page' do
+    pending
   end
 
   # ---------------------------------------------------------
@@ -74,21 +80,34 @@ describe 'Emaki' do
   end
 
   #
+  # SLIDE PAGE
+  # /username/slidename
+  #
+  describe 'GET /username/slidename' do
+    pending
+    before do
+      # TODO: refresh slides/ directory
+      get '/testuser/testslide'
+    end
+  end
+
+  #
   # /slides
   #
+
+  # POST /slides はつまるところ 個別スライドページを返却するので
+  # /username/slidename のテストケースを読み込んでます。
   describe 'POST /slides' do
+    pending
     before do
       # TODO: refresh slides/ directory
       post '/slides'
     end
     it 'redirects to /testuser/testslide' do
-      pending 'not yet'
     end
     it 'creates directory "slides/testuser/testslide"' do
-      pending 'not yet'
     end
     it 'creates png images in the directory' do
-      pending 'not yet'
     end
   end
 end

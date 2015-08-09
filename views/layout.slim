@@ -13,6 +13,21 @@ html
         }
         a {
           color: #a88;
+          -webkit-transition: color 0.2s linear;
+        }
+        a:hover {
+          color: #caa;
+          -webkit-transition: color 0.2s linear;
+        }
+        a#toTop {
+          text-decoration: none;
         }
   body
-    == yield
+    .content
+      .header
+        a#toTop href="/"
+          h1 emaki
+        a#toNew href="/new"
+          |
+            + New slide
+      == yield

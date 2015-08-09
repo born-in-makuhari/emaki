@@ -39,6 +39,8 @@ end
 # マッチしなかったらスライドだと判断
 get '/:username/:slidename' do
   if Slide.exist?(params[:username], params[:slidename])
+    @un = params[:username]
+    @sn = params[:slidename]
     slim :slide, layout: :layout
   else
     redirect to('/')

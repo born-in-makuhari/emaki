@@ -23,10 +23,48 @@ describe 'Emaki::Slide' do
       FileUtils.rmdir(@un_path)
     end
 
+    # ===============================================================
+    # Manipulate slides/ directory & files
+    #
+    # ---------------------------------------------------------------
+    # safety
+    #
     describe '.makepath' do
       it { expect(Slide.makepath(@un, @sn)).to eq @sn_path }
     end
 
+    describe '.exist?' do
+      context "when #{@sn_path} exists," do
+        before { Slide.mkdir(@un, @sn) }
+        it { expect(Slide.exist?(@un, @sn)).to be true }
+      end
+      context "when #{@sn_path} does not exist," do
+        it { expect(Slide.exist?(@un, @sn)).to be false }
+      end
+    end
+
+    describe '.page_number' do
+      before :all do
+        FileUtils.mkdir_p(@sn_path)
+        @dummy_files = []
+        @page_number = 5
+        @page_number.times do |i|
+          dummy_file = @sn_path + "/#{i}_dummy.txt"
+          FileUtils.touch(dummy_file)
+          @dummy_files << dummy_file
+        end
+      end
+      after :all do
+        @dummy_files.each do |file|
+          FileUtils.remove(file)
+        end
+      end
+      it { expect(Slide.page_number(@un, @sn)).to be @page_number }
+    end
+
+    # ---------------------------------------------------------------
+    # invasive
+    #
     describe '.mkdir' do
       before do
         FileUtils.rmdir(@sn_path)
@@ -59,18 +97,11 @@ describe 'Emaki::Slide' do
         expect(FileTest.exist?(@un_path)).to be true
       end
     end
-
-    describe '.exist?' do
-      context "when #{@sn_path} exists," do
-        before { Slide.mkdir(@un, @sn) }
-        it { expect(Slide.exist?(@un, @sn)).to be true }
-      end
-      context "when #{@sn_path} does not exist," do
-        it { expect(Slide.exist?(@un, @sn)).to be false }
-      end
-    end
+    # ===============================================================
+    # Manipulate tmp/ directory & files
     #
-    # control tmp/
+    # ---------------------------------------------------------------
+    # invasive
     #
     describe 'Slide manipulates tmp/' do
       describe 'save & remove' do
@@ -119,6 +150,9 @@ describe 'Emaki::Slide' do
         end
       end
 
+      # -------------------------------------------------------------
+      # safety
+      #
       describe '.tmppath' do
         it { expect(Slide.tmppath).to eq "#{EMAKI_ROOT}/tmp" }
       end
@@ -144,5 +178,9 @@ describe 'Emaki::Slide' do
         end
       end
     end
+
+    #
+    # and more...
+    #
   end
 end

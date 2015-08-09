@@ -70,7 +70,7 @@ describe 'Emaki' do
     it 'desplays all pages, as <img>' do
       3.times do |i|
         expect(html).to desplay @page_css[i]
-        expect(html).to desplay @img_css[i], :href, @img_href[i]
+        expect(html).to desplay @img_css[i], :src, @img_href[i]
       end
     end
   end

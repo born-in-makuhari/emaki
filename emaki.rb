@@ -16,7 +16,7 @@ class Slide
     @internal_logger ||= Rack::NullLogger.new nil
   end
 
-  def self.makepath(un, sn, logger = self.logger)
+  def self.makepath(un, sn)
     File.expand_path('../', __FILE__) + "/slides/#{un}/#{sn}"
   end
 
@@ -49,8 +49,8 @@ class Slide
     path
   end
 
-  def self.exist?(un, sn, logger = self.logger)
-    FileTest.exist?(makepath(un, sn, logger))
+  def self.exist?(un, sn)
+    FileTest.exist?(makepath(un, sn))
   end
   # --------------------------------------------------------------
   # tmp/ にファイルを保存し、keyを返す
@@ -67,7 +67,9 @@ class Slide
   end
 
   def self.tmpremove(key)
-    FileUtils.rm(tmppath + '/' + key)
+    path = tmppath + '/' + key
+    puts "[save_slide] tmpremove #{path}"
+    FileUtils.rm(path)
   end
 
   def self.tmppath
@@ -104,8 +106,11 @@ post '/slides' do
   file = params[:slide]
 
   result = save_slide un, sn, file
-  redirect to("/#{un}/#{sn}") if result
-  redirect to('/new')
+  if result
+    redirect to("/#{un}/#{sn}")
+  else
+    redirect to('/new')
+  end
 end
 
 # マッチしなかったらスライドだと判断
@@ -117,14 +122,20 @@ end
 # Routesの処理代行
 #
 def save_slide(un, sn, file)
+  puts "[save_slide] #{un}, #{sn}, #{file}"
   # 一時保存
   key = Slide.tmpsave(file, logger)
+  puts "[save_slide] key is #{key}"
   return false unless key
 
   # ディレクトリないことを確認
-  return false if Slide.exist?(un, sn, logger)
+  return false if Slide.exist?(un, sn)
+
+  puts "[save_slide] dir doesnot exist"
   # 作成失敗なら後処理は不要
-  return false if Slide.mkdir(un, sn, logger)
+  return false unless Slide.mkdir(un, sn, logger)
+
+  puts "[save_slide] convert start"
 
   # PDFファイルを変換
   convert_pdf_to_png(un, sn, Slide.tmppath + '/' + key, Slide.makepath(un, sn))
@@ -132,13 +143,15 @@ end
 
 def convert_pdf_to_png(un, sn, srcfilepath, destpath)
   begin
-    images = Magick::Imagge.read(srcfilepath)
+    images = Magick::Image.read(srcfilepath)
     images.each_with_index { |image, i| image[i].write("#{destpath}/#{i}.png") }
     return true
   rescue => e
+    puts "[save_slide] convert error #{e.message}"
     logger.error(e.message)
     Slide.rmdir(un, sn, logger)
   ensure
+    puts "[save_slide] ensure, remove tmpfile"
     Slide.tmpremove(key)
   end
 end

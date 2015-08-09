@@ -41,6 +41,8 @@ get '/:username/:slidename' do
   if Slide.exist?(params[:username], params[:slidename])
     @un = params[:username]
     @sn = params[:slidename]
+    @page_number = Slide.page_number @un, @sn
+    #@img_urls = Slide.page_url @un, @sn
     slim :slide, layout: :layout
   else
     redirect to('/')

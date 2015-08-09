@@ -43,27 +43,38 @@ describe 'Emaki::Slide' do
       end
     end
 
-    describe '.page_number' do
-      context 'if pages exist,' do
-        before :all do
-          FileUtils.mkdir_p(@sn_path)
-          @dummy_files = []
-          @page_number = 5
-          @page_number.times do |i|
-            dummy_file = @sn_path + "/#{i}_dummy.txt"
-            FileUtils.touch(dummy_file)
-            @dummy_files << dummy_file
-          end
+    context 'if pages exist,' do
+      before :all do
+        FileUtils.mkdir_p(@sn_path)
+        @dummy_files = []
+        @page_urls = []
+        @page_number = 5
+        @page_number.times do |i|
+          dummy_file = @sn_path + "/#{i}_dummy.txt"
+          FileUtils.touch(dummy_file)
+          @dummy_files << dummy_file
+          @page_urls << "/#{@un}/#{@sn}/#{i}.png"
         end
-        after :all do
-          @dummy_files.each do |file|
-            FileUtils.remove(file)
-          end
+      end
+
+      after :all do
+        @dummy_files.each do |file|
+          FileUtils.remove(file)
         end
+      end
+
+      describe '.page_number' do
         it { expect(Slide.page_number(@un, @sn)).to be @page_number }
       end
 
-      context 'if slide doesnot exist,' do
+      describe '.page_urls' do
+        it { expect(Slide.page_urls(@un, @sn).length).to be @page_number }
+        it { expect(Slide.page_urls(@un, @sn)).to eq @page_urls }
+      end
+    end
+
+    context 'if slide doesnot exist,' do
+      describe '.page_number' do
         it { expect(Slide.page_number(@un, @sn)).to be 0 }
       end
     end

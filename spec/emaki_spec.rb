@@ -6,7 +6,7 @@ describe 'Emaki' do
   # 共通テストケース
   #
 
-  # ヘッダ、タイトル、などなど
+  # 普通のページ。ヘッダ、タイトル、などなど
   shared_examples_for 'an emaki page' do
     it 'displays "emaki" as a link to "/"' do
       target = html.at_css 'a#toTop'
@@ -18,6 +18,7 @@ describe 'Emaki' do
     end
   end
 
+  # スライドページ。
   shared_examples_for 'a slide page' do
     pending
   end
@@ -98,7 +99,6 @@ describe 'Emaki' do
   # POST /slides はつまるところ 個別スライドページを返却するので
   # /username/slidename のテストケースを読み込んでます。
   describe 'POST /slides' do
-    pending
     before do
       # TODO: refresh slides/ directory
       post '/slides'

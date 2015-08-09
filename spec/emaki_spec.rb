@@ -1,5 +1,35 @@
 require File.expand_path '../spec_helper.rb', __FILE__
 
+# ===========================================================
+# カスタムマッチャー
+#
+
+# desplay: セレクタ表記で要素を確定し、
+#          値が１つの場合は要素があるか確認
+#          値が２つの場合はテキストが同じか確認
+#          値が３つの場合は要素の属性名・属性値が同じか確認
+RSpec::Matchers.define :desplay do |css, keyortext, value|
+  match do |actual|
+    if keyortext.nil?
+      actual.at_css(css)
+    elsif value.nil?
+      actual.at_css(css).text == keyortext
+    else
+      actual.at_css(css).get(keyortext) == value
+    end
+  end
+end
+
+# have_attribute: セレクタ表記で要素を確定、
+#                 属性名と値がマッチしたら成功
+RSpec::Matchers.define :have_arrtibute do |css, key, value|
+  match { |actual| actual.at_css(css).get(key) == value }
+end
+
+# ===========================================================
+# Emaki specs
+#
+
 describe 'Emaki' do
   before :all do
     FileUtils.rm_rf(Slide.tmppath) if Slide.tmppath != '/'
@@ -12,9 +42,8 @@ describe 'Emaki' do
   # 普通のページ。ヘッダ、タイトル、などなど
   shared_examples_for 'an emaki page' do
     it 'displays "emaki" as a link to "/"' do
-      target = html.at_css 'a#toTop'
-      expect(target.text).to eq 'emaki'
-      expect(target.get(:href)).to eq '/'
+      expect(html).to desplay 'a#toTop', 'emaki'
+      expect(html).to desplay 'a#toTop', 'href', '/'
     end
     it 'returns 200' do
       expect(last_response).to be_ok

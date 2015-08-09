@@ -25,14 +25,19 @@ describe 'Emaki' do
       it '         form#newSlide method="post"' do
         expect(@html.at_css('form#newSlide').get(:method)).to eq 'post'
       end
-      it 'contains <input type="text" name="username">' do
-        pending 'not yet'
+      it 'contains <input id="username" type="text" name="username">' do
+        target = @html.at_css('input#username')
+        expect(target.get(:type)).to eq 'text'
+        expect(target.get(:name)).to eq 'username'
       end
-      it 'contains <input type="text" name="slidename">' do
-        pending 'not yet'
+      it 'contains <input id="slidename" type="text" name="slidename">' do
+        target = @html.at_css('input#slidename')
+        expect(target.get(:type)).to eq 'text'
+        expect(target.get(:name)).to eq 'slidename'
       end
       it 'contains <input type="submit">' do
-        pending 'not yet'
+        target = @html.at_css('input[type="submit"]')
+        expect(target).not_to be nil
       end
     end
   end

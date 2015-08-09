@@ -124,21 +124,34 @@ describe 'Emaki' do
   # /username/slidename
   #
   describe 'GET /username/slidename' do
-    it_behaves_like 'an emaki page'
-    it_behaves_like 'a slide page'
+    context 'if target exists,' do
+      it_behaves_like 'an emaki page'
+      it_behaves_like 'a slide page'
 
-    before :all do
-      pdf_path = SPEC_ROOT + '/test.pdf'
-      @d = { username: UN, slidename: SN,
-        slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
-      @path = Slide.makepath @d[:username], @d[:slidename]
-      post '/slides', @d
-      get '/testuser/testslide'
+      before :all do
+        pdf_path = SPEC_ROOT + '/test.pdf'
+        @d = { username: UN, slidename: SN,
+          slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
+        @path = Slide.makepath @d[:username], @d[:slidename]
+        post '/slides', @d
+        get '/testuser/testslide'
+      end
+
+      after :all do
+        FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
+        FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
+      end
     end
 
-    after :all do
-      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
-      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
+    context 'if target does not exist,' do
+      it_behaves_like 'an emaki page'
+
+      before :all do
+        get '/testuser/testslide'
+      end
+
+      it { expect(last_response.status).to eq 404 }
+      it { expect(html).to desplay '#slideNotFound' }
     end
   end
 

@@ -18,6 +18,11 @@ describe 'Emaki::Slide' do
       @sn = SN
     end
 
+    after do
+      FileUtils.rmdir(@sn_path)
+      FileUtils.rmdir(@un_path)
+    end
+
     describe '.mkdir' do
       before do
         FileUtils.rmdir(@sn_path)
@@ -52,7 +57,7 @@ describe 'Emaki::Slide' do
     end
 
     describe '.makepath' do
-      it "(#{UN}, #{SN}) -> ..../slides/#{UN}/#{SN}"
+      it { expect(Slide.makepath(@un, @sn)).to eq @sn_path }
     end
   end
 end

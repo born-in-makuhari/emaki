@@ -15,11 +15,11 @@
   height: 100%;
 }
 
+
 #slideControls {
   width: 640px;
   height: 75px;
 }
-
 #slideControls #indicator {
   width: 100%;
   height: 25px;
@@ -28,11 +28,12 @@
 #slideControls #indicator .indicator-dot {
   margin: 0 20px 0 20px;
   color: #caa;
+  -webkit-transition: color 0.2s linear;
 }
 #slideControls #indicator .indicator-dot.active {
-  color: #a88;
+  color: black;
+  -webkit-transition: color 0.2s linear;
 }
-
 #slideControls button {
   background: #a88;
   border: 0;
@@ -41,13 +42,13 @@
   width: 50%;
   height: 50px;
   font-size: 200%;
-  -webkit-transition: color 0.2s linear;
+  -webkit-transition: background 0.2s linear;
+}
+#slideControls button:hover {
+  background: black;
+  -webkit-transition: background 0.2s linear;
 }
 
-#slideControls button:hover {
-  background: #caa;
-  -webkit-transition: color 0.2s linear;
-}
 
 
 #slides {
@@ -57,6 +58,62 @@
 #slides li {
   list-style: none;
 }
+
+fieldset {
+  width: 330px;
+  padding: 20px;
+  border: 0;
+  background: white;
+  border-radius: 2px;
+}
+fieldset p {
+  color: #a88;
+}
+input {
+  font-size: 110%;
+  border: 0;
+  border-radius: 2px;
+  padding: 10px;
+  width: 120px;
+}
+input[type="text"] {
+  border: 1px solid #a88;
+}
+input[type="file"] {
+}
+input[type="file"] {
+  width: 280px;
+  background: #a88;
+  color: white;
+  overflow: hidden !important;
+  display: block;
+}
+input[type="submit"] {
+  width: 300px;
+  background: #a88;
+  color: white;
+}
+input[type="submit"]:hover {
+  background: #caa;
+}
+
+
+#attention {
+  margin: 20px 0 0 0;
+  background: white;
+  color: #b44;
+  border-radius: 2px;
+  width: 330px;
+  padding: 20px;
+}
+#attention ul {
+  border-left: 1px solid #a88;
+}
+#attention ul li {
+  list-style: none;
+}
+
+
 body {
   background: #edc;
   color: #533
@@ -69,9 +126,23 @@ a {
   -webkit-transition: color 0.2s linear;
 }
 a:hover {
-  color: #caa;
+  color: black;
   -webkit-transition: color 0.2s linear;
 }
 a#toTop {
   text-decoration: none;
+}
+a#toNew {
+  text-decoration: none;
+}
+a#toNew .plus {
+  position: relative;
+  margin: auto;
+}
+#dozing {
+  padding-left: 20px;
+  border-left: 1px solid #a88;
+}
+.all {
+  border-bottom: 1px solid #a88;
 }

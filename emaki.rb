@@ -39,6 +39,7 @@ end
 
 get '/new' do
   @attention = session[:attention]
+  session[:attention] = nil
   slim :new, layout: :layout
 end
 

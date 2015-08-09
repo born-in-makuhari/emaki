@@ -101,7 +101,7 @@ describe 'Emaki' do
     let(:html) { @html }
 
     before do
-      pdf_path = File.expand_path('../', __FILE__) + '/test.pdf'
+      pdf_path = SPEC_ROOT + '/test.pdf'
       @d = { username: UN, slidename: SN,
         slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
       @path = Slide.makepath @d[:username], @d[:slidename]
@@ -124,7 +124,7 @@ describe 'Emaki' do
   describe 'POST /slides' do
     context "{ username: '#{UN}', slidename: '#{SN}', file: './test.pdf' }" do
       before do
-        pdf_path = File.expand_path('../', __FILE__) + '/test.pdf'
+        pdf_path = SPEC_ROOT + '/test.pdf'
         @d = { username: UN, slidename: SN,
           slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
         @path = Slide.makepath @d[:username], @d[:slidename]

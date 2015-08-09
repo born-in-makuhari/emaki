@@ -1,6 +1,8 @@
 require 'sinatra'
 require 'slim'
-require File.expand_path('../lib', __FILE__) + '/slide.rb'
+EMAKI_ROOT = File.expand_path('../', __FILE__)
+require EMAKI_ROOT + '/lib/slide.rb'
+
 
 configure :production, :development do
   enable :logging

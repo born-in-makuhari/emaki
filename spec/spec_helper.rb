@@ -19,3 +19,5 @@ RSpec.configure { |c| c.include RSpecMixin }
 
 UN = 'testuser'
 SN = 'testslide'
+
+SPEC_ROOT = File.expand_path('../', __FILE__)

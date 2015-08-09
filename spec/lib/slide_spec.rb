@@ -1,4 +1,4 @@
-require File.expand_path '../spec_helper.rb', __FILE__
+require File.expand_path '../../spec_helper.rb', __FILE__
 
 # slide関連のファイル操作を行うSlideクラスをテスト
 describe 'Emaki::Slide' do
@@ -6,8 +6,8 @@ describe 'Emaki::Slide' do
   # tips: allをつけると１回だけ実行する。
   #       デフォルトはeach(毎回)
   before :all do
-    @un_path = File.expand_path('../..', __FILE__) + "/slides/#{UN}"
-    @sn_path = File.expand_path('../..', __FILE__) + "/slides/#{UN}/#{SN}"
+    @un_path = EMAKI_ROOT + "/slides/#{UN}"
+    @sn_path = EMAKI_ROOT + "/slides/#{UN}/#{SN}"
     puts "user  dir: #{@un_path}"
     puts "slide dir: #{@sn_path}"
   end

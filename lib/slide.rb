@@ -1,7 +1,5 @@
 require 'RMagick'
 
-EMAKI_ROOT = File.expand_path('../../', __FILE__)
-
 # ----------------------------------------------------------------
 # Slide
 #

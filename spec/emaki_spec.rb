@@ -103,12 +103,13 @@ describe 'Emaki' do
       before do
         data = { username: 'testuser', slidename: 'testslide' }
         Slide.rmdir data[:username], data[:slidename]
+        @path = Slide.makepath data[:username], data[:slidename]
         post '/slides'
       end
       it 'redirects to /testuser/testslide'
       it 'creates directory "slides/testuser/testslide"' do
-        path = File.expand_path('..', __FILE__) + '/slides/testuser/testslide'
-        expect(Dir.exist? path).to be true
+        puts @path
+        expect(FileTest.exist? @path).to be true
       end
       it 'creates png images in the directory'
     end

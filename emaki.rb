@@ -12,36 +12,40 @@ end
 # TODO: It is too danger, I need another way
 # mkdir -p slides/#{un}/#{sn}
 class Slide
-  def makepath(un, sn)
+  def self.logger
+    @internal_logger ||= Rack::NullLogger.new nil
+  end
+
+  def self.makepath(un, sn)
     File.expand_path('../', __FILE__) + "/slides/#{un}/#{sn}"
   end
 
-  def self.mkdir(un, sn)
+  def self.mkdir(un, sn, logger = self.logger)
     return false if un.nil? || sn.nil?
     path = makepath(un, sn)
-    logger.info "MKDIR #{path}"
+    logger.info("MKDIR #{path}")
     begin
-      Dir.mkdir path
+      FileUtils.mkdir_p path
     rescue => e
-      logger.error e
+      logger.error(e.message)
       return false
     end
 
-    true
+    path
   end
 
-  def self.rmdir(un, sn)
+  def self.rmdir(un, sn, logger = self.logger)
     return false if un.nil? || sn.nil?
     path = makepath(un, sn)
-    logger.info "RMDIR #{path}"
+    logger.info("RMDIR #{path}")
     begin
       FileUtils.rmdir path
     rescue => e
-      logger.error e
+      logger.error(e.message)
       return false
     end
 
-    true
+    path
   end
 end
 # ----------------------------------------------------------------
@@ -56,6 +60,7 @@ get '/new' do
 end
 
 post '/slides' do
-  Slide.mkdir params[:username], params[:slidename]
-  redirect to('/testuser/testslide')
+  ok = Slide.mkdir params[:username], params[:slidename], logger
+  redirect to('/testuser/testslide') if ok
+  redirect to('/new')
 end

@@ -1,5 +1,14 @@
-p Sorry, Emaki is still dozing
+p Emaki is still dozing
 p
   | our project is&nbsp;
-  a href="https://github.com/born-in-makuhari/emaki" here
-.box width="500"
+  a href="https://github.com/born-in-makuhari/emaki"
+    | here
+#slides
+  - @slides.each do |un, user_slides|
+    h3 = un
+    ul
+      - user_slides.each do |slide|
+        - unless slide == '.' || slide == '..'
+          li
+            a href="/#{un}/#{slide}"
+              = "#{un}/#{slide}"

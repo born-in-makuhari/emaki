@@ -14,4 +14,28 @@
   width: 100%;
   height: 100%;
 }
-
+#slides {
+  padding: 0 0 0 20px;
+  border-left: 1px solid #a88;
+}
+#slides li {
+  list-style: none;
+}
+body {
+  background: #edc;
+  color: #533
+}
+.content {
+  padding: 50px;
+}
+a {
+  color: #a88;
+  -webkit-transition: color 0.2s linear;
+}
+a:hover {
+  color: #caa;
+  -webkit-transition: color 0.2s linear;
+}
+a#toTop {
+  text-decoration: none;
+}

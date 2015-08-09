@@ -16,6 +16,22 @@ end
 # Routes
 #
 get '/' do
+  # FIXME: DBがないので、ひとまずリスト表示する
+  @slides = {}
+  if FileTest.exist?(EMAKI_ROOT + '/slides')
+    users = Dir.entries(EMAKI_ROOT + '/slides')
+    users.each do |un|
+      next if un == '.' || un == '..'
+      slides = Dir.entries(EMAKI_ROOT + '/slides/' + un)
+      @slides[un] = []
+      slides.each do |sn|
+        next if sn == '.' || sn == '..'
+        @slides[un] << sn
+      end
+    end
+  end
+  # FIXME: ここまで
+
   slim :index, layout: :layout
 end
 

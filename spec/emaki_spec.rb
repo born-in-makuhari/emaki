@@ -169,6 +169,18 @@ describe 'Emaki' do
   # /slides
   #
   describe 'POST /slides' do
+    context "if username is invalid," do
+      it 'redirects to "/new" with message'
+    end
+
+    context "if slidename is invalid," do
+      it 'redirects to "/new" with message'
+    end
+
+    context "no file," do
+      it 'redirects to "/new" with message'
+    end
+
     context "{ username: '#{UN}', slidename: '#{SN}', file: './test.pdf' }" do
       before :all do
         pdf_path = SPEC_ROOT + '/test.pdf'

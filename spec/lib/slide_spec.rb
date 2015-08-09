@@ -29,6 +29,31 @@ describe 'Emaki::Slide' do
     # ---------------------------------------------------------------
     # safety
     #
+    describe '.valid_slug?' do
+      it 'max 50' do
+        expect(Slide.valid_slug?('A' * 50)).to be true
+        expect(Slide.valid_slug?('A' * 51)).to be false
+      end
+
+      it 'min 1' do
+        expect(Slide.valid_slug?('A' * 1)).to be true
+        expect(Slide.valid_slug?('A' * 0)).to be false
+      end
+
+      it 'requires alphabet at the first & last' do
+        expect(Slide.valid_slug?('a' * 1)).to be true
+        expect(Slide.valid_slug?('-' * 1)).to be false
+        expect(Slide.valid_slug?('_' * 1)).to be false
+        expect(Slide.valid_slug?('_' + ('a' * 20) + '_')).to be false
+      end
+
+      it 'allows A-Z, a-z, -, _ only' do
+        expect(Slide.valid_slug?('A-a_z-Z' * 1)).to be true
+        expect(Slide.valid_slug?('A=Z' * 1)).to be false
+        expect(Slide.valid_slug?('にほんご' * 1)).to be false
+      end
+    end
+
     describe '.makepath' do
       it { expect(Slide.makepath(@un, @sn)).to eq @sn_path }
     end

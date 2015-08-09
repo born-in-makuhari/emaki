@@ -1,33 +1,52 @@
 require File.expand_path '../spec_helper.rb', __FILE__
 
 describe 'Emaki' do
-  describe 'GET /' do
-    before do
-      get '/'
-      @html = Oga.parse_html(last_response.body)
+
+  # ---------------------------------------------------------
+  # 共通テストケース
+  #
+  shared_examples_for 'an emaki page' do
+    it 'displays "emaki" as a link to "/"' do
+      target = html.at_css 'a#toTop'
+      expect(target.text).to eq 'emaki'
+      expect(target.get(:href)).to eq '/'
     end
     it 'returns 200' do
       expect(last_response).to be_ok
     end
-    it 'displays "emaki" as a link to "/"' do
-      target = @html.at_css('a#toEmaki')
-      expect(target.text).to eq 'emaki'
-      expect(target.get(:href)).to eq '/'
+  end
+
+  # ---------------------------------------------------------
+  # 個別テストケース
+  #
+
+  #
+  #  /
+  #
+  describe 'GET /' do
+    it_behaves_like 'an emaki page'
+    let(:html) { @html }
+    before do
+      get '/'
+      @html = Oga.parse_html(last_response.body)
     end
     it 'links to "/new"' do
       target = @html.at_css('a#toNew')
       expect(target.get(:href)).to eq '/new'
     end
   end
+
+  #
+  #  /new
+  #
   describe 'GET /new' do
+    it_behaves_like 'an emaki page'
+    let(:html) { @html }
     before do
       get '/new'
       @html = Oga.parse_html(last_response.body)
     end
     describe 'then' do
-      it 'returns 200' do
-        expect(last_response).to be_ok
-      end
       it 'contains form#newSlide' do
         expect(@html.at_css('form#newSlide')).not_to be nil
       end
@@ -53,6 +72,10 @@ describe 'Emaki' do
       end
     end
   end
+
+  #
+  # /slides
+  #
   describe 'POST /slides' do
     before do
       # TODO: refresh slides/ directory

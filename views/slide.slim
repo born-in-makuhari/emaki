@@ -6,6 +6,10 @@ script src="/js/slide.js"
     section id="page#{i}"
       img src="#{url}" alt="page #{i}"
 #slideControls
+  #indicator
+    - @page_number.times do |i|
+      span.indicator-dot id="indicatorDot#{i}"
+        | ●
   button#prev
     | <
   button#next

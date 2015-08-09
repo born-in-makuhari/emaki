@@ -14,6 +14,42 @@
   width: 100%;
   height: 100%;
 }
+
+#slideControls {
+  width: 640px;
+  height: 75px;
+}
+
+#slideControls #indicator {
+  width: 100%;
+  height: 25px;
+  text-align: center;
+}
+#slideControls #indicator .indicator-dot {
+  margin: 0 20px 0 20px;
+  color: #caa;
+}
+#slideControls #indicator .indicator-dot.active {
+  color: #a88;
+}
+
+#slideControls button {
+  background: #a88;
+  border: 0;
+  color: white;
+  margin: 0;
+  width: 50%;
+  height: 50px;
+  font-size: 200%;
+  -webkit-transition: color 0.2s linear;
+}
+
+#slideControls button:hover {
+  background: #caa;
+  -webkit-transition: color 0.2s linear;
+}
+
+
 #slides {
   padding: 0 0 0 20px;
   border-left: 1px solid #a88;

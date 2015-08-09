@@ -27,7 +27,6 @@ post '/slides' do
   un = params[:username]
   sn = params[:slidename]
   file = params[:slide]
-  puts "file.class: #{file.class}"
 
   result = save_slide un, sn, file
   if result

@@ -94,10 +94,15 @@ describe 'Emaki::Slide' do
           end
           describe '.tmpremove' do
             context 'with key' do
-              it 'removes tmpfile'
+              before { @result = Slide.tmpremove(@key) }
 
-              it 'returns tmpfile name'
+              it 'removes tmpfile' do
+                expect(FileTest.exist?(EMAKI_ROOT + '/tmp/' + @key)).to be false
+              end
 
+              it 'returns tmpfile fullpath list' do
+                expect(@result).to eq [EMAKI_ROOT + '/tmp/' + @key]
+              end
             end
             context 'without key' do
               before { @result = Slide.tmpremove('') }

@@ -42,7 +42,7 @@ get '/:username/:slidename' do
     @un = params[:username]
     @sn = params[:slidename]
     @page_number = Slide.page_number @un, @sn
-    #@img_urls = Slide.page_url @un, @sn
+    @page_urls = Slide.page_urls @un, @sn
     slim :slide, layout: :layout
   else
     redirect to('/')

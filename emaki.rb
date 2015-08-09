@@ -40,7 +40,7 @@ class Slide
     path = makepath(un, sn)
     logger.info("RMDIR #{path}")
     begin
-      FileUtils.rmdir path
+      FileUtils.rm_rf path
     rescue => e
       logger.error(e.message + e.backtrace[0])
       return false
@@ -119,6 +119,11 @@ end
 
 # マッチしなかったらスライドだと判断
 get '/:username/:slidename' do
+  if Slide.exist?(params[:username], params[:slidename])
+    slim :slide, layout: :layout
+  else
+    redirect to('/')
+  end
 end
 
 # ----------------------------------------------------------------

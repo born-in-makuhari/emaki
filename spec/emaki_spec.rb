@@ -1,6 +1,9 @@
 require File.expand_path '../spec_helper.rb', __FILE__
 
 describe 'Emaki' do
+  before :all do
+    FileUtils.rm_rf(Slide.tmppath) if Slide.tmppath != '/'
+  end
 
   # ---------------------------------------------------------
   # 共通テストケース
@@ -95,9 +98,20 @@ describe 'Emaki' do
   describe 'GET /username/slidename' do
     it_behaves_like 'an emaki page'
     it_behaves_like 'a slide page'
+    let(:html) { @html }
+
     before do
-      # TODO: refresh slides/ directory
+      pdf_path = File.expand_path('../', __FILE__) + '/test.pdf'
+      @d = { username: UN, slidename: SN,
+        slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
+      @path = Slide.makepath @d[:username], @d[:slidename]
+      post '/slides', @d
       get '/testuser/testslide'
+      @html = Oga.parse_html(last_response.body)
+    end
+
+    after do
+      Slide.rmdir UN, SN
     end
   end
 
@@ -118,7 +132,7 @@ describe 'Emaki' do
       end
 
       after do
-        Slide.rmdir @d[:username], @d[:slidename]
+        Slide.rmdir UN, SN
       end
 
       it "redirects to /#{UN}/#{SN}" do
@@ -134,6 +148,11 @@ describe 'Emaki' do
         expect(FileTest.exist? @path + '/0.png').to be true
         expect(FileTest.exist? @path + '/1.png').to be true
         expect(FileTest.exist? @path + '/2.png').to be true
+      end
+
+      it 'cleanup /tmp' do
+        puts Slide.tmppath
+        expect(Dir.entries(Slide.tmppath).join).to eq '...'
       end
     end
   end

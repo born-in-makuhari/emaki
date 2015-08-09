@@ -53,7 +53,7 @@ describe 'Emaki::Slide' do
           dummy_file = @sn_path + "/#{i}_dummy.txt"
           FileUtils.touch(dummy_file)
           @dummy_files << dummy_file
-          @page_urls << "/#{@un}/#{@sn}/#{i}.png"
+          @page_urls << "/#{UN}/#{SN}/#{i}.png"
         end
       end
 

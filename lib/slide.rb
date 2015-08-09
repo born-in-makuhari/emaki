@@ -25,6 +25,13 @@ class Slide
     Dir.entries(path).length - 2 # Ignore . & ..
   end
 
+  def self.page_urls(un, sn)
+    num = page_number un, sn
+    num.times.map do |i|
+      "/#{un}/#{sn}/#{i}.png"
+    end
+  end
+
   def self.mkdir(un, sn, logger = self.logger)
     # TODO: It is too danger, I need another way
     # mkdir -p slides/#{un}/#{sn}

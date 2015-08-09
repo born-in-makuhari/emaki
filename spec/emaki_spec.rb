@@ -2,9 +2,21 @@ require File.expand_path '../spec_helper.rb', __FILE__
 
 describe 'Emaki' do
   describe 'GET /' do
-    before { get '/' }
+    before do
+      get '/'
+      @html = Oga.parse_html(last_response.body)
+    end
     it 'returns 200' do
       expect(last_response).to be_ok
+    end
+    it 'displays "emaki" as a link to "/"' do
+      target = @html.at_css('a#toEmaki')
+      expect(target.text).to eq 'emaki'
+      expect(target.get(:href)).to eq '/'
+    end
+    it 'links to "/new"' do
+      target = @html.at_css('a#toNew')
+      expect(target.get(:href)).to eq '/new'
     end
   end
   describe 'GET /new' do

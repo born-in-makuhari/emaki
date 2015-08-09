@@ -1,6 +1,13 @@
 require 'sinatra'
 require 'slim'
 
+configure :production, :development do
+  enable :logging
+  file = File.new("#{settings.root}/logs/#{settings.environment}.log", 'a+')
+  file.sync = true
+  use Rack::CommonLogger, file
+end
+
 # TODO: It is too danger, I need another way
 # mkdir -p slides/#{un}/#{sn}
 def mkdir_slides(un, sn)
@@ -8,7 +15,7 @@ def mkdir_slides(un, sn)
 
   begin
     logger.info File.expand_path('.', __FILE__) + "slides/#{un}/#{sn}"
-    #Dir.mkdir File.expand_path('.', __FILE__) + "slides/#{un}/#{sn}"
+    # Dir.mkdir File.expand_path('.', __FILE__) + "slides/#{un}/#{sn}"
   rescue => e
     logger.error e
     return false

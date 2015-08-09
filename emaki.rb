@@ -49,6 +49,10 @@ get '/:username/:slidename' do
   end
 end
 
+# スライド画像の返却
+get '/:username/:slidename/:number.png' do
+end
+
 # ----------------------------------------------------------------
 # Procs
 # Routesの処理代行

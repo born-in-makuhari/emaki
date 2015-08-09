@@ -1,12 +1,12 @@
 var nowNumber = 0;
-var pageNumber = $('input#pageNumber').val();
+var pageNumber = 0;
 
 function page(num) {
   nowNumber = num;
   for (var i = 0; i < pageNumber; i++) {
-    $page = $('#slideView section#page' + i);
+    var $page = $('#slideView section#page' + i);
     if (i == nowNumber) {
-      $page.css('display', 'visible');
+      $page.css('display', '');
     } else {
       $page.css('display', 'none');
     }
@@ -28,6 +28,7 @@ function prev() {
 }
 
 $(function () {
+  pageNumber = $('input#pageNumber').val();
   page(nowNumber);
 
   $('#next').on('click', next);

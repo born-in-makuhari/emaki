@@ -101,7 +101,8 @@ describe 'Emaki' do
   describe 'POST /slides' do
     context 'with { username: testuser, slidename: testslide }' do
       before do
-        # TODO: refresh slides/ directory
+        data = { username: 'testuser', slidename: 'testslide' }
+        Slide.rmdir data[:username], data[:slidename]
         post '/slides'
       end
       it 'redirects to /testuser/testslide'

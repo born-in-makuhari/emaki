@@ -73,8 +73,7 @@ describe 'Emaki::Slide' do
     # control tmp/
     #
     describe 'Slide manipulates tmp/' do
-
-      describe '.tmpsave' do
+      describe 'save & remove' do
         context 'with file' do
           before do
             pdf_path = SPEC_ROOT + '/test.pdf'
@@ -88,27 +87,30 @@ describe 'Emaki::Slide' do
 
           after { FileUtils.rm_rf(EMAKI_ROOT + '/tmp') }
 
-          it 'saves tmpfile' do
-            expect(FileTest.exist?(EMAKI_ROOT + '/tmp/' + @key)).to be true
+          describe '.tmpsave' do
+            it 'saves tmpfile' do
+              expect(FileTest.exist?(EMAKI_ROOT + '/tmp/' + @key)).to be true
+            end
           end
-        end
-        context 'without file' do
-          it 'does not save tmpfile' do
-            expect(FileTest.exists?(EMAKI_ROOT + '/tmp')).to be false
-          end
-          it 'returns nil' do
-            expect(@key).to be nil
-          end
-        end
-      end
+          describe '.tmpremove' do
+            context 'with key' do
+              it 'removes tmpfile'
 
-      describe '.tmpremove' do
-        context 'with key' do
-          it 'removes tmpfile'
-          it 'returns tmpfile name'
-        end
-        context 'without key' do
-          it 'returns nil'
+              it 'returns tmpfile name'
+
+            end
+            context 'without key' do
+              before { @result = Slide.tmpremove('') }
+
+              it 'returns nil' do
+                expect(@result).to be nil
+              end
+
+              it 'doesnot remove tmpfile' do
+                expect(FileTest.exist?(EMAKI_ROOT + '/tmp/' + @key)).to be true
+              end
+            end
+          end
         end
       end
 

@@ -23,6 +23,10 @@ describe 'Emaki::Slide' do
       FileUtils.rmdir(@un_path)
     end
 
+    describe '.makepath' do
+      it { expect(Slide.makepath(@un, @sn)).to eq @sn_path }
+    end
+
     describe '.mkdir' do
       before do
         FileUtils.rmdir(@sn_path)
@@ -56,8 +60,47 @@ describe 'Emaki::Slide' do
       end
     end
 
-    describe '.makepath' do
-      it { expect(Slide.makepath(@un, @sn)).to eq @sn_path }
+    describe '.exist?' do
+      context "when #{@sn_path} exists," do
+        before { Slide.mkdir(@un, @sn) }
+        it { expect(Slide.exist?(@un, @sn)).to be true }
+      end
+      context "when #{@sn_path} does not exist," do
+        it { expect(Slide.exist?(@un, @sn)).to be false }
+      end
+    end
+    #
+    # control tmp/
+    #
+    describe 'Slide manipulates tmp/' do
+      describe '.tmpsave' do
+        context 'with file' do
+          it 'saves tmpfile'
+          it 'returns tmpfile name'
+        end
+        context 'without file' do
+          it 'returns nil'
+        end
+      end
+      describe '.tmpremove' do
+        context 'with key' do
+          it 'removes tmpfile'
+          it 'returns tmpfile name'
+        end
+        context 'without key' do
+          it 'returns nil'
+        end
+      end
+      describe '.tmppath' do
+        it "returns #{EMAKI_ROOT}/tmp"
+      end
+      describe '.tmp' do
+        it 'creates tmp/ directory'
+      end
+      describe '.maketmpkey' do
+        it 'returns random+time+filename string'
+        it 'provides strings not duplicated each other (sample 10000)'
+      end
     end
   end
 end

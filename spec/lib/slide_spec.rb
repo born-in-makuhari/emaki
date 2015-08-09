@@ -29,6 +29,10 @@ describe 'Emaki::Slide' do
     # ---------------------------------------------------------------
     # safety
     #
+    describe '.valid_slugs?' do
+      it 'calls ".valid_slug?" with each parameter.'
+    end
+
     describe '.valid_slug?' do
       it 'max 50' do
         expect(Slide.valid_slug?('A' * 50)).to be true

@@ -45,6 +45,13 @@ post '/slides' do
   sn = params[:slidename]
   file = params[:slide]
 
+  # slugは正当か？
+  valid_un = Slide.valid_slug?(un)
+  valid_sn = Slide.valid_slug?(sn)
+  unless valid_un && valid_sn
+
+  end
+
   result = save_slide un, sn, file
   if result
     redirect to("/#{un}/#{sn}")

@@ -21,3 +21,7 @@ UN = 'testuser'
 SN = 'testslide'
 
 SPEC_ROOT = File.expand_path('../', __FILE__)
+
+def session
+  last_request.env['rack.session']
+end

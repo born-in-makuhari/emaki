@@ -1,4 +1,5 @@
 require File.expand_path '../spec_helper.rb', __FILE__
+require 'slim'
 
 # ===========================================================
 # カスタムマッチャー
@@ -169,16 +170,50 @@ describe 'Emaki' do
   # /slides
   #
   describe 'POST /slides' do
-    context "if username is invalid," do
-      it 'redirects to "/new" with message'
+    context 'if username is invalid,' do
+      before :all do
+        pdf_path = SPEC_ROOT + '/test.pdf'
+        @d = { username: '-', slidename: SN,
+          slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
+        post '/slides', @d
+      end
+
+      it 'redirects to "/new" with slug_rule' do
+        expect(last_response.redirect?).to be true
+        expect(last_response['Location']).to eq 'http://example.org/new'
+        follow_redirect!
+        expect(html).to desplay '#attention #slugRule'
+      end
     end
 
-    context "if slidename is invalid," do
-      it 'redirects to "/new" with message'
+    context 'if slidename is invalid,' do
+      before :all do
+        pdf_path = SPEC_ROOT + '/test.pdf'
+        @d = { username: UN, slidename: '_',
+          slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
+        post '/slides', @d
+      end
+
+      it 'redirects to "/new" with slug_rule' do
+        expect(last_response.redirect?).to be true
+        expect(last_response['Location']).to eq 'http://example.org/new'
+        follow_redirect!
+        expect(html).to desplay '#attention #slugRule'
+      end
     end
 
-    context "no file," do
-      it 'redirects to "/new" with message'
+    context 'no file,' do
+      before :all do
+        @d = { username: UN, slidename: SN }
+        post '/slides', @d
+      end
+
+      it 'redirects to "/new" with no_file' do
+        expect(last_response.redirect?).to be true
+        expect(last_response['Location']).to eq 'http://example.org/new'
+        follow_redirect!
+        expect(html).to desplay '#attention #noFile'
+      end
     end
 
     context "{ username: '#{UN}', slidename: '#{SN}', file: './test.pdf' }" do

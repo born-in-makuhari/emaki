@@ -37,6 +37,7 @@ get '/' do
 end
 
 get '/new' do
+  @attention = session[:attention]
   slim :new, layout: :layout
 end
 
@@ -46,10 +47,10 @@ post '/slides' do
   file = params[:slide]
 
   # slugは正当か？
-  valid_un = Slide.valid_slug?(un)
-  valid_sn = Slide.valid_slug?(sn)
-  unless valid_un && valid_sn
-
+  unless Slide.valid_slugs?(un, sn)
+    session[:result] = slim :slug_rule
+    redirect to('/new')
+    return
   end
 
   result = save_slide un, sn, file

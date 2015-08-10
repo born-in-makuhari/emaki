@@ -3,3 +3,7 @@ Gemfile.lock
 logs/development.log
 slides/
 tmp/
+
+bootstrap/
+bootstrap*
+.sass-cache/

@@ -1,16 +1,19 @@
-#dozing
-  p Emaki is still dozing
+.jumbotron
+  h1 emaki
+  p.lead = EMAKI_VERSION
+  p このバージョンはプレリリースです。
   p
-    | our project is&nbsp;
-    a href="https://github.com/born-in-makuhari/emaki"
-      | here
-h3.all All slides
-#slides
-  - @slides.each do |un, user_slides|
-    h3 = un
-    ul
-      - user_slides.each do |slide|
-        - unless slide == '.' || slide == '..'
-          li
-            a href="/#{un}/#{slide}"
-              = "#{un}/#{slide}"
+    a.btn.btn-lg.btn-success href="https://github.com/born-in-makuhari/emaki" role="button" target="brank"
+      | emaki on Github
+      | &nbsp;
+      span.glyphicon.glyphicon-new-window
+.row.marketing#slides
+  .col-lg-6
+    - @slides.each do |un, user_slides|
+      h3 = un
+      ul
+        - user_slides.each do |slide|
+          - unless slide == '.' || slide == '..'
+            li
+              a href="/#{un}/#{slide}"
+                = "#{un}/#{slide}"

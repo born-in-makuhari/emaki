@@ -1,17 +1,29 @@
 doctype html
 html
   head
-    meta charset="utf-8"
+    meta charset="utf-8" /
+    meta content="IE=edge" http-equiv="X-UA-Compatible" /
+    meta content="width=device-width, initial-scale=1" name="viewport" /
+    /! The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags
+    meta content="" name="description" /
+    meta content="" name="author" /
     title emaki
+    / load compiled css
     link rel="stylesheet" href="/css/styles.css"
   body
-    .content
-      .header
-        a#toTop href="/"
-          h1 emaki
-        a#toNew href="/new"
-          h3 + new slide
+    .container
+      .header.clearfix
+        nav
+          ul.nav.nav-pills.pull-right
+            li role="presentation"
+              a href="/"  emaki
+            li.active role="presentation"
+              a href="/new"  + New slide
+        h3.text-muted emaki
       == yield
+      footer.footer
+        p &copy; Company 2014
+    /! /container
     / jquery & bootstrap
     script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"
     script src="/js/bootstrap.min.js"

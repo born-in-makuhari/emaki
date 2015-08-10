@@ -2,6 +2,7 @@ require 'sinatra'
 require 'slim'
 
 EMAKI_ROOT = File.expand_path('../', __FILE__)
+EMAKI_VERSION = 'version 0.0.0'
 
 require EMAKI_ROOT + '/lib/slide.rb'
 

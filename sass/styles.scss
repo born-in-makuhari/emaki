@@ -1,3 +1,5 @@
+@import "compass";
+
 // Import Bootstrap Compass integration
 @import "bootstrap-compass";
 
@@ -7,6 +9,10 @@
 // Import Bootstrap for Sass
 @import "bootstrap";
 
+
+// ----------------------------------------------------------
+// layout.slim
+//
 .header nav {
   padding: 10px 0 0 0;
 }
@@ -15,6 +21,9 @@ h3.text-muted {
   margin-top: 10px;
 }
 
+// ----------------------------------------------------------
+// index.slim
+//
 #slides table.table {
   margin: 0;
 }
@@ -22,5 +31,49 @@ h3.text-muted {
 @media screen and (max-width: $screen-xs-max) {
   .jumbotron {
     padding: 1em;
+  }
+}
+// ----------------------------------------------------------
+// slide.slim
+//
+@mixin gradient-top-lighten($color:#666, $lighten:10%){
+  background-color: $color;
+  @include filter-gradient(lighten($color, $lighten), $color, vertical);
+  @include background-image(linear-gradient(lighten($color, $lighten) 0%, $color 100%));
+}
+
+.slide-view-container {
+  @include gradient-top-lighten($gray, 20%);
+  border-radius: $border-radius-base;
+  padding-top: 15px;
+
+  img {
+    border-radius: $border-radius-base;
+    width: 100%;
+  }
+  #slideControls {
+    background: transparent;
+    #indicator {
+      text-align: center;
+
+      span.indicator-dot {
+        color: white;
+        font-size: 2em;
+
+        &.active {
+          color: lighten(saturate($brand-primary, 46.7%), 25%);
+        }
+      }
+    }
+
+    #controls {
+      .btn-group {
+        width: 100%;
+        button {
+          min-width: 50%;
+          outline: none;
+        }
+      }
+    }
   }
 }

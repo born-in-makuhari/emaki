@@ -1,14 +1,18 @@
-#slideView
-  input#pageNumber type="hidden" value="#{@page_number}"
-  - @page_urls.each_with_index do |url, i|
-    section id="page#{i}"
-      img src="#{url}" alt="page #{i}"
-#slideControls
-  #indicator
-    - @page_number.times do |i|
-      span.indicator-dot id="indicatorDot#{i}"
-        | ●
-  button#prev
-    | <
-  button#next
-    | >
+.row
+  .slide-view-container.col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1.col-xs-12
+    #slideView
+      input#pageNumber type="hidden" value="#{@page_number}"
+      - @page_urls.each_with_index do |url, i|
+        section id="page#{i}"
+          img src="#{url}" alt="page #{i}"
+    #slideControls.panel
+      #indicator
+        - @page_number.times do |i|
+          span.indicator-dot id="indicatorDot#{i}"
+            | ●
+      #controls
+        .btn-group
+          button#prev.btn.btn-default
+            | <
+          button#next.btn.btn-default
+            | >

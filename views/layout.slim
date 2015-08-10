@@ -22,7 +22,14 @@ html
         h3.text-muted emaki
       == yield
       footer.footer
-        p &copy; Company 2014
+        p
+          | &copy; Born in Makuhari
+          | &nbsp;
+          - since = '2015'
+          - nowyear = Date.today.strftime('%Y')
+          = since
+          - unless since == nowyear
+            = "&nbsp;-&nbsp;" + nowyear
     /! /container
     / jquery & bootstrap
     script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"

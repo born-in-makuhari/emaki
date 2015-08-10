@@ -15,6 +15,10 @@ h3.text-muted {
   margin-top: 10px;
 }
 
+#slides table.table {
+  margin: 0;
+}
+
 @media screen and (max-width: $screen-xs-max) {
   .jumbotron {
     padding: 1em;

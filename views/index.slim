@@ -8,12 +8,22 @@
       | &nbsp;
       span.glyphicon.glyphicon-new-window
 .row.marketing#slides
-  .col-lg-6
+  .col-lg-12
     - @slides.each do |un, user_slides|
-      h3 = un
-      ul
-        - user_slides.each do |slide|
-          - unless slide == '.' || slide == '..'
-            li
-              a href="/#{un}/#{slide}"
-                = "#{un}/#{slide}"
+      .panel.panel-default
+        .panel-heading
+          h3
+            span.glyphicon.glyphicon-user
+            | &nbsp;
+            = un
+        .panel-body
+          - unless user_slides.empty?
+            table.table
+              - user_slides.each do |slide|
+                - unless slide == '.' || slide == '..'
+                  tr
+                    a href="/#{un}/#{slide}"
+                      p.lead
+                        = "#{un}/#{slide}"
+          - else
+            | No slide

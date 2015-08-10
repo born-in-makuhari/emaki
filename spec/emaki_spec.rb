@@ -45,7 +45,6 @@ describe 'Emaki' do
   # ヘッダ、タイトル
   shared_examples_for 'common header' do
     it 'displays "emaki" as a link to "/"' do
-      expect(html).to desplay 'a#toTop', 'emaki'
       expect(html).to desplay 'a#toTop', 'href', '/'
     end
   end

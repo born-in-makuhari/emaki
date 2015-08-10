@@ -266,7 +266,6 @@ describe 'Emaki' do
       end
 
       it 'cleanup /tmp' do
-        puts Slide.tmppath
         expect(Dir.entries(Slide.tmppath).join).to eq '...'
       end
     end

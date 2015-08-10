@@ -8,8 +8,6 @@ describe 'Emaki::Slide' do
   before :all do
     @un_path = EMAKI_ROOT + "/slides/#{UN}"
     @sn_path = EMAKI_ROOT + "/slides/#{UN}/#{SN}"
-    puts "user  dir: #{@un_path}"
-    puts "slide dir: #{@sn_path}"
   end
 
   context "when (#{UN}, #{SN}) given" do
@@ -32,8 +30,8 @@ describe 'Emaki::Slide' do
     describe '.valid_slugs?' do
       context 'when it called by 3 parameters,' do
         before do
-          Slide.stub(:valid_slug?).and_return(true)
-          Slide.should_receive(:valid_slug?).exactly(3).times
+          allow(Slide).to receive(:valid_slug?).and_return(true)
+          expect(Slide).to receive(:valid_slug?).exactly(3).times
         end
         it 'calls ".valid_slug?" with each parameter.' do
           Slide.valid_slugs?('a', 'b', 'c')
@@ -41,17 +39,17 @@ describe 'Emaki::Slide' do
       end
 
       context 'when all ok' do
-        before { Slide.stub(:valid_slug?).and_return(true) }
+        before { allow(Slide).to receive(:valid_slug?).and_return(true) }
         it { expect(Slide.valid_slugs?('a', 'b', 'c')).to be true }
       end
 
       context 'when all NG' do
-        before { Slide.stub(:valid_slug?).and_return(false) }
+        before { allow(Slide).to receive(:valid_slug?).and_return(false) }
         it { expect(Slide.valid_slugs?('a', 'b', 'c')).to be false }
       end
 
       context 'when one NG' do
-        before { Slide.stub(:valid_slug?).and_return(true, true, false) }
+        before { allow(Slide).to receive(:valid_slug?).and_return(true, true, false) }
         it { expect(Slide.valid_slugs?('a', 'b', 'c')).to be false }
       end
     end

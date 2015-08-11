@@ -3,27 +3,25 @@
   p.lead = EMAKI_VERSION
   p このバージョンはプレリリースです。
   p
-    a.btn.btn-lg.btn-success href="https://github.com/born-in-makuhari/emaki" role="button" target="brank"
+    a.btn.btn-lg.btn-info href="https://github.com/born-in-makuhari/emaki" role="button" target="brank"
       | emaki on Github
       | &nbsp;
       span.glyphicon.glyphicon-new-window
-.row.marketing#slides
+.row#slides
   .col-lg-12
-    - @slides.each do |un, user_slides|
-      .panel.panel-default
-        .panel-heading
-          h3
-            span.glyphicon.glyphicon-user
-            | &nbsp;
-            = un
-        .panel-body
+    - if @slides
+      ul.list-group
+        - @slides.each do |un, user_slides|
           - unless user_slides.empty?
-            table.table
-              - user_slides.each do |slide|
+            .list-group-item.list-group-item-info
+              h4
+                span.glyphicon.glyphicon-user
+                | &nbsp;
+                = un
+            - user_slides.each do |slide|
+              .list-group-item
                 - unless slide == '.' || slide == '..'
-                  tr
-                    a href="/#{un}/#{slide}"
-                      p.lead
-                        = "#{un}/#{slide}"
-          - else
-            | No slide
+                  a href="/#{un}/#{slide}"
+                    h4
+                      = "#{un}/#{slide}"
+

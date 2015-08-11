@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gem 'sinatra'
 gem 'slim'
 gem 'rmagick'
+gem 'redis'
 
 # for styling
 gem 'sass'

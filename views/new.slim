@@ -1,15 +1,32 @@
-form#newSlide method="post" action="/slides" enctype="multipart/form-data"
-  fieldset
-    h3 Register new slide
-    p
-      input#username  type="text" name="username" placeholder="username..."
-      | &nbsp;/&nbsp;
-      input#slidename type="text" name="slidename" placeholder="slidename..."
-    p
-      input#slide     type="file" name="slide" placeholder="select PDF..."
-    p
-      input type="submit" name="Send"
-  - if @attention
-    #attention
-      == @attention
+.row
+  .col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1.col-xs-12
+    h1.text-muted 新しいスライド
+    form#newSlide method="post" action="/slides" enctype="multipart/form-data"
+      .form-group
+        .row
+          .col-xs-6
+            input#username.form-control.input-lg type="text" name="username" placeholder="ユーザー名"
+          .col-xs-6
+            input#slidename.form-control.input-lg type="text" name="slidename" placeholder="スライド名"
+      .form-group
+        .input-group
+          input#selectedFile.form-control (type="text" readonly)
+          .input-group-btn
+            button#selectFile.btn.btn-default type="button" ファイルを選択
+            input#slide.hidden type="file" name="slide"
+      .form-group
+        input.btn.btn-primary.btn-block.input-lg type="submit"
+      - if @attention
+        #attention
+          == @attention
+javascript:
+    $(function() {
+      $('#selectFile').on('click', function() {
+        $('#slide').trigger('click');
+      });
 
+      $('#slide').change(function() {
+        var file = $(this).val();
+        $('#selectedFile').val(file.replace('C:\\fakepath\\', ''));
+      });
+    });

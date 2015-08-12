@@ -1,6 +1,14 @@
+# ----------------------------------------------------------------
+# Gems
+#
 require 'sinatra'
 require 'slim'
+require 'redis'
+require 'redis-namespace'
 
+# ----------------------------------------------------------------
+# Emaki::
+#
 EMAKI_ROOT = File.expand_path('../', __FILE__)
 EMAKI_VERSION = 'version 0.0.0'
 
@@ -14,6 +22,17 @@ configure :production, :development do
   file.sync = true
   use Rack::CommonLogger, file
 end
+# ----------------------------------------------------------------
+# Database
+#
+Redis.current = Redis::Namespace.new host: '127.0.0.1', port: 6379
+
+puts
+puts
+puts
+puts Redis.current
+puts
+puts
 
 # ----------------------------------------------------------------
 # Routes

@@ -4,7 +4,12 @@ source 'https://rubygems.org'
 gem 'sinatra'
 gem 'slim'
 gem 'rmagick'
+
+# for redis
 gem 'redis'
+gem 'redis-namespace'
+gem 'redis-objects'
+
 
 # for styling
 gem 'sass'

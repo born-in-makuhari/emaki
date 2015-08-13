@@ -162,81 +162,74 @@ describe 'Emaki::Slide' do
   # invasive
   #
   describe 'Slide manipulates tmp/' do
-    describe 'save & remove' do
-      shared_context 'with file' do
-        before do
-          slide = {
-            filename: 'test.pdf',
-            tempfile:
-              Rack::Test::UploadedFile.new(PDF_PATH, 'application/pdf')
-          }
-          @key = Slide.tmpsave slide
+    before do
+      slide = {
+        filename: 'test.pdf',
+        tempfile:
+          Rack::Test::UploadedFile.new(PDF_PATH, 'application/pdf')
+      }
+      @key = Slide.tmpsave slide
+    end
+
+    after { FileUtils.rm_rf(EMAKI_ROOT + '/tmp') }
+
+    describe '.tmpsave' do
+      it 'saves tmpfile' do
+        expect(FileTest.exist?(EMAKI_ROOT + '/tmp/' + @key)).to be true
+      end
+    end
+
+    describe '.tmpremove' do
+      context 'with key' do
+        before { @result = Slide.tmpremove(@key) }
+
+        it 'removes tmpfile' do
+          expect(FileTest.exist?(EMAKI_ROOT + '/tmp/' + @key)).to be false
+        end
+
+        it 'returns tmpfile fullpath list' do
+          expect(@result).to eq [EMAKI_ROOT + '/tmp/' + @key]
         end
       end
 
-      after { FileUtils.rm_rf(EMAKI_ROOT + '/tmp') }
+      context 'without key' do
+        before { @result = Slide.tmpremove('') }
 
-      describe '.tmpsave' do
-        include_context 'with file'
-        it 'saves tmpfile' do
+        it 'returns nil' do
+          expect(@result).to be nil
+        end
+
+        it 'doesnot remove tmpfile' do
           expect(FileTest.exist?(EMAKI_ROOT + '/tmp/' + @key)).to be true
         end
       end
-
-      describe '.tmpremove' do
-        include_context 'with file'
-
-        context 'with key' do
-          before { @result = Slide.tmpremove(@key) }
-
-          it 'removes tmpfile' do
-            expect(FileTest.exist?(EMAKI_ROOT + '/tmp/' + @key)).to be false
-          end
-
-          it 'returns tmpfile fullpath list' do
-            expect(@result).to eq [EMAKI_ROOT + '/tmp/' + @key]
-          end
-        end
-
-        context 'without key' do
-          before { @result = Slide.tmpremove('') }
-
-          it 'returns nil' do
-            expect(@result).to be nil
-          end
-
-          it 'doesnot remove tmpfile' do
-            expect(FileTest.exist?(EMAKI_ROOT + '/tmp/' + @key)).to be true
-          end
-        end
-      end
     end
+  end
 
-    # -------------------------------------------------------------
-    # safety
-    #
-    describe '.tmppath' do
-      it { expect(Slide.tmppath).to eq "#{EMAKI_ROOT}/tmp" }
+  # ---------------------------------------------------------------
+  # safety
+  #
+  describe '.tmppath' do
+    it { expect(Slide.tmppath).to eq "#{EMAKI_ROOT}/tmp" }
+  end
+  describe '.tmp' do
+    before do
+      FileUtils.rm_rf(EMAKI_ROOT + '/tmp')
+      Slide.tmp
     end
-    describe '.tmp' do
-      before do
-        FileUtils.rm_rf(EMAKI_ROOT + '/tmp')
-        Slide.tmp
-      end
-      it 'creates tmp/ directory' do
-        expect(FileTest.exist?(EMAKI_ROOT + '/tmp')).to be true
-      end
+    it 'creates tmp/ directory' do
+      expect(FileTest.exist?(EMAKI_ROOT + '/tmp')).to be true
     end
-    describe '.maketmpkey' do
-      context 'when same key provided,' do
-        it 'provides strings not duplicated each other (sample 10000)' do
-          count = {}
-          10_000.times.map do
-            key = Slide.maketmpkey('duplicated.pdf')
-            count[key] = true
-          end
-          expect(count.keys.length).to be 10_000
+  end
+  describe '.maketmpkey' do
+    context 'when same key provided,' do
+      it 'provides strings not duplicated each other (sample 10000)' do
+        count = {}
+        10_000.times.map do
+          key = Slide.maketmpkey('duplicated.pdf')
+          count[key] = true
         end
+        expect(count.keys.length).to be 10_000
       end
     end
   end

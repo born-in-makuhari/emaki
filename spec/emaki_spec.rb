@@ -100,6 +100,12 @@ describe 'Emaki' do
     end
   end
 
+  # リダイレクト
+  shared_examples_for 'redirect' do |path|
+    it { expect(last_response.redirect?).to be true }
+    it { expect(last_response['Location']).to eq "http://example.org#{path}" }
+  end
+
   # ---------------------------------------------------------
   # 個別テストケース
   #
@@ -175,11 +181,7 @@ describe 'Emaki' do
   describe 'POST /slides' do
     context 'if username is invalid,' do
       include_context 'slide posted with', false, true, true
-
-      it 'redirects to "/new"' do
-        expect(last_response.redirect?).to be true
-        expect(last_response['Location']).to eq 'http://example.org/new'
-      end
+      it_behaves_like 'redirect', '/new'
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -193,11 +195,7 @@ describe 'Emaki' do
 
     context 'if slidename is invalid,' do
       include_context 'slide posted with', true, false, true
-
-      it 'redirects to "/new"' do
-        expect(last_response.redirect?).to be true
-        expect(last_response['Location']).to eq 'http://example.org/new'
-      end
+      it_behaves_like 'redirect', '/new'
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -211,11 +209,7 @@ describe 'Emaki' do
 
     context 'no file,' do
       include_context 'slide posted with', true, true, false
-
-      it 'redirects to "/new" with no_file' do
-        expect(last_response.redirect?).to be true
-        expect(last_response['Location']).to eq 'http://example.org/new'
-      end
+      it_behaves_like 'redirect', '/new'
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -228,15 +222,11 @@ describe 'Emaki' do
 
     context do
       include_context 'slide posted with', true, true, true
+      it_behaves_like 'redirect', "/#{UN}/#{SN}"
 
       after :all do
         FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
         FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
-      end
-
-      it "redirects to /#{UN}/#{SN}" do
-        expect(last_response.redirect?).to be true
-        expect(last_response['Location']).to eq "http://example.org/#{UN}/#{SN}"
       end
 
       it "creates directory slides/#{UN}/#{SN}" do

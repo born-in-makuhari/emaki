@@ -1,6 +1,9 @@
 require File.expand_path '../spec_helper.rb', __FILE__
 require 'slim'
 
+# テストで使うデータたち
+PDF_PATH = SPEC_ROOT + '/test.pdf'
+
 # ===========================================================
 # カスタムマッチャー
 #
@@ -32,10 +35,34 @@ end
 #
 
 describe 'Emaki' do
+
+  # どんなサンプルでも、変数 html が lazy load で使える。
   let(:html) { Oga.parse_html(last_response.body) }
 
   before :all do
     FileUtils.rm_rf(Slide.tmppath) if Slide.tmppath != '/'
+  end
+  # ---------------------------------------------------------
+  # 共通の事前条件
+  #
+  shared_context 'new slide posted with' do |username, slidename, file|
+    if file
+      file = Rack::Test::UploadedFile.new(PDF_PATH, 'application/pdf')
+    else
+      file = nil
+    end
+
+    let(:slide_path) { SLIDES_ROOT + "/#{UN}/#{SN}" }
+
+    before :all do
+      post_data = {
+        username: username,
+        slidename: slidename,
+        slide: file
+      }
+
+      post '/slides', post_data
+    end
   end
 
   # ---------------------------------------------------------
@@ -91,9 +118,7 @@ describe 'Emaki' do
   #
   describe 'GET /' do
     it_behaves_like 'an emaki page'
-    before do
-      get '/'
-    end
+    before(:all) { get '/' }
     it { expect(html).to desplay 'a#toNew', 'href', '/new' }
   end
 
@@ -102,9 +127,7 @@ describe 'Emaki' do
   #
   describe 'GET /new' do
     it_behaves_like 'an emaki page'
-    before :all do
-      get '/new'
-    end
+    before(:all) { get '/new' }
     describe 'html' do
       form = 'form#newSlide'
       uninput = 'input#username'
@@ -130,15 +153,11 @@ describe 'Emaki' do
   #
   describe 'GET /username/slidename' do
     context 'if target exists,' do
+      include_context 'new slide posted with', UN, SN, true
       it_behaves_like 'an emaki page'
       it_behaves_like 'a slide page'
 
       before :all do
-        pdf_path = SPEC_ROOT + '/test.pdf'
-        @d = { username: UN, slidename: SN,
-          slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
-        @path = Slide.makepath @d[:username], @d[:slidename]
-        post '/slides', @d
         get '/testuser/testslide'
       end
 
@@ -170,12 +189,7 @@ describe 'Emaki' do
   #
   describe 'POST /slides' do
     context 'if username is invalid,' do
-      before :all do
-        pdf_path = SPEC_ROOT + '/test.pdf'
-        @d = { username: '-', slidename: SN,
-          slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
-        post '/slides', @d
-      end
+      include_context 'new slide posted with', '-', SN, true
 
       it 'redirects to "/new"' do
         expect(last_response.redirect?).to be true
@@ -193,12 +207,7 @@ describe 'Emaki' do
     end
 
     context 'if slidename is invalid,' do
-      before :all do
-        pdf_path = SPEC_ROOT + '/test.pdf'
-        @d = { username: UN, slidename: '_',
-          slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
-        post '/slides', @d
-      end
+      include_context 'new slide posted with', UN, '-', true
 
       it 'redirects to "/new"' do
         expect(last_response.redirect?).to be true
@@ -216,10 +225,7 @@ describe 'Emaki' do
     end
 
     context 'no file,' do
-      before :all do
-        @d = { username: UN, slidename: SN }
-        post '/slides', @d
-      end
+      include_context 'new slide posted with', UN, SN, false
 
       it 'redirects to "/new" with no_file' do
         expect(last_response.redirect?).to be true
@@ -236,13 +242,7 @@ describe 'Emaki' do
     end
 
     context "{ username: '#{UN}', slidename: '#{SN}', file: './test.pdf' }" do
-      before :all do
-        pdf_path = SPEC_ROOT + '/test.pdf'
-        @d = { username: UN, slidename: SN,
-          slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
-        @path = Slide.makepath @d[:username], @d[:slidename]
-        post '/slides', @d
-      end
+      include_context 'new slide posted with', UN, SN, true
 
       after :all do
         FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
@@ -255,13 +255,13 @@ describe 'Emaki' do
       end
 
       it "creates directory slides/#{UN}/#{SN}" do
-        expect(FileTest.exist? @path).to be true
+        expect(FileTest.exist? slide_path).to be true
       end
 
       it 'creates png images in the directory' do
-        expect(FileTest.exist? @path + '/0.png').to be true
-        expect(FileTest.exist? @path + '/1.png').to be true
-        expect(FileTest.exist? @path + '/2.png').to be true
+        expect(FileTest.exist? slide_path + '/0.png').to be true
+        expect(FileTest.exist? slide_path + '/1.png').to be true
+        expect(FileTest.exist? slide_path + '/2.png').to be true
       end
 
       it 'cleanup /tmp' do
@@ -273,13 +273,7 @@ describe 'Emaki' do
   # スライド画像へのルーティング
   #
   describe 'GET /:username/:slidename/:number.png' do
-    before :all do
-      pdf_path = SPEC_ROOT + '/test.pdf'
-      @d = { username: UN, slidename: SN,
-        slide: Rack::Test::UploadedFile.new(pdf_path, 'application/pdf') }
-      @path = Slide.makepath @d[:username], @d[:slidename]
-      post '/slides', @d
-    end
+    include_context 'new slide posted with', UN, SN, true
 
     after :all do
       FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")

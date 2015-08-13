@@ -1,9 +1,6 @@
 require File.expand_path '../spec_helper.rb', __FILE__
 require 'slim'
 
-# テストで使うデータたち
-PDF_PATH = SPEC_ROOT + '/test.pdf'
-
 # ===========================================================
 # カスタムマッチャー
 #
@@ -24,12 +21,6 @@ RSpec::Matchers.define :desplay do |css, keyortext, value|
   end
 end
 
-# have_attribute: セレクタ表記で要素を確定、
-#                 属性名と値がマッチしたら成功
-RSpec::Matchers.define :have_arrtibute do |css, key, value|
-  match { |actual| actual.at_css(css).get(key) == value }
-end
-
 # ===========================================================
 # Emaki specs
 #
@@ -45,19 +36,20 @@ describe 'Emaki' do
   # ---------------------------------------------------------
   # 共通の事前条件
   #
-  shared_context 'new slide posted with' do |username, slidename, file|
-    if file
-      file = Rack::Test::UploadedFile.new(PDF_PATH, 'application/pdf')
-    else
-      file = nil
-    end
+  # username:  trueの時は正しい形式
+  # slidename: 上に同じ
+  # file:      上に同じ
+  shared_context 'slide posted with' do |un, sn, file|
+    un  = un ? UN : '-'
+    sn  = sn ? SN : '-'
+    file = file ? PDF_FILE : nil
 
-    let(:slide_path) { SLIDES_ROOT + "/#{UN}/#{SN}" }
+    let(:slide_path) { SLIDES_ROOT + "/#{un}/#{sn}" }
 
     before :all do
       post_data = {
-        username: username,
-        slidename: slidename,
+        username: un,
+        slidename: sn,
         slide: file
       }
 
@@ -127,24 +119,22 @@ describe 'Emaki' do
   #
   describe 'GET /new' do
     it_behaves_like 'an emaki page'
+    let(:form) { 'form#newSlide' }
+    let(:uninput) { 'input#username' }
+    let(:sninput) { 'input#slidename' }
+    let(:slinput) { 'input#slide' }
     before(:all) { get '/new' }
-    describe 'html' do
-      form = 'form#newSlide'
-      uninput = 'input#username'
-      sninput = 'input#slidename'
-      slinput = 'input#slide'
-      it { expect(html).to desplay form }
-      it { expect(html).to desplay form, :action, '/slides' }
-      it { expect(html).to desplay form, :method, 'post' }
-      it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
-      it { expect(html).to desplay uninput, :type, 'text' }
-      it { expect(html).to desplay uninput, :name, 'username' }
-      it { expect(html).to desplay sninput, :type, 'text' }
-      it { expect(html).to desplay sninput, :name, 'slidename' }
-      it { expect(html).to desplay slinput, :type, 'file' }
-      it { expect(html).to desplay slinput, :name, 'slide' }
-      it { expect(html).to desplay 'input[type="submit"]' }
-    end
+    it { expect(html).to desplay form }
+    it { expect(html).to desplay form, :action, '/slides' }
+    it { expect(html).to desplay form, :method, 'post' }
+    it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
+    it { expect(html).to desplay uninput, :type, 'text' }
+    it { expect(html).to desplay uninput, :name, 'username' }
+    it { expect(html).to desplay sninput, :type, 'text' }
+    it { expect(html).to desplay sninput, :name, 'slidename' }
+    it { expect(html).to desplay slinput, :type, 'file' }
+    it { expect(html).to desplay slinput, :name, 'slide' }
+    it { expect(html).to desplay 'input[type="submit"]' }
   end
 
   #
@@ -153,13 +143,11 @@ describe 'Emaki' do
   #
   describe 'GET /username/slidename' do
     context 'if target exists,' do
-      include_context 'new slide posted with', UN, SN, true
+      include_context 'slide posted with', true, true, true
       it_behaves_like 'an emaki page'
       it_behaves_like 'a slide page'
 
-      before :all do
-        get '/testuser/testslide'
-      end
+      before(:all) { get "/#{UN}/#{SN}" }
 
       after :all do
         FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
@@ -170,9 +158,7 @@ describe 'Emaki' do
     context 'if target does not exist,' do
       it_behaves_like 'common header'
 
-      before :all do
-        get '/testuser/testslide'
-      end
+      before(:all) { get '/testuser/testslide' }
 
       it { expect(last_response.status).to eq 404 }
       it do
@@ -189,7 +175,7 @@ describe 'Emaki' do
   #
   describe 'POST /slides' do
     context 'if username is invalid,' do
-      include_context 'new slide posted with', '-', SN, true
+      include_context 'slide posted with', false, true, true
 
       it 'redirects to "/new"' do
         expect(last_response.redirect?).to be true
@@ -207,7 +193,7 @@ describe 'Emaki' do
     end
 
     context 'if slidename is invalid,' do
-      include_context 'new slide posted with', UN, '-', true
+      include_context 'slide posted with', true, false, true
 
       it 'redirects to "/new"' do
         expect(last_response.redirect?).to be true
@@ -225,7 +211,7 @@ describe 'Emaki' do
     end
 
     context 'no file,' do
-      include_context 'new slide posted with', UN, SN, false
+      include_context 'slide posted with', true, true, false
 
       it 'redirects to "/new" with no_file' do
         expect(last_response.redirect?).to be true
@@ -241,8 +227,8 @@ describe 'Emaki' do
       end
     end
 
-    context "{ username: '#{UN}', slidename: '#{SN}', file: './test.pdf' }" do
-      include_context 'new slide posted with', UN, SN, true
+    context do
+      include_context 'slide posted with', true, true, true
 
       after :all do
         FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
@@ -273,7 +259,7 @@ describe 'Emaki' do
   # スライド画像へのルーティング
   #
   describe 'GET /:username/:slidename/:number.png' do
-    include_context 'new slide posted with', UN, SN, true
+    include_context 'slide posted with', true, true, true
 
     after :all do
       FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")

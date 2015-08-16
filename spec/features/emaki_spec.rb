@@ -10,6 +10,10 @@ describe 'Common page', type: :feature do
 end
 
 describe 'Slide page', type: :feature do
+  include_context 'slide posted with', true, true, true
+  before :all do
+    visit "/#{UN}/#{SN}"
+  end
   describe 'has Page Indicator' do
     it { expect(page).to have_css 'progress#pageIndicator' }
     it 'displays now page (default page 0)'

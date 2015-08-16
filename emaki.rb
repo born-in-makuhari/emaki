@@ -8,7 +8,18 @@ Bundler.require
 # Emaki::
 #
 EMAKI_ROOT = File.expand_path('../', __FILE__)
-EMAKI_VERSION = 'version 0.0.0'
+EMAKI_VERSION = 'ver 0.0.0'
+EMAKI_ENV = ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development'
+DB_NAMESPACE = "emaki:#{EMAKI_ENV}"
+
+puts <<"EOS"
++---------------------+
+|   emaki #{EMAKI_VERSION}   |
++---------------------+
+| environment:  #{EMAKI_ENV}
+| db namespace: #{DB_NAMESPACE}
+|
+EOS
 
 require EMAKI_ROOT + '/lib/binder.rb'
 
@@ -31,7 +42,7 @@ adapter = DataMapper.setup(:default, adapter: 'redis')
 adapter.resource_naming_convention = lambda do |value|
   [
     'emaki',
-    'development',
+    EMAKI_ENV,
     DataMapper::Inflector.pluralize(
       DataMapper::Inflector.underscore(value)).gsub('/', '_')
   ].join(':')
@@ -145,7 +156,8 @@ def save_slide(un, sn, file)
 
   # PDFファイルを変換
   result = convert_pdf_to_png(un, sn,
-                              Binder.tmppath + '/' + key, Binder.makepath(un, sn))
+                              Binder.tmppath + '/' + key,
+                              Binder.makepath(un, sn))
   Binder.tmpremove(key, logger)
   result
 end

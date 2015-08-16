@@ -1,9 +1,9 @@
 require 'bundler'
 Bundler.require :test
 
-require File.expand_path '../../emaki.rb', __FILE__
-
 ENV['RACK_ENV'] = 'test'
+
+require File.expand_path '../../emaki.rb', __FILE__
 
 # add definitions
 module RSpecMixin

@@ -79,10 +79,11 @@ get '/new' do
 end
 
 post '/slides' do
-  un = params[:username]
-  sn = params[:slidename]
+  un = params[:username]  # required
+  sn = params[:slidename] # required
   name = params[:name]
   title = params[:title]
+  description = params[:description]
   file = params[:slide]
 
   # slugは正当か？
@@ -104,7 +105,12 @@ post '/slides' do
     # ユーザーとスライドのレコードを作成する。
     # アカウント機能ができたら、ユーザーはここで作るべきではない
     User.create(slug: un, name: name)
-    Slide.create(user_slug: un, slug: sn, title: title)
+    Slide.create(
+      user_slug: un,
+      slug: sn,
+      title: title,
+      description: description
+    )
 
     redirect to("/#{un}/#{sn}")
   else

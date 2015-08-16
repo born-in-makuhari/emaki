@@ -99,3 +99,10 @@ h3.text-muted {
   margin: 0;
   cursor: pointer;
 }
+
+#newSlide {
+  textarea {
+    height: 10em;
+    resize: vertical;
+  }
+}

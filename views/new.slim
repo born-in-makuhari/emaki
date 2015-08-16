@@ -22,6 +22,10 @@
             input#slide.hidden type="file" name="slide"
           input#selectedFile.form-control.input-lg (type="text" readonly)
       .form-group
+        .row
+          .col-xs-12
+            textarea#description.form-control.input-lg name="description" placeholder="スライドの説明"
+      .form-group
         input.btn.btn-primary.btn-block.btn-lg type="submit"
       - if @attention
         #attention

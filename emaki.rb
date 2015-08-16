@@ -62,7 +62,7 @@ get '/' do
       k = u.name ? u.name : u.slug
       v = s.title ? s.title : s.slug
       @slides[k] ||= []
-      @slides[k] << s.slug
+      @slides[k] << v
     end
   end
   # TODO: ここまで

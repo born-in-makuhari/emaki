@@ -30,7 +30,7 @@ describe 'Emaki' do
   let(:html) { Oga.parse_html(last_response.body) }
 
   before :all do
-    FileUtils.rm_rf(Slide.tmppath) if Slide.tmppath != '/'
+    FileUtils.rm_rf(Binder.tmppath) if Binder.tmppath != '/'
   end
   # ---------------------------------------------------------
   # 共通の事前条件
@@ -240,7 +240,7 @@ describe 'Emaki' do
       end
 
       it 'cleanup /tmp' do
-        expect(Dir.entries(Slide.tmppath).join).to eq '...'
+        expect(Dir.entries(Binder.tmppath).join).to eq '...'
       end
     end
   end

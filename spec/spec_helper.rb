@@ -1,6 +1,5 @@
-require 'rack/test'
-require 'rspec'
-require 'oga'
+require 'bundler'
+Bundler.require :test
 
 require File.expand_path '../../emaki.rb', __FILE__
 

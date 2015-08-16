@@ -187,6 +187,12 @@ describe 'Emaki' do
   # /slides
   #
   describe 'POST /slides' do
+    after :all do
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
+      flush_testdb!
+    end
+
     context 'if username is invalid,' do
       include_context 'slide posted with', false, true, true
       it_behaves_like 'redirect', '/new'
@@ -246,12 +252,6 @@ describe 'Emaki' do
     context do
       include_context 'slide posted with', true, true, true
       it_behaves_like 'redirect', "/#{UN}/#{SN}"
-
-      after :all do
-        FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
-        FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
-        # TODO userとslideの削除処理
-      end
 
       it "creates directory slides/#{UN}/#{SN}" do
         expect(FileTest.exist? slide_path).to be true

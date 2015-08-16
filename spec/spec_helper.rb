@@ -33,4 +33,8 @@ end
 
 # 全てのテストデータを削除
 # TODO: もっといいやりかた
-`redis-cli KEYS "emaki:test:*" | xargs redis-cli DEL`
+def flush_testdb!
+  puts '| test db flushed !'
+  `redis-cli KEYS "emaki:test:*" | xargs redis-cli DEL`
+end
+flush_testdb!

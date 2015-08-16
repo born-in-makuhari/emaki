@@ -51,6 +51,7 @@ describe 'Emaki' do
       post_data = {
         name: 'ユーザーの表示名はどんな形式でもいい',
         title: 'タイトルの表示名はどんな形式でもいい',
+        description: 'タイトルの説明はどんな形式でもいい',
         username: un,
         slidename: sn,
         slide: file
@@ -140,6 +141,7 @@ describe 'Emaki' do
     let(:slinput) { 'input#slide' }
     let(:name) { 'input#name' }
     let(:title) { 'input#title' }
+    let(:description) { 'textarea#description' }
     before(:all) { get '/new' }
     it { expect(html).to desplay form }
     it { expect(html).to desplay form, :action, '/slides' }
@@ -155,6 +157,7 @@ describe 'Emaki' do
     it { expect(html).to desplay name, :name, 'name' }
     it { expect(html).to desplay title, :type, 'text' }
     it { expect(html).to desplay title, :name, 'title' }
+    it { expect(html).to desplay description, :name, 'description' }
     it { expect(html).to desplay 'input[type="submit"]' }
   end
 
@@ -197,18 +200,15 @@ describe 'Emaki' do
   describe 'POST /slides' do
 
     shared_examples "creates users & slides (#{UN}, #{SN})" do
-      it 'user exists' do
-        expect(User.exists?(UN)).to be true
+      before do
+        @u = User.first(slug: UN)
+        @s = Slide.first(user_slug: UN, slug: SN)
       end
-      it 'user has name' do
-        expect(User.first(slug: UN).name).not_to eq nil
-      end
-      it 'slide exists' do
-        expect(Slide.exists?(UN, SN)).to be true
-      end
-      it 'slide has title' do
-        expect(Slide.first(user_slug: UN, slug: SN).title).not_to eq nil
-      end
+      it('user exists') { expect(@u).not_to eq nil }
+      it('user has name') { expect(@u.name).not_to eq nil }
+      it('slide exists') { expect(@s).not_to eq nil }
+      it('slide has title') { expect(@s.title).not_to eq nil }
+      it('slide has description') { expect(@s.description).not_to eq nil }
     end
     shared_examples "does not create users & slides (#{UN}, #{SN})" do
       it { expect(User.exists?(UN)).to be false }

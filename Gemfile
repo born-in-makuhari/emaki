@@ -9,7 +9,6 @@ gem 'rmagick'
 gem 'dm-core'
 gem 'dm-redis-adapter'
 gem 'redis-objects'
-gem 'redis-namespace'
 
 
 # for styling
@@ -24,4 +23,5 @@ group :test do
   gem 'rspec'
   gem 'fuubar'
   gem 'oga'
+  gem 'redis-namespace'
 end

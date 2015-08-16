@@ -30,3 +30,7 @@ PDF_FILE = Rack::Test::UploadedFile.new(PDF_PATH, PDF_TYPE)
 def session
   last_request.env['rack.session']
 end
+
+# 全てのテストデータを削除
+# TODO: もっといいやりかた
+`redis-cli KEYS "emaki:test:*" | xargs redis-cli DEL`

@@ -47,6 +47,8 @@ describe 'Emaki' do
 
     before :all do
       post_data = {
+        name: 'ユーザーの表示名はどんな形式でもいい',
+        title: 'タイトルの表示名はどんな形式でもいい',
         username: un,
         slidename: sn,
         slide: file
@@ -128,6 +130,8 @@ describe 'Emaki' do
     let(:uninput) { 'input#username' }
     let(:sninput) { 'input#slidename' }
     let(:slinput) { 'input#slide' }
+    let(:name) { 'input#name' }
+    let(:title) { 'input#title' }
     before(:all) { get '/new' }
     it { expect(html).to desplay form }
     it { expect(html).to desplay form, :action, '/slides' }
@@ -139,6 +143,10 @@ describe 'Emaki' do
     it { expect(html).to desplay sninput, :name, 'slidename' }
     it { expect(html).to desplay slinput, :type, 'file' }
     it { expect(html).to desplay slinput, :name, 'slide' }
+    it { expect(html).to desplay name, :type, 'text' }
+    it { expect(html).to desplay name, :name, 'name' }
+    it { expect(html).to desplay title, :type, 'text' }
+    it { expect(html).to desplay title, :name, 'title' }
     it { expect(html).to desplay 'input[type="submit"]' }
   end
 
@@ -191,6 +199,11 @@ describe 'Emaki' do
           expect(html).to desplay '#attention #slugRule'
         end
       end
+
+      it "does not creates users:#{UN}"
+      it "does not creates users:#{UN} with name"
+      it "does not creates slides:#{UN}:#{SN}"
+      it "does not creates slides:#{UN}:#{SN} with title"
     end
 
     context 'if slidename is invalid,' do
@@ -205,6 +218,11 @@ describe 'Emaki' do
           expect(html).to desplay '#attention #slugRule'
         end
       end
+
+      it "does not creates users:#{UN}"
+      it "does not creates users:#{UN} with name"
+      it "does not creates slides:#{UN}:#{SN}"
+      it "does not creates slides:#{UN}:#{SN} with title"
     end
 
     context 'no file,' do
@@ -218,6 +236,11 @@ describe 'Emaki' do
           expect(html).to desplay '#attention #noFile'
         end
       end
+
+      it "does not creates users:#{UN}"
+      it "does not creates users:#{UN} with name"
+      it "does not creates slides:#{UN}:#{SN}"
+      it "does not creates slides:#{UN}:#{SN} with title"
     end
 
     context do
@@ -227,6 +250,7 @@ describe 'Emaki' do
       after :all do
         FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
         FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
+        # TODO userとslideの削除処理
       end
 
       it "creates directory slides/#{UN}/#{SN}" do
@@ -242,6 +266,11 @@ describe 'Emaki' do
       it 'cleanup /tmp' do
         expect(Dir.entries(Binder.tmppath).join).to eq '...'
       end
+
+      it "creates users:#{UN}"
+      it "creates users:#{UN} with name"
+      it "creates slides:#{UN}:#{SN}"
+      it "creates slides:#{UN}:#{SN} with title"
     end
   end
   # ---------------------------------------------------------

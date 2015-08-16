@@ -1,5 +1,6 @@
 require 'bundler'
 Bundler.require :test
+require 'capybara/rspec'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -15,6 +16,9 @@ end
 
 # For RSpec 2.x
 RSpec.configure { |c| c.include RSpecMixin }
+
+# For Capybara
+Capybara.app = Sinatra::Application
 
 # Test data
 UN = 'testuser'

@@ -38,8 +38,6 @@ end
 
 # おまじない
 adapter = DataMapper.setup(:default, adapter: 'redis')
-
-# TODO: development, test, productionを使い分ける
 adapter.resource_naming_convention = lambda do |value|
   [
     'emaki',
@@ -83,6 +81,8 @@ end
 post '/slides' do
   un = params[:username]
   sn = params[:slidename]
+  name = params[:name]
+  title = params[:title]
   file = params[:slide]
 
   # slugは正当か？
@@ -100,6 +100,12 @@ post '/slides' do
 
   result = save_slide un, sn, file
   if result
+    # TODO: ユーザー作成機能をしかるべき場所へ移す。
+    # ユーザーとスライドのレコードを作成する。
+    # アカウント機能ができたら、ユーザーはここで作るべきではない
+    User.create(slug: un, name: name)
+    Slide.create(user_slug: un, slug: sn, title: title)
+
     redirect to("/#{un}/#{sn}")
   else
     redirect to('/new')

@@ -187,24 +187,34 @@ describe 'Emaki' do
   # /slides
   #
   describe 'POST /slides' do
+    before do
+      flush_testdb!
+    end
+
     after :all do
       FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
       FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
+    end
+
+    after do
       flush_testdb!
     end
 
     shared_examples "creates users & slides (#{UN}, #{SN})" do
       it 'user exists' do
+        Redis.current.keys('*').each do |k|
+          puts k
+        end
         expect(User.exists?(UN)).to be true
       end
       it 'user has name' do
-        expect(User.first(UN).name).not_to eq nil
+        expect(User.first(slug: UN).name).not_to eq nil
       end
       it 'slide exists' do
         expect(Slide.exists?(UN, SN)).to be true
       end
       it 'slide has title' do
-        expect(Slide.first(UN, SN).title).not_to eq nil
+        expect(Slide.first(user_slug: UN, slug: SN).title).not_to eq nil
       end
     end
     shared_examples "does not create users & slides (#{UN}, #{SN})" do

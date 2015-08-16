@@ -53,21 +53,19 @@ end
 #
 get '/' do
 
-  # FIXME: DBがないので、ゴリ押しリスト表示する
+  # TODO: 全件表示しているけどそれでいいんですか？
   @slides = {}
-  if FileTest.exist?(EMAKI_ROOT + '/slides')
-    users = Dir.entries(EMAKI_ROOT + '/slides')
-    users.each do |un|
-      next if un == '.' || un == '..'
-      slides = Dir.entries(EMAKI_ROOT + '/slides/' + un)
-      @slides[un] = []
-      slides.each do |sn|
-        next if sn == '.' || sn == '..'
-        @slides[un] << sn
-      end
+  all_slides = Slide.all
+  all_slides.each do |s|
+    u = User.first(slug: s.user_slug)
+    if u
+      k = u.name ? u.name : u.slug
+      v = s.title ? s.title : s.slug
+      @slides[k] ||= []
+      @slides[k] << s.slug
     end
   end
-  # FIXME: ここまで
+  # TODO: ここまで
 
   slim :index, layout: :layout
 end

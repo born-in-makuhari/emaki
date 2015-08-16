@@ -1,7 +1,6 @@
 .row
   .col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1.col-xs-12
     h1.text-muted 新しいスライド
-    p.text-muted * アルファベット、「-」「_」が使えます
     form#newSlide method="post" action="/slides" enctype="multipart/form-data"
       .form-group
         .row
@@ -9,12 +8,15 @@
             input#username.form-control.input-lg type="text" name="username" placeholder="ユーザーID *"
           .col-xs-6
             input#slidename.form-control.input-lg type="text" name="slidename" placeholder="スライドID *"
+        .row
+          .col-xs-12
+            p.text-muted * アルファベット、「-」「_」が使えます
       .form-group
         .row
           .col-xs-6
-            input#name.form-control.input-lg type="text" name="name" placeholder="ユーザー名"
+            input#name.form-control.input-lg type="text" name="name" placeholder="ユーザー名(オプション)"
           .col-xs-6
-            input#title.form-control.input-lg type="text" name="title" placeholder="スライド名"
+            input#title.form-control.input-lg type="text" name="title" placeholder="スライド名(オプション)"
       .form-group
         .input-group
           .input-group-btn

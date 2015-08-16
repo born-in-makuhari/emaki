@@ -101,6 +101,7 @@ describe 'Emaki' do
     end
 
     it { expect(html).to desplay @slide_css }
+    it { expect(html).to desplay 'progress#pageIndicator' }
     it { expect(html).to desplay '#next' }
     it { expect(html).to desplay '#prev' }
     it { expect(html).to desplay '#name' }

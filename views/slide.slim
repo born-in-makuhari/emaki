@@ -1,5 +1,9 @@
 .row
   .slide-view-container.col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1.col-xs-12
+    #slideHead
+      h3.title
+        span#title
+          = @slide.title ? @slide.title : @slide.slug
     #slideView
       input#pageNumber type="hidden" value="#{@page_number}"
       - @page_urls.each_with_index do |url, i|
@@ -16,3 +20,11 @@
             | <
           button#next.btn.btn-default
             | >
+    #slideDetails.panel.panel-default
+      h3
+        span.text-muted by
+        | &nbsp;
+        span#name
+          = @user.name ? @user.name : @user.slug
+      #description
+        = @slide.description ? @slide.description : "No description."

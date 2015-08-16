@@ -118,19 +118,29 @@ post '/slides' do
   end
 end
 
+# SLIDE PAGE
 # マッチしなかったらスライドだと判断
 get '/:username/:slidename' do
-  if Binder.exist?(params[:username], params[:slidename])
-    @un = params[:username]
-    @sn = params[:slidename]
-    @page_number = Binder.page_number @un, @sn
-    @page_urls = Binder.page_urls @un, @sn
-    slim :slide, layout: :layout
-  else
+  unless Binder.exist?(params[:username], params[:slidename])
     status 404
     @slide_name = "#{params[:username]}/#{params[:slidename]}"
-    slim :slide_not_found
+    return slim :slide_not_found, layout: :layout
   end
+  @un = params[:username]
+  @sn = params[:slidename]
+
+  @user = User.first slug: @un
+  @slide = Slide.first user_slug: @un, slug: @sn
+
+  if @user.nil? || @slide.nil?
+    status 404
+    @slide_name = "#{params[:username]}/#{params[:slidename]}"
+    return slim :slide_not_found, layout: :layout
+  end
+
+  @page_number = Binder.page_number @un, @sn
+  @page_urls = Binder.page_urls @un, @sn
+  slim :slide, layout: :layout
 end
 
 # スライド画像の返却

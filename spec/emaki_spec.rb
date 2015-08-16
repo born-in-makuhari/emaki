@@ -46,6 +46,8 @@ describe 'Emaki' do
     let(:slide_path) { SLIDES_ROOT + "/#{un}/#{sn}" }
 
     before :all do
+      flush_testdb!
+
       post_data = {
         name: 'ユーザーの表示名はどんな形式でもいい',
         title: 'タイトルの表示名はどんな形式でもいい',
@@ -55,6 +57,12 @@ describe 'Emaki' do
       }
 
       post '/slides', post_data
+    end
+
+    after :all do
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
+      flush_testdb!
     end
   end
 
@@ -187,24 +195,9 @@ describe 'Emaki' do
   # /slides
   #
   describe 'POST /slides' do
-    before do
-      flush_testdb!
-    end
-
-    after :all do
-      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
-      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
-    end
-
-    after do
-      flush_testdb!
-    end
 
     shared_examples "creates users & slides (#{UN}, #{SN})" do
       it 'user exists' do
-        Redis.current.keys('*').each do |k|
-          puts k
-        end
         expect(User.exists?(UN)).to be true
       end
       it 'user has name' do

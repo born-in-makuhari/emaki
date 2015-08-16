@@ -8,3 +8,11 @@ describe 'Common page', type: :feature do
     expect(uri.path).to eq '/'
   end
 end
+
+describe 'Slide page', type: :feature do
+  describe 'has Page Indicator' do
+    it 'displays progress#pageIndicator'
+    it 'displays now page (default page 0)'
+    it 'displays now page (default page 0)'
+  end
+end

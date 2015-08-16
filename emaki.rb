@@ -22,6 +22,7 @@ puts <<"EOS"
 EOS
 
 require EMAKI_ROOT + '/lib/binder.rb'
+require EMAKI_ROOT + '/lib/models.rb'
 
 enable :sessions
 set :session_secret, 'emaki'
@@ -48,17 +49,6 @@ adapter.resource_naming_convention = lambda do |value|
   ].join(':')
 end
 # おまじないおわり
-
-# TODO: ファイル分離
-# モデル
-class User
-  include Redis::Objects
-  include DataMapper::Resource
-
-  property :slug, String, key: true
-  property :name, String
-end
-User.finalize
 
 # ----------------------------------------------------------------
 # Routes

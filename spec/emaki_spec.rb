@@ -193,9 +193,29 @@ describe 'Emaki' do
       flush_testdb!
     end
 
+    shared_examples "creates users & slides (#{UN}, #{SN})" do
+      it 'user exists' do
+        expect(User.exists?(UN)).to be true
+      end
+      it 'user has name' do
+        expect(User.first(UN).name).not_to eq nil
+      end
+      it 'slide exists' do
+        expect(Slide.exists?(UN, SN)).to be true
+      end
+      it 'slide has title' do
+        expect(Slide.first(UN, SN).title).not_to eq nil
+      end
+    end
+    shared_examples "does not create users & slides (#{UN}, #{SN})" do
+      it { expect(User.exists?(UN)).to be false }
+      it { expect(Slide.exists?(UN, SN)).to be false }
+    end
+
     context 'if username is invalid,' do
       include_context 'slide posted with', false, true, true
       it_behaves_like 'redirect', '/new'
+      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -206,15 +226,12 @@ describe 'Emaki' do
         end
       end
 
-      it "does not creates users:#{UN}"
-      it "does not creates users:#{UN} with name"
-      it "does not creates slides:#{UN}:#{SN}"
-      it "does not creates slides:#{UN}:#{SN} with title"
     end
 
     context 'if slidename is invalid,' do
       include_context 'slide posted with', true, false, true
       it_behaves_like 'redirect', '/new'
+      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -225,15 +242,12 @@ describe 'Emaki' do
         end
       end
 
-      it "does not creates users:#{UN}"
-      it "does not creates users:#{UN} with name"
-      it "does not creates slides:#{UN}:#{SN}"
-      it "does not creates slides:#{UN}:#{SN} with title"
     end
 
     context 'no file,' do
       include_context 'slide posted with', true, true, false
       it_behaves_like 'redirect', '/new'
+      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -243,15 +257,12 @@ describe 'Emaki' do
         end
       end
 
-      it "does not creates users:#{UN}"
-      it "does not creates users:#{UN} with name"
-      it "does not creates slides:#{UN}:#{SN}"
-      it "does not creates slides:#{UN}:#{SN} with title"
     end
 
     context do
       include_context 'slide posted with', true, true, true
       it_behaves_like 'redirect', "/#{UN}/#{SN}"
+      it_behaves_like "creates users & slides (#{UN}, #{SN})"
 
       it "creates directory slides/#{UN}/#{SN}" do
         expect(FileTest.exist? slide_path).to be true
@@ -267,10 +278,6 @@ describe 'Emaki' do
         expect(Dir.entries(Binder.tmppath).join).to eq '...'
       end
 
-      it "creates users:#{UN}"
-      it "creates users:#{UN} with name"
-      it "creates slides:#{UN}:#{SN}"
-      it "creates slides:#{UN}:#{SN} with title"
     end
   end
   # ---------------------------------------------------------

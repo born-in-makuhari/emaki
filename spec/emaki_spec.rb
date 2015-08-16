@@ -103,6 +103,9 @@ describe 'Emaki' do
     it { expect(html).to desplay @slide_css }
     it { expect(html).to desplay '#next' }
     it { expect(html).to desplay '#prev' }
+    it { expect(html).to desplay '#name' }
+    it { expect(html).to desplay '#title' }
+    it { expect(html).to desplay '#description' }
     it 'desplays all pages, as <img>' do
       3.times do |i|
         expect(html).to desplay @page_css[i]

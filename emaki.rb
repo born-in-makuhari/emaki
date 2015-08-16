@@ -1,10 +1,8 @@
 # ----------------------------------------------------------------
 # Gems
 #
-require 'sinatra'
-require 'slim'
-require 'redis'
-require 'redis-namespace'
+require 'bundler'
+Bundler.require
 
 # ----------------------------------------------------------------
 # Emaki::
@@ -25,14 +23,31 @@ end
 # ----------------------------------------------------------------
 # Database
 #
-Redis.current = Redis::Namespace.new host: '127.0.0.1', port: 6379
 
-puts
-puts
-puts
-puts Redis.current
-puts
-puts
+# おまじない
+adapter = DataMapper.setup(:default, adapter: 'redis')
+
+# TODO: development, test, productionを使い分ける
+adapter.resource_naming_convention = lambda do |value|
+  [
+    'emaki',
+    'development',
+    DataMapper::Inflector.pluralize(
+      DataMapper::Inflector.underscore(value)).gsub('/', '_')
+  ].join(':')
+end
+# おまじないおわり
+
+# TODO: ファイル分離
+# モデル
+class User
+  include Redis::Objects
+  include DataMapper::Resource
+
+  property :slug, String, key: true
+  property :name, String
+end
+User.finalize
 
 # ----------------------------------------------------------------
 # Routes

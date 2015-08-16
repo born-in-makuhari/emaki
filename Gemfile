@@ -6,9 +6,10 @@ gem 'slim'
 gem 'rmagick'
 
 # for redis
-gem 'redis'
-gem 'redis-namespace'
+gem 'dm-core'
+gem 'dm-redis-adapter'
 gem 'redis-objects'
+gem 'redis-namespace'
 
 
 # for styling

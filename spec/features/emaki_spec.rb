@@ -73,7 +73,7 @@ describe 'Register page', type: :feature do
   end
 end
 
-describe 'SignIn page', type: feature do
+describe 'SignIn page', type: :feature do
   let(:form) { find 'form#signin' }
   before { visit '/signin' }
 

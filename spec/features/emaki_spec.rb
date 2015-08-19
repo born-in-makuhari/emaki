@@ -28,7 +28,10 @@ describe 'Top page', type: :feature do
 end
 
 describe 'Register page', type: :feature do
-  before { visit '/register' }
+  let(:form) { find('form#register') }
+  before do
+    visit '/register'
+  end
 
   it 'links to Top' do
     click_link 'toTop'
@@ -37,18 +40,16 @@ describe 'Register page', type: :feature do
   end
 
   context 'if not signed in' do
-    it 'has form #register' do
-      expect(page).to have_css 'form#register'
+    it { expect(page).to have_css 'form#register' }
+    it do
+      expect(form.native.attributes['method'].value).to eq 'post'
+      expect(form.native.attributes['action'].value).to eq '/users'
     end
-    it 'has form action="POST /users"' do
-      expect(find('form#register').native.attributes['method'].value).to eq 'post'
-      expect(find('form#register').native.attributes['action'].value).to eq '/users'
-    end
-    it 'has input #username'
-    it 'has input #name'
-    it 'has input #email'
-    it 'has input #password'
-    it 'has submit button'
+    it { expect(page).to have_css 'form#register input#username' }
+    it { expect(page).to have_css 'form#register input#name' }
+    it { expect(page).to have_css 'form#register input#email' }
+    it { expect(page).to have_css 'form#register input#password' }
+    it { expect(page).to have_css 'form#register input[type="submit"]' }
   end
 
   context 'if signed in' do

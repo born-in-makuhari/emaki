@@ -58,12 +58,11 @@ get '/' do
   all_slides = Slide.all
   all_slides.each do |s|
     u = User.first(slug: s.user_slug)
-    if u
-      k = u.name ? u.name : u.slug
-      v = s.title ? s.title : s.slug
-      @slides[k] ||= []
-      @slides[k] << v
-    end
+    next unless u
+    k = u.name ? u.name : u.slug
+    v = s.title ? s.title : s.slug
+    @slides[u.slug] ||= []
+    @slides[u.slug] << { slug: s.slug, name: k, title: v }
   end
   # TODO: ここまで
 

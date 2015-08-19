@@ -18,17 +18,21 @@ describe 'Slide page', type: :feature do
 
   describe 'has Page Indicator' do
     let(:indicator) { 'progress#pageIndicator' }
+
     it { expect(page).to have_css indicator }
     it 'max=2' do
-      expect(find(indicator)[:max]).to eq "2"
+      expect(find(indicator)[:max]).to eq '2'
     end
     it 'displays 0' do
-      expect(find(indicator).value).to eq "0"
+      expect(find(indicator).value).to eq '0'
     end
 
     context 'when #next clicked, ' do
-
-      it 'displays 1'
+      it 'displays 1' do
+        click_button 'next'
+        expect(find(indicator).value).to eq '1'
+      end
     end
+
   end
 end

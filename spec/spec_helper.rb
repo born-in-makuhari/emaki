@@ -17,9 +17,14 @@ end
 # For RSpec 2.x
 RSpec.configure { |c| c.include RSpecMixin }
 
+# ---------------------------------------------------------
 # For Capybara
 Capybara.app = Sinatra::Application
-
+Capybara.current_driver = :webkit
+Capybara::Webkit.configure do |config|
+  config.allow_url('ajax.googleapis.com')
+end
+# ---------------------------------------------------------
 # Test data
 UN = 'testuser'
 SN = 'testslide'

@@ -1,2 +1,5 @@
 Gemfile.lock
 .bundle
+logs/development.log
+slides/
+tmp/

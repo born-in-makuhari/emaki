@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    meta charset="utf-8"
+    title emaki
+    link rel="stylesheet" href="/css/emaki.css"
+  body
+    .content
+      .header
+        a#toTop href="/"
+          h1 emaki
+        a#toNew href="/new"
+          h3 + new slide
+      == yield

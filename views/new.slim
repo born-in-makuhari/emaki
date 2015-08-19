@@ -1,0 +1,15 @@
+form#newSlide method="post" action="/slides" enctype="multipart/form-data"
+  fieldset
+    h3 Register new slide
+    p
+      input#username  type="text" name="username" placeholder="username..."
+      | &nbsp;/&nbsp;
+      input#slidename type="text" name="slidename" placeholder="slidename..."
+    p
+      input#slide     type="file" name="slide" placeholder="select PDF..."
+    p
+      input type="submit" name="Send"
+  - if @attention
+    #attention
+      == @attention
+

@@ -1,24 +1,16 @@
-doctype html
-html
-  head
-    meta charset="utf-8"
-    title emaki
-    style
-      |
-        body {
-          background: #edc;
-        }
-        .content {
-          padding: 50px;
-        }
-        a {
-          color: #a88;
-        }
-  body
-    .content
-      h1 emaki
-      p Sorry, Emaki is still dozing
-      p
-        | our project is&nbsp;
-        a href="https://github.com/born-in-makuhari/emaki" here
-      .box width="500"
+#dozing
+  p Emaki is still dozing
+  p
+    | our project is&nbsp;
+    a href="https://github.com/born-in-makuhari/emaki"
+      | here
+h3.all All slides
+#slides
+  - @slides.each do |un, user_slides|
+    h3 = un
+    ul
+      - user_slides.each do |slide|
+        - unless slide == '.' || slide == '..'
+          li
+            a href="/#{un}/#{slide}"
+              = "#{un}/#{slide}"

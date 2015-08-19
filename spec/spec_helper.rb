@@ -1,5 +1,6 @@
 require 'rack/test'
 require 'rspec'
+require 'oga'
 
 require File.expand_path '../../emaki.rb', __FILE__
 
@@ -15,3 +16,12 @@ end
 
 # For RSpec 2.x
 RSpec.configure { |c| c.include RSpecMixin }
+
+UN = 'testuser'
+SN = 'testslide'
+
+SPEC_ROOT = File.expand_path('../', __FILE__)
+
+def session
+  last_request.env['rack.session']
+end

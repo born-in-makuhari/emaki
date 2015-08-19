@@ -2,10 +2,12 @@ require 'sinatra'
 require 'slim'
 
 EMAKI_ROOT = File.expand_path('../', __FILE__)
+EMAKI_VERSION = 'version 0.0.0'
 
 require EMAKI_ROOT + '/lib/slide.rb'
 
 enable :sessions
+set :session_secret, 'emaki'
 configure :production, :development do
   enable :logging
   file = File.new("#{settings.root}/logs/#{settings.environment}.log", 'a+')

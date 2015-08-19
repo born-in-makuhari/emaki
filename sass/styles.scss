@@ -58,14 +58,8 @@ h3.text-muted {
     background: transparent;
     #indicator {
       text-align: center;
-
-      span.indicator-dot {
-        color: $gray-lighter;
-        font-size: 2em;
-
-        &.active {
-          color: lighten(saturate($brand-primary, 46.7%), 30%);
-        }
+      #pageIndicator {
+        min-width: 100%;
       }
     }
 

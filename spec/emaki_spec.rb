@@ -134,6 +134,14 @@ describe 'Emaki' do
   end
 
   #
+  # /register
+  #
+  describe 'GET /register' do
+    it_behaves_like 'an emaki page'
+    before(:all) { get '/register' }
+  end
+
+  #
   #  /new
   #
   describe 'GET /new' do

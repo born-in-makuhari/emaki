@@ -37,8 +37,13 @@ describe 'Register page', type: :feature do
   end
 
   context 'if not signed in' do
-    it 'has form #register'
-    it 'has form action="POST /users"'
+    it 'has form #register' do
+      expect(page).to have_css 'form#register'
+    end
+    it 'has form action="POST /users"' do
+      expect(find('form#register').native.attributes['method'].value).to eq 'post'
+      expect(find('form#register').native.attributes['action'].value).to eq '/users'
+    end
     it 'has input #username'
     it 'has input #name'
     it 'has input #email'

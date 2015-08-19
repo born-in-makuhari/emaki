@@ -32,40 +32,6 @@ describe 'Emaki' do
   before :all do
     FileUtils.rm_rf(Binder.tmppath) if Binder.tmppath != '/'
   end
-  # ---------------------------------------------------------
-  # 共通の事前条件
-  #
-  # username:  trueの時は正しい形式
-  # slidename: 上に同じ
-  # file:      上に同じ
-  shared_context 'slide posted with' do |un, sn, file|
-    un  = un ? UN : '-'
-    sn  = sn ? SN : '-'
-    file = file ? PDF_FILE : nil
-
-    let(:slide_path) { SLIDES_ROOT + "/#{un}/#{sn}" }
-
-    before :all do
-      flush_testdb!
-
-      post_data = {
-        name: 'ユーザーの表示名はどんな形式でもいい',
-        title: 'タイトルの表示名はどんな形式でもいい',
-        description: 'タイトルの説明はどんな形式でもいい',
-        username: un,
-        slidename: sn,
-        slide: file
-      }
-
-      post '/slides', post_data
-    end
-
-    after :all do
-      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
-      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
-      flush_testdb!
-    end
-  end
 
   # ---------------------------------------------------------
   # 共通テストケース

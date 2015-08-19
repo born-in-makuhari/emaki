@@ -7,9 +7,7 @@
           img src="#{url}" alt="page #{i}"
     #slideControls.panel
       #indicator
-        - @page_number.times do |i|
-          span.indicator-dot id="indicatorDot#{i}"
-            | ●
+        progress#pageIndicator max="#{@page_number - 1}" value="0"
       #controls
         .btn-group
           button#prev.btn.btn-default

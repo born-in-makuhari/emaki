@@ -108,6 +108,14 @@ describe 'Emaki' do
   end
 
   #
+  # /signin
+  #
+  describe 'GET /signin' do
+    it_behaves_like 'an emaki page'
+    before(:all) { get '/signin' }
+  end
+
+  #
   #  /new
   #
   describe 'GET /new' do

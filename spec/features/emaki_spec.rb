@@ -8,9 +8,7 @@ require File.expand_path '../../spec_helper.rb', __FILE__
 # TODO: 今spec/emaki_spec.rbに書いているフィーチャースペックはココに移す
 
 describe 'Top page', type: :feature do
-  before do
-    visit '/'
-  end
+  before { visit '/' }
 
   it 'links to Top' do
     click_link 'toTop'
@@ -24,19 +22,36 @@ describe 'Top page', type: :feature do
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/register'
     end
+    it 'links to SignIn' do
+      click_link 'toSignIn'
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq '/signin'
+    end
+  end
+
+  context 'if signed in' do
+    it
   end
 end
 
 describe 'Register page', type: :feature do
-  let(:form) { find('form#register') }
-  before do
-    visit '/register'
-  end
+  let(:form) { find 'form#register' }
+  before { visit '/register' }
 
   it 'links to Top' do
     click_link 'toTop'
     uri = URI.parse(current_url)
     expect(uri.path).to eq '/'
+  end
+  it 'links to Register' do
+    click_link 'toRegister'
+    uri = URI.parse(current_url)
+    expect(uri.path).to eq '/register'
+  end
+  it 'links to SignIn' do
+    click_link 'toSignIn'
+    uri = URI.parse(current_url)
+    expect(uri.path).to eq '/signin'
   end
 
   context 'if not signed in' do
@@ -58,8 +73,47 @@ describe 'Register page', type: :feature do
   end
 end
 
+describe 'SignIn page', type: feature do
+  let(:form) { find 'form#signin' }
+  before { visit '/signin' }
+
+  context 'if not signed in' do
+    it 'links to Top' do
+      click_link 'toTop'
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq '/'
+    end
+    it 'links to Register' do
+      click_link 'toRegister'
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq '/register'
+    end
+  end
+
+  context 'if signed in' do
+    it
+  end
+end
+
 describe 'Slide page', type: :feature do
   include_context 'slide posted with', true, true, true
+
+  context 'if not signed in, ' do
+    it 'links to Register' do
+      click_link 'toRegister'
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq '/register'
+    end
+    it 'links to SignIn' do
+      click_link 'toSignIn'
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq '/signin'
+    end
+  end
+
+  context 'if signed in' do
+    it
+  end
 
   before :each do
     visit "/#{UN}/#{SN}"

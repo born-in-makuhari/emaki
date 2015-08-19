@@ -11,12 +11,24 @@ end
 
 describe 'Slide page', type: :feature do
   include_context 'slide posted with', true, true, true
-  before :all do
+
+  before do
     visit "/#{UN}/#{SN}"
   end
+
   describe 'has Page Indicator' do
-    it { expect(page).to have_css 'progress#pageIndicator' }
-    it 'displays now page (default page 0)'
-    it 'displays now page (default page 0)'
+    let(:indicator) { 'progress#pageIndicator' }
+    it { expect(page).to have_css indicator }
+    it 'max=2' do
+      expect(find(indicator)[:max]).to eq "2"
+    end
+    it 'displays 0' do
+      expect(find(indicator).value).to eq "0"
+    end
+
+    context 'when #next clicked, ' do
+
+      it 'displays 1'
+    end
   end
 end

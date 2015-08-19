@@ -30,7 +30,7 @@ describe 'Emaki' do
   let(:html) { Oga.parse_html(last_response.body) }
 
   before :all do
-    FileUtils.rm_rf(Slide.tmppath) if Slide.tmppath != '/'
+    FileUtils.rm_rf(Binder.tmppath) if Binder.tmppath != '/'
   end
   # ---------------------------------------------------------
   # 共通の事前条件
@@ -46,13 +46,24 @@ describe 'Emaki' do
     let(:slide_path) { SLIDES_ROOT + "/#{un}/#{sn}" }
 
     before :all do
+      flush_testdb!
+
       post_data = {
+        name: 'ユーザーの表示名はどんな形式でもいい',
+        title: 'タイトルの表示名はどんな形式でもいい',
+        description: 'タイトルの説明はどんな形式でもいい',
         username: un,
         slidename: sn,
         slide: file
       }
 
       post '/slides', post_data
+    end
+
+    after :all do
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
+      flush_testdb!
     end
   end
 
@@ -92,6 +103,9 @@ describe 'Emaki' do
     it { expect(html).to desplay @slide_css }
     it { expect(html).to desplay '#next' }
     it { expect(html).to desplay '#prev' }
+    it { expect(html).to desplay '#name' }
+    it { expect(html).to desplay '#title' }
+    it { expect(html).to desplay '#description' }
     it 'desplays all pages, as <img>' do
       3.times do |i|
         expect(html).to desplay @page_css[i]
@@ -128,6 +142,9 @@ describe 'Emaki' do
     let(:uninput) { 'input#username' }
     let(:sninput) { 'input#slidename' }
     let(:slinput) { 'input#slide' }
+    let(:name) { 'input#name' }
+    let(:title) { 'input#title' }
+    let(:description) { 'textarea#description' }
     before(:all) { get '/new' }
     it { expect(html).to desplay form }
     it { expect(html).to desplay form, :action, '/slides' }
@@ -139,6 +156,11 @@ describe 'Emaki' do
     it { expect(html).to desplay sninput, :name, 'slidename' }
     it { expect(html).to desplay slinput, :type, 'file' }
     it { expect(html).to desplay slinput, :name, 'slide' }
+    it { expect(html).to desplay name, :type, 'text' }
+    it { expect(html).to desplay name, :name, 'name' }
+    it { expect(html).to desplay title, :type, 'text' }
+    it { expect(html).to desplay title, :name, 'title' }
+    it { expect(html).to desplay description, :name, 'description' }
     it { expect(html).to desplay 'input[type="submit"]' }
   end
 
@@ -179,9 +201,27 @@ describe 'Emaki' do
   # /slides
   #
   describe 'POST /slides' do
+
+    shared_examples "creates users & slides (#{UN}, #{SN})" do
+      before do
+        @u = User.first(slug: UN)
+        @s = Slide.first(user_slug: UN, slug: SN)
+      end
+      it('user exists') { expect(@u).not_to eq nil }
+      it('user has name') { expect(@u.name).not_to eq nil }
+      it('slide exists') { expect(@s).not_to eq nil }
+      it('slide has title') { expect(@s.title).not_to eq nil }
+      it('slide has description') { expect(@s.description).not_to eq nil }
+    end
+    shared_examples "does not create users & slides (#{UN}, #{SN})" do
+      it { expect(User.exists?(UN)).to be false }
+      it { expect(Slide.exists?(UN, SN)).to be false }
+    end
+
     context 'if username is invalid,' do
       include_context 'slide posted with', false, true, true
       it_behaves_like 'redirect', '/new'
+      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -191,11 +231,13 @@ describe 'Emaki' do
           expect(html).to desplay '#attention #slugRule'
         end
       end
+
     end
 
     context 'if slidename is invalid,' do
       include_context 'slide posted with', true, false, true
       it_behaves_like 'redirect', '/new'
+      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -205,11 +247,13 @@ describe 'Emaki' do
           expect(html).to desplay '#attention #slugRule'
         end
       end
+
     end
 
     context 'no file,' do
       include_context 'slide posted with', true, true, false
       it_behaves_like 'redirect', '/new'
+      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -218,16 +262,13 @@ describe 'Emaki' do
           expect(html).to desplay '#attention #noFile'
         end
       end
+
     end
 
     context do
       include_context 'slide posted with', true, true, true
       it_behaves_like 'redirect', "/#{UN}/#{SN}"
-
-      after :all do
-        FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
-        FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
-      end
+      it_behaves_like "creates users & slides (#{UN}, #{SN})"
 
       it "creates directory slides/#{UN}/#{SN}" do
         expect(FileTest.exist? slide_path).to be true
@@ -240,8 +281,9 @@ describe 'Emaki' do
       end
 
       it 'cleanup /tmp' do
-        expect(Dir.entries(Slide.tmppath).join).to eq '...'
+        expect(Dir.entries(Binder.tmppath).join).to eq '...'
       end
+
     end
   end
   # ---------------------------------------------------------

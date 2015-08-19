@@ -5,6 +5,12 @@ gem 'sinatra'
 gem 'slim'
 gem 'rmagick'
 
+# for redis
+gem 'dm-core'
+gem 'dm-redis-adapter'
+gem 'redis-objects'
+
+
 # for styling
 gem 'sass'
 gem 'compass'
@@ -17,4 +23,5 @@ group :test do
   gem 'rspec'
   gem 'fuubar'
   gem 'oga'
+  gem 'redis-namespace'
 end

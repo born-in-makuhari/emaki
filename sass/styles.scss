@@ -46,7 +46,7 @@ h3.text-muted {
 }
 
 .slide-view-container {
-  @include gradient-top-lighten($gray, 20%);
+  //@include gradient-top-lighten($gray-lighter, 20%);
   border-radius: $border-radius-base;
   padding-top: 15px;
 
@@ -60,11 +60,11 @@ h3.text-muted {
       text-align: center;
 
       span.indicator-dot {
-        color: white;
+        color: $gray-lighter;
         font-size: 2em;
 
         &.active {
-          color: lighten(saturate($brand-primary, 46.7%), 25%);
+          color: lighten(saturate($brand-primary, 46.7%), 30%);
         }
       }
     }
@@ -79,6 +79,10 @@ h3.text-muted {
       }
     }
   }
+}
+
+.slide-details {
+  margin: 1.5em 0;
 }
 
 // ----------------------------------------------------------
@@ -98,4 +102,11 @@ h3.text-muted {
   top: 0;
   margin: 0;
   cursor: pointer;
+}
+
+#newSlide {
+  textarea {
+    height: 10em;
+    resize: vertical;
+  }
 }

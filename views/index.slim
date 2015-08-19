@@ -20,8 +20,7 @@
                 = un
             - user_slides.each do |slide|
               .list-group-item
-                - unless slide == '.' || slide == '..'
-                  a href="/#{un}/#{slide}"
-                    h4
-                      = "#{un}/#{slide}"
+                a href="/#{un}/#{slide[:slug]}"
+                  h4
+                    = "#{slide[:name]}/#{slide[:title]}"
 

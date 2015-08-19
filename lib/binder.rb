@@ -1,7 +1,5 @@
-require 'RMagick'
-
 # ----------------------------------------------------------------
-# Slide
+# Binder
 #
 # emakiからスライドの実態を隠蔽するクラス。
 # TODO: moduleにしたほうがいいのでは？
@@ -10,7 +8,7 @@ require 'RMagick'
 # アップロードされたとき一時保存したり、
 # スライドのファイルパスを返したりする。
 #
-class Slide
+class Binder
   def self.logger
     @internal_logger ||= Rack::NullLogger.new nil
   end

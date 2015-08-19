@@ -31,8 +31,9 @@ class Slide
   include Redis::Objects
   include DataMapper::Resource
 
-  property :user_slug, String, key: true
-  property :slug, String, key: true
+  property :id, Serial, key: true
+  property :user_slug, String
+  property :slug, String
   property :title, String
   property :description, String
 

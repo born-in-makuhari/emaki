@@ -75,6 +75,10 @@ get '/new' do
   slim :new, layout: :layout
 end
 
+get '/register' do
+  slim :register, layout: :layout
+end
+
 post '/slides' do
   un = params[:username]  # required
   sn = params[:slidename] # required

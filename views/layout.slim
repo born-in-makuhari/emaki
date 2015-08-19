@@ -24,9 +24,11 @@ html
             / TODO: ログアウト状態の時しか表示しない
             li role="presentation"
               a#toRegister href="/register"
+                | +
+                | &nbsp;
                 span.glyphicon.glyphicon-user
                 | &nbsp;
-                Register
+                | Register
         h3.text-muted
           a href="/" emaki
       == yield

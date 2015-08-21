@@ -78,11 +78,14 @@ describe 'Register page', type: :feature do
       expect('form#register').to have_attr 'method', 'post'
       expect('form#register').to have_attr 'action', '/users'
     end
-    it { expect('form#register input#username').to have_attr 'type', 'text' }
-    it { expect('form#register input#username').to have_attr 'name', 'username' }
-    it { expect('form#register input#name').to have_attr 'name', 'name' }
-    it { expect(page).to have_css 'form#register input#email' }
-    it { expect(page).to have_css 'form#register input#password' }
+    it { expect('#register input#username').to have_attr 'type', 'text' }
+    it { expect('#register input#username').to have_attr 'name', 'username' }
+    it { expect('#register input#name').to have_attr 'type', 'text' }
+    it { expect('#register input#name').to have_attr 'name', 'name' }
+    it { expect('#register input#email').to have_attr 'type', 'text' }
+    it { expect('#register input#email').to have_attr 'name', 'email' }
+    it { expect('#register input#password').to have_attr 'type', 'password' }
+    it { expect('#register input#password').to have_attr 'name', 'password' }
     it { expect(page).to have_css 'form#register input[type="submit"]' }
   end
 
@@ -111,10 +114,9 @@ describe 'SignIn page', type: :feature do
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/register'
     end
-    it { expect(page).to have_css 'form#signin' }
     it do
-      expect(form.native.attributes['method'].value).to eq 'post'
-      expect(form.native.attributes['action'].value).to eq '/signin'
+      expect('form#signin').to have_attr 'method', 'post'
+      expect('form#signin').to have_attr 'action', '/signin'
     end
     it do
       expect('form#signin input#usernameOrEmail')

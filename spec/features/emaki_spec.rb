@@ -1,11 +1,22 @@
 require File.expand_path '../../spec_helper.rb', __FILE__
-
-# フィーチャースペック
+#
+#              Feature Specs
 #
 # 画面とサーバーの機能を結合したスペック。
 # 画面表示や画面操作のテスト。
 #
 # TODO: 今spec/emaki_spec.rbに書いているフィーチャースペックはココに移す
+
+# カスタムマッチャー
+# have_attribute(key, value)
+#
+# たとえばこういうのにマッチする
+#     <div id="hoge" >
+RSpec::Matchers.define :have_attribute do |key, value|
+  match do |actual|
+    find(actual).native.attributes[key].value == value
+  end
+end
 
 describe 'Top page', type: :feature do
   before { visit '/' }
@@ -88,6 +99,20 @@ describe 'SignIn page', type: :feature do
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/register'
     end
+    it { expect(page).to have_css 'form#signin' }
+    it do
+      expect(form.native.attributes['method'].value).to eq 'post'
+      expect(form.native.attributes['action'].value).to eq '/signin'
+    end
+    it do
+      expect('form#signin input#usernameOrEmail')
+        .to have_attribute 'name', 'username_or_email'
+    end
+    it do
+      expect('form#signin input#password').to have_attribute 'name', 'password'
+      expect('form#signin input#password').to have_attribute 'type', 'password'
+    end
+    it { expect(page).to have_css 'form#signin input[type="submit"]' }
   end
 
   context 'if signed in' do

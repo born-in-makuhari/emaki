@@ -8,15 +8,19 @@ require File.expand_path '../../spec_helper.rb', __FILE__
 # TODO: 今spec/emaki_spec.rbに書いているフィーチャースペックはココに移す
 
 # カスタムマッチャー
-# have_attribute(key, value)
+# have_attr(key, value)
 #
 # たとえばこういうのにマッチする
 #     <div id="hoge" >
-RSpec::Matchers.define :have_attribute do |key, value|
+RSpec::Matchers.define :have_attr do |key, value|
   match do |actual|
     find(actual).native.attributes[key].value == value
   end
 end
+
+#
+# Top page
+#
 
 describe 'Top page', type: :feature do
   before { visit '/' }
@@ -45,6 +49,10 @@ describe 'Top page', type: :feature do
   end
 end
 
+#
+# Register page
+#
+
 describe 'Register page', type: :feature do
   let(:form) { find 'form#register' }
   before { visit '/register' }
@@ -66,13 +74,13 @@ describe 'Register page', type: :feature do
   end
 
   context 'if not signed in' do
-    it { expect(page).to have_css 'form#register' }
     it do
-      expect(form.native.attributes['method'].value).to eq 'post'
-      expect(form.native.attributes['action'].value).to eq '/users'
+      expect('form#register').to have_attr 'method', 'post'
+      expect('form#register').to have_attr 'action', '/users'
     end
-    it { expect(page).to have_css 'form#register input#username' }
-    it { expect(page).to have_css 'form#register input#name' }
+    it { expect('form#register input#username').to have_attr 'type', 'text' }
+    it { expect('form#register input#username').to have_attr 'name', 'username' }
+    it { expect('form#register input#name').to have_attr 'name', 'name' }
     it { expect(page).to have_css 'form#register input#email' }
     it { expect(page).to have_css 'form#register input#password' }
     it { expect(page).to have_css 'form#register input[type="submit"]' }
@@ -83,6 +91,10 @@ describe 'Register page', type: :feature do
     it 'has attention "welcome"'
   end
 end
+
+#
+# SignIn page
+#
 
 describe 'SignIn page', type: :feature do
   let(:form) { find 'form#signin' }
@@ -106,11 +118,11 @@ describe 'SignIn page', type: :feature do
     end
     it do
       expect('form#signin input#usernameOrEmail')
-        .to have_attribute 'name', 'username_or_email'
+        .to have_attr 'name', 'username_or_email'
     end
     it do
-      expect('form#signin input#password').to have_attribute 'name', 'password'
-      expect('form#signin input#password').to have_attribute 'type', 'password'
+      expect('form#signin input#password').to have_attr 'name', 'password'
+      expect('form#signin input#password').to have_attr 'type', 'password'
     end
     it { expect(page).to have_css 'form#signin input[type="submit"]' }
   end
@@ -119,6 +131,10 @@ describe 'SignIn page', type: :feature do
     it
   end
 end
+
+#
+# Slide page
+#
 
 describe 'Slide page', type: :feature do
   include_context 'slide posted with', true, true, true

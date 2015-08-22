@@ -23,6 +23,7 @@ puts <<"EOS"
 |
 EOS
 
+require EMAKI_ROOT + '/lib/helpers.rb'
 require EMAKI_ROOT + '/lib/binder.rb'
 require EMAKI_ROOT + '/lib/models.rb'
 
@@ -68,17 +69,20 @@ end
 # おまじないおわり
 
 # ----------------------------------------------------------------
-# Attention system
+# Implicit functions
 #
+# 暗黙的な処理。
+# 最後の入力値をリダイレクト先に次に引き継いだり、
+# 注意書きをリダイレクト先に引き継いだり
 
 before do
   @attention = session[:attention]
   session[:attention] = nil
-  if session[:last_input]
-    @last_input = JSON.parse(session[:last_input])
-  else
-    @last_input = {}
-  end
+  @last_input = load_last
+end
+
+after do
+  save_last
 end
 
 # ----------------------------------------------------------------
@@ -146,7 +150,6 @@ post '/users' do
   # スラグが不正だったらこの時点で終了
   unless Binder.valid_slug? slug
     session[:attention] = slim :slug_rule, layout: false
-    session[:last_input] = params.to_json
     redirect to '/register'
     return
   end
@@ -160,7 +163,6 @@ post '/users' do
     # TODO: 理由を表示する
     # TODO: 値を保持
     session[:attention] = slim :user_rule, layout: false
-    session[:last_input] = params.to_json
     redirect to '/register'
   end
 end

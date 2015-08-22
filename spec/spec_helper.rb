@@ -1,6 +1,7 @@
 require 'bundler'
 Bundler.require :test
 require 'capybara/rspec'
+require 'rack_session_access/capybara'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -54,6 +55,8 @@ flush_testdb!
 
 # ---------------------------------------------------------
 # 共通の事前条件
+
+# スライドがある状態
 #
 # username:  trueの時は正しい形式
 # slidename: 上に同じ
@@ -85,6 +88,10 @@ shared_context 'slide posted with' do |un, sn, file|
   end
 end
 
+#
+# ユーザーがある状態
+#
+# info...UserモデルのプロパティをもつHash
 shared_context 'user created' do |info|
   before do
     User.create(info).save

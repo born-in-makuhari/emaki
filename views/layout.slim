@@ -24,17 +24,21 @@ html
             / TODO: ログアウト状態の時しか表示しない
             li role="presentation"
               a#toSignIn href="/signin"
-                span.glyphicon.glyphicon-user
-                | &nbsp;
                 | Sign in
             / TODO: ログアウト状態の時しか表示しない
             li role="presentation"
               a#toRegister href="/register"
                 | +
                 | &nbsp;
-                span.glyphicon.glyphicon-user
-                | &nbsp;
                 | Register
+            - if session[:user]
+              - user = User.first(slug: session[:user])
+              - name = user.name ? user.name : user.slug
+              li.active#userinfo role="presentation"
+                a href="#"
+                  span.glyphicon.glyphicon-user
+                  | &nbsp;
+                  | #{name}
         h3.text-muted
           a href="/" emaki
       == yield

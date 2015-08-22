@@ -48,9 +48,7 @@ describe 'Top page', type: :feature do
   end
 
   context 'if signed in' do
-    it 'displays userinfo' do
-      expect(page).to have_css '#userinfo'
-    end
+    it
   end
 end
 
@@ -162,6 +160,23 @@ describe 'SignIn page', type: :feature do
     context 'when submit email/password' do
       before do
         fill_in 'usernameOrEmail', with: 'for.signin@test.com'
+        fill_in 'password', with: 'for-signin'
+        find('form#signin input[type=submit]').click
+      end
+
+      it 'redirects to Top' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/'
+      end
+
+      it 'displays userinfo' do
+        expect(page).to have_css '#userinfo'
+      end
+    end
+
+    context 'when submit username/password' do
+      before do
+        fill_in 'usernameOrEmail', with: 'for-signin'
         fill_in 'password', with: 'for-signin'
         find('form#signin input[type=submit]').click
       end

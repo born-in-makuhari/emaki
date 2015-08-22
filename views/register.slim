@@ -3,15 +3,15 @@
     h1.text-muted 新しいユーザー
     form#register method="post" action="/users"
       .form-group
-        input#email.form-control.input-lg type="text" name="email" placeholder="メールアドレス"
+        input#email.form-control.input-lg type="text" name="email" placeholder="メールアドレス" value="#{@last_input['email']}"
       .form-group
-        input#password.form-control.input-lg type="password" name="password" placeholder="パスワード"
+        input#password.form-control.input-lg type="password" name="password" placeholder="パスワード" value="#{@last_input['password']}"
       hr
       .form-group
-        input#username.form-control.input-lg type="text" name="username" placeholder="ユーザーID *"
+        input#username.form-control.input-lg type="text" name="username" placeholder="ユーザーID *" value="#{@last_input['username']}"
         p.text-muted * アルファベット、「-」「_」が使えます
       .form-group
-        input#name.form-control.input-lg type="text" name="name" placeholder="ユーザー名（オプション）"
+        input#name.form-control.input-lg type="text" name="name" placeholder="ユーザー名（オプション）" value="#{@last_input['name']}"
       .form-group
         input.btn.btn-primary.btn-block.btn-lg type="submit"
       - if @attention

@@ -3,6 +3,7 @@
 #
 require 'bundler'
 Bundler.require
+require 'rack/session/dalli'
 
 # ----------------------------------------------------------------
 # Emaki::
@@ -24,7 +25,7 @@ EOS
 require EMAKI_ROOT + '/lib/binder.rb'
 require EMAKI_ROOT + '/lib/models.rb'
 
-enable :sessions
+use Rack::Session::Dalli, cache: Dalli::Client.new
 set :session_secret, 'emaki'
 configure :production, :development do
   enable :logging
@@ -55,6 +56,11 @@ end
 before do
   @attention = session[:attention]
   session[:attention] = nil
+  if session[:last_input]
+    @last_input = JSON.parse(session[:last_input])
+  else
+    @last_input = {}
+  end
 end
 
 # ----------------------------------------------------------------
@@ -122,6 +128,7 @@ post '/users' do
   # スラグが不正だったらこの時点で終了
   unless Binder.valid_slug? slug
     session[:attention] = slim :slug_rule, layout: false
+    session[:last_input] = params.to_json
     redirect to '/register'
     return
   end
@@ -134,6 +141,8 @@ post '/users' do
   else
     # TODO: 理由を表示する
     # TODO: 値を保持
+    session[:attention] = slim :user_rule, layout: false
+    session[:last_input] = params.to_json
     redirect to '/register'
   end
 end

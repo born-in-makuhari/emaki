@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 
 # for application
 gem 'sinatra'
+gem 'dalli'
+gem 'json'
 gem 'slim'
 gem 'rmagick'
 

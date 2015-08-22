@@ -111,6 +111,35 @@ get '/signin' do
   slim :signin, layout: :layout
 end
 
+post '/signin' do
+  # emailかどうか、「＠」で判断する
+  u_o_e = params[:username_or_email]
+  password = params[:password]
+
+  user = nil
+  if u_o_e.include? '@'
+    user = User.first(email: u_o_e)
+  else
+    user = User.first(slug: u_o_e)
+  end
+
+  # ユーザーなかったら戻る
+  if user.nil?
+    redirect to '/signin'
+    return
+  end
+
+  # パスワードあってなかったら戻る
+  if user.password != password
+    redirect to '/signin'
+    return
+  end
+
+  # ユーザーあったらログイン状態
+  session[:user] = user.slug
+  redirect to '/'
+end
+
 post '/slides' do
   sn = params[:slidename] # required
   title = params[:title]

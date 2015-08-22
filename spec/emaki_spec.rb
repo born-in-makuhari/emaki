@@ -106,7 +106,6 @@ describe 'Emaki' do
   describe 'GET /' do
     it_behaves_like 'an emaki page'
     before(:all) { get '/' }
-    it { expect(html).to desplay 'a#toNew', 'href', '/new' }
   end
 
   #

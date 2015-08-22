@@ -18,27 +18,25 @@ html
           ul.nav.nav-pills.pull-right
             li role="presentation"
               a#toTop href="/" Top
-            / TODO: ログイン状態の時しか表示しない
-            li role="presentation"
-              a#toNew href="/new"  + New slide
-            / TODO: ログアウト状態の時しか表示しない
-            li role="presentation"
-              a#toSignIn href="/signin"
-                | Sign in
-            / TODO: ログアウト状態の時しか表示しない
-            li role="presentation"
-              a#toRegister href="/register"
-                | +
-                | &nbsp;
-                | Register
             - if session[:user]
               - user = User.first(slug: session[:user])
               - name = user.name ? user.name : user.slug
+              li role="presentation"
+                a#toNew href="/new"  + New slide
               li.active#userinfo role="presentation"
                 a href="#"
                   span.glyphicon.glyphicon-user
                   | &nbsp;
                   | #{name}
+            - else
+              li role="presentation"
+                a#toSignIn href="/signin"
+                  | Sign in
+              li role="presentation"
+                a#toRegister href="/register"
+                  | +
+                  | &nbsp;
+                  | Register
         h3.text-muted
           a href="/" emaki
       == yield

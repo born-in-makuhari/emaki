@@ -32,19 +32,20 @@ set :protect_from_csrf, false
 disable :sessions
 
 expire_after = 30 * 24 * 60 * 60 # production keeps 1 month
+use Rack::Session::Cookie, secret: 'emaki'
 if EMAKI_ENV == 'development'
   expire_after = 12 * 60 * 60  # for dev: 12 hours
-  use Rack::Protection
-  use Rack::Session::Cookie, secret: 'emaki'
-  use Rack::Protection::FormToken
 elsif EMAKI_ENV == 'test'
   expire_after = 0.1 * 60 * 60 # for test: 6 minutes
 else # production
-  use Rack::Protection
   use Rack::Session::Cookie, secret: 'emaki'
-  use Rack::Protection::FormToken
 end
 use Rack::Session::Redis, expire_after: expire_after
+
+if EMAKI_ENV != 'test'
+  use Rack::Protection
+  use Rack::Protection::FormToken
+end
 
 configure :production, :development do
   enable :logging

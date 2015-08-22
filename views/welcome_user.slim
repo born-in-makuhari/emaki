@@ -1,7 +1,8 @@
 #welcomeUser.panel.panel-success
-  h3.text_muted
+  .panel-heading
     | ようこそ、#{@user.name}(#{@user.slug})
-  ul
-    li 登録に成功しました。
-    li 「Sign In」からログインできます。
-    li ログインすると、スライドを投稿できます。
+  .panel-body
+    ul
+      li 登録に成功しました。
+      li 「Sign In」からログインできます。
+      li ログインすると、スライドを投稿できます。

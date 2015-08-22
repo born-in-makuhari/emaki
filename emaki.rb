@@ -76,9 +76,7 @@ end
 # 注意書きをリダイレクト先に引き継いだり
 
 before do
-  @attention = session[:attention]
-  session[:attention] = nil
-  @last_input = load_last
+  load_attention
 end
 
 after do
@@ -94,7 +92,7 @@ end
 before '*' do |path|
   target = ['/new', '/slides']
   if target.include?(path) && session[:user].nil?
-    session[:attention] = slim :only_named_user, layout: false
+    attention :only_named_user
     redirect to '/'
   end
 end
@@ -108,7 +106,7 @@ end
 before '*' do |path|
   target = ['/users', '/register', '/signin']
   if target.include?(path) && session[:user]
-    session[:attention] = slim :only_guest, layout: false
+    attention :only_guest
     redirect to '/'
   end
 end
@@ -149,7 +147,7 @@ post '/users' do
   email = params[:email]
   # スラグが不正だったらこの時点で終了
   unless Binder.valid_slug? slug
-    session[:attention] = slim :slug_rule, layout: false
+    attention :slug_rule
     redirect to '/register'
     return
   end
@@ -157,12 +155,10 @@ post '/users' do
   # ユーザーを登録
   @user = User.create(slug: slug, name: name, password: password, email: email)
   if @user.save
-    session[:attention] = slim :welcome_user, layout: false
+    attention :welcome_user
     redirect to '/'
   else
-    # TODO: 理由を表示する
-    # TODO: 値を保持
-    session[:attention] = slim :user_rule, layout: false
+    attention :user_rule
     redirect to '/register'
   end
 end
@@ -210,16 +206,17 @@ post '/slides' do
   title = params[:title]
   description = params[:description]
   file = params[:slide]
+  ignore_last :slide
 
   # slugは正当か？
   unless Binder.valid_slug?(sn)
-    session[:attention] = slim :slug_rule, layout: false
+    attention :slug_rule
     redirect to('/new')
     return
   end
 
   unless file
-    session[:attention] = slim :no_file, layout: false
+    attention :no_file
     redirect to('/new')
     return
   end
@@ -251,7 +248,7 @@ get '/:username/:slidename' do
   unless Binder.exist?(params[:username], params[:slidename])
     status 404
     @slide_name = "#{params[:username]}/#{params[:slidename]}"
-    return slim :slide_not_found, layout: :layout
+    return slim :"attentions/slide_not_found", layout: :layout
   end
   @un = params[:username]
   @sn = params[:slidename]

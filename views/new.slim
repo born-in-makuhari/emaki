@@ -26,9 +26,9 @@
       .form-group
         input.btn.btn-primary.btn-block.btn-lg type="submit"
         input type="hidden" name="authenticity_token" value="#{session[:csrf]}"
-      - if @attention
+      - if attention?
         #attention
-          == @attention
+          == attention
 javascript:
     $(function() {
       $('#selectFile').on('click', function() {

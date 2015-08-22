@@ -150,11 +150,47 @@ describe 'Emaki' do
       it_behaves_like 'redirect', '/'
       it_behaves_like "does not create user #{UN}"
     end
-    context 'with invalid name' do
-      it
+    context 'with password 51' do
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: UN,
+             password: 'p' * 51,
+             name: 'テ' * 50,
+             email: 'test.user.email@testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/'
+      it_behaves_like "does not create user #{UN}"
+    end
+    context 'with name 51' do
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: UN,
+             password: UN + 'password',
+             name: 'テ' * 51,
+             email: 'test.user.email@testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/'
+      it_behaves_like "does not create user #{UN}"
     end
     context 'with invalid username' do
-      it
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: '-',
+             password: UN + 'password',
+             name: 'テスト用ユーザー',
+             email: 'test.user.email@testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/'
+      it_behaves_like "does not create user #{UN}"
     end
 
     context 'with valid user informations' do

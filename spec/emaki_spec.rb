@@ -125,10 +125,25 @@ describe 'Emaki' do
     end
 
     context 'with valid user informations' do
-      before(:all) { post '/users' }
+      before(:all) do
+        post '/users', {
+          username: UN,
+          password: UN + 'password',
+          name: 'テスト用ユーザー',
+          email: 'test.user.email@testuser.com'
+        }
+      end
       it_behaves_like 'redirect', '/'
 
-      it 'creates new User'
+      it 'creates new User' do
+        expect(User.first(slug: UN)).not_to be nil
+      end
+
+      it 'sets parameters to new User' do
+        expect(User.first(slug: UN).password).to eq(UN + 'password')
+        expect(User.first(slug: UN).name).to eq 'テスト用ユーザー'
+        expect(User.first(slug: UN).email).to eq 'test.user.email@testuser.com'
+      end
     end
   end
 

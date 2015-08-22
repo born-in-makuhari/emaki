@@ -239,6 +239,39 @@ describe 'SignIn page', type: :feature do
 end
 
 #
+# New page
+#
+describe 'New page', type: :feature do
+  include_context 'user created',
+                  slug: 'for-signin',
+                  name: 'ログインテスト用',
+                  email: 'for.signin@test.com',
+                  password: 'for-signin'
+
+  context 'when miss values, ' do
+    before do
+      visit '/signin'
+      fill_in 'usernameOrEmail', with: 'for-signin'
+      fill_in 'password', with: 'for-signin'
+      find('form#signin input[type=submit]').click
+
+      visit '/new'
+      fill_in 'slidename', with: '-----'
+      fill_in 'title', with: 'ttttt'
+      fill_in 'description', with: 'ddddd'
+
+      find('input[type=submit]').click
+    end
+
+    it 'keeps values.' do
+      expect(find('#slidename').value).to eq '-----'
+      expect(find('#title').value).to eq 'ttttt'
+      expect(find('#description').value).to eq 'ddddd'
+    end
+  end
+end
+
+#
 # Slide page
 #
 

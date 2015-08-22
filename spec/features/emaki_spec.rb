@@ -87,6 +87,17 @@ describe 'Register page', type: :feature do
     it { expect('#register input#password').to have_attr 'type', 'password' }
     it { expect('#register input#password').to have_attr 'name', 'password' }
     it { expect(page).to have_css 'form#register input[type="submit"]' }
+
+    context 'when submit valid informations,' do
+      before do
+        fill_in 'username', 'emeria'
+        fill_in 'name', '最初のユーザー'
+        fill_in 'password', 'iona'
+        fill_in 'email', 'shield-of-emeria'
+        find('form#register input[type=submit]').click
+      end
+      it 'redirects to Top'
+    end
   end
 
   context 'if signed in' do

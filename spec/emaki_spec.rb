@@ -147,7 +147,7 @@ describe 'Emaki' do
       end
       after(:all) { flush_testdb! }
 
-      it_behaves_like 'redirect', '/'
+      it_behaves_like 'redirect', '/register'
       it_behaves_like "does not create user #{UN}"
     end
     context 'with password 51' do
@@ -161,7 +161,7 @@ describe 'Emaki' do
       end
       after(:all) { flush_testdb! }
 
-      it_behaves_like 'redirect', '/'
+      it_behaves_like 'redirect', '/register'
       it_behaves_like "does not create user #{UN}"
     end
     context 'with name 51' do
@@ -175,7 +175,7 @@ describe 'Emaki' do
       end
       after(:all) { flush_testdb! }
 
-      it_behaves_like 'redirect', '/'
+      it_behaves_like 'redirect', '/register'
       it_behaves_like "does not create user #{UN}"
     end
     context 'with invalid username' do
@@ -189,7 +189,7 @@ describe 'Emaki' do
       end
       after(:all) { flush_testdb! }
 
-      it_behaves_like 'redirect', '/'
+      it_behaves_like 'redirect', '/register'
       it_behaves_like "does not create user #{UN}"
     end
 

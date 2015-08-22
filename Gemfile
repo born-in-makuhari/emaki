@@ -21,7 +21,6 @@ gem 'bootstrap-sass'
 group :test do
   gem 'rack'
   gem 'rack-test'
-  gem 'rack_session_access'
   gem 'rspec'
   gem 'fuubar'
   gem 'oga'

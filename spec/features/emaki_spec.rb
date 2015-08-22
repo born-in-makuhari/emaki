@@ -143,10 +143,6 @@ describe 'Register page', type: :feature do
     end
   end
 
-  context 'if signed in' do
-    it 'redirects to Top'
-    it 'has attention "welcome"'
-  end
 end
 
 #
@@ -222,9 +218,6 @@ describe 'SignIn page', type: :feature do
     end
   end
 
-  context 'if signed in' do
-    it
-  end
 end
 
 #
@@ -234,10 +227,6 @@ end
 describe 'Slide page', type: :feature do
   include_context 'signed in', nil, :all
   include_context 'slide posted with', true, true, true
-
-  context 'if signed in' do
-    it
-  end
 
   before :each do
     visit "/#{UN}/#{SN}"

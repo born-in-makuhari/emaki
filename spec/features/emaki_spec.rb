@@ -42,10 +42,15 @@ describe 'Top page', type: :feature do
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/signin'
     end
+    it 'does not display userinfo' do
+      expect(page).not_to have_css '#userinfo'
+    end
   end
 
   context 'if signed in' do
-    it
+    it 'displays userinfo' do
+      expect(page).to have_css '#userinfo'
+    end
   end
 end
 
@@ -103,6 +108,10 @@ describe 'Register page', type: :feature do
         uri = URI.parse(current_url)
         expect(uri.path).to eq '/'
       end
+    end
+
+    it 'does not display userinfo' do
+      expect(page).not_to have_css '#userinfo'
     end
   end
 

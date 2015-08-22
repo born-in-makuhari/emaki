@@ -108,6 +108,14 @@ describe 'Emaki' do
   end
 
   #
+  # /users
+  #
+  describe 'POST /users' do
+    before(:all) { post '/users' }
+    it_behaves_like 'redirect', '/'
+  end
+
+  #
   # /signin
   #
   describe 'GET /signin' do

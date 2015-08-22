@@ -96,7 +96,13 @@ describe 'Register page', type: :feature do
         fill_in 'email', 'shield-of-emeria'
         find('form#register input[type=submit]').click
       end
-      it 'redirects to Top'
+      it 'displays #welcomeUser' do
+        it { expect(page).to have_css '#welcomeUser' }
+      end
+      it 'redirects to Top' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/'
+      end
     end
   end
 

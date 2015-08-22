@@ -53,6 +53,7 @@ end
 #
 get '/' do
   @attention = session[:attention]
+  session[:attention] = nil
 
   # TODO: 全件表示しているけどそれでいいんですか？
   @slides = {}
@@ -77,6 +78,8 @@ get '/new' do
 end
 
 get '/register' do
+  @attention = session[:attention]
+  session[:attention] = nil
   slim :register, layout: :layout
 end
 
@@ -85,12 +88,21 @@ post '/users' do
   name = params[:name]
   password = params[:password]
   email = params[:email]
+  # スラグが不正だったらこの時点で終了
+  unless Binder.valid_slug? slug
+    session[:attention] = slim :slug_rule, layout: false
+    redirect to '/register'
+    return
+  end
+
   # ユーザーを登録
   @user = User.create(slug: slug, name: name, password: password, email: email)
-  if @user
+  if @user.save
     session[:attention] = slim :welcome_user, layout: false
     redirect to '/'
   else
+    # TODO: 理由を表示する
+    # TODO: 値を保持
     redirect to '/register'
   end
 end

@@ -93,7 +93,7 @@ describe 'Register page', type: :feature do
         fill_in 'username', with: 'emeria'
         fill_in 'name', with: '最初のユーザー'
         fill_in 'password', with: 'iona'
-        fill_in 'email', with: 'shield-of-emeria'
+        fill_in 'email', with: 'shield-of-emeria@mtg.com'
         find('form#register input[type=submit]').click
       end
       it 'displays #welcomeUser' do

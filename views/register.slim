@@ -14,3 +14,6 @@
         input#name.form-control.input-lg type="text" name="name" placeholder="ユーザー名（オプション）"
       .form-group
         input.btn.btn-primary.btn-block.btn-lg type="submit"
+      - if @attention
+        #attention
+          == @attention

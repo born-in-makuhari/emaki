@@ -132,7 +132,7 @@ describe 'Emaki' do
       end
       after(:all) { flush_testdb! }
 
-      it_behaves_like 'redirect', '/'
+      it_behaves_like 'redirect', '/register'
       it_behaves_like "does not create user #{UN}"
     end
 

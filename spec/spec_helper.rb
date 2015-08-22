@@ -91,13 +91,17 @@ end
 # ユーザーがある状態
 #
 # info...UserモデルのプロパティをもつHash
-shared_context 'user created' do |info|
-  info ||= {
+def sample_user
+  {
     slug: UN,
     name: UN,
     email: UN + '@test.com',
     password: 'password'
   }
+end
+
+shared_context 'user created' do |info|
+  info ||= sample_user
 
   before do
     User.create(info).save
@@ -105,5 +109,15 @@ shared_context 'user created' do |info|
 
   after do
     User.first(slug: info[:slug]).destroy if User.first(slug: info[:slug])
+  end
+end
+
+shared_context 'signed in' do |info|
+  info ||= sample_user
+  include_context 'user created', info
+  before do
+    post '/signin',
+         username_or_email: info[:slug],
+         password: info[:password]
   end
 end

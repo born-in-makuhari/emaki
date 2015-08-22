@@ -118,10 +118,8 @@ describe 'Emaki' do
     end
 
     context 'if signed in,' do
-      include_context 'user created'
+      include_context 'signed in'
       before(:all) do
-        get '/'
-        session[:user] = UN
         get '/register'
       end
 
@@ -229,10 +227,8 @@ describe 'Emaki' do
       end
     end
     context 'if signed in,' do
-      include_context 'user created'
+      include_context 'signed in'
       before(:all) do
-        get '/'
-        session[:user] = UN
         post '/users',
              username: UN,
              password: UN + 'password',
@@ -241,7 +237,6 @@ describe 'Emaki' do
       end
 
       it_behaves_like 'redirect', '/'
-      it { expect(User.first(slug: UN)).to eq nil }
     end
   end
 
@@ -253,10 +248,8 @@ describe 'Emaki' do
     before(:all) { get '/signin' }
 
     context 'if signed in,' do
-      include_context 'user created'
+      include_context 'signed in'
       before(:all) do
-        get '/'
-        session[:user] = UN
         get '/signin'
       end
 
@@ -282,10 +275,8 @@ describe 'Emaki' do
       end
     end
     context 'if signed in,' do
-      include_context 'user created'
+      include_context 'signed in'
       before(:all) do
-        get '/'
-        session[:user] = UN
         post '/signin',
              username_or_email: UN,
              password: 'password'

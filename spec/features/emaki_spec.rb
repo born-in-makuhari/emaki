@@ -48,6 +48,9 @@ describe 'Top page', type: :feature do
     it 'does not display userinfo' do
       expect(page).not_to have_css '#userinfo'
     end
+    it 'does not display toSignOut' do
+      expect(page).not_to have_css 'a#toSignOut'
+    end
   end
 
   context 'if signed in, ' do
@@ -70,8 +73,13 @@ describe 'Top page', type: :feature do
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/new'
     end
+    it 'links to SignOut' do
+      click_link 'toSignOut'
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq '/'
+      expect(page).not_to have_css '#userinfo'
+    end
   end
-
 end
 
 #

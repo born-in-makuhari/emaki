@@ -28,15 +28,18 @@ html
                   span.glyphicon.glyphicon-user
                   | &nbsp;
                   | #{name}
-            - else
               li role="presentation"
-                a#toSignIn href="/signin"
-                  | Sign in
+                a#toSignOut href="/signout"
+                  span.glyphicon.glyphicon-log-out
+            - else
               li role="presentation"
                 a#toRegister href="/register"
                   | +
                   | &nbsp;
                   | Register
+              li role="presentation"
+                a#toSignIn href="/signin"
+                  span.glyphicon.glyphicon-log-in
         h3.text-muted
           a href="/" emaki
       == yield

@@ -140,6 +140,11 @@ post '/signin' do
   redirect to '/'
 end
 
+get '/signout' do
+  session[:user] = nil
+  redirect to '/'
+end
+
 post '/slides' do
   sn = params[:slidename] # required
   title = params[:title]

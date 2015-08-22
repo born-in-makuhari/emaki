@@ -94,15 +94,13 @@ get '/signin' do
 end
 
 post '/slides' do
-  # TODO: ユーザー登録はここじゃない
-  un = params[:username]  # required
   sn = params[:slidename] # required
   title = params[:title]
   description = params[:description]
   file = params[:slide]
 
   # slugは正当か？
-  unless Binder.valid_slugs?(un, sn)
+  unless Binder.valid_slug?(sn)
     session[:attention] = slim :slug_rule, layout: false
     redirect to('/new')
     return
@@ -113,6 +111,11 @@ post '/slides' do
     redirect to('/new')
     return
   end
+
+  # TODO: ユーザー名はセッションから取得する
+  un = 'testuser'
+  User.create(slug: 'testuser') if User.first(slug: 'testuser').nil?
+  # TODO: ここまで
 
   result = save_slide un, sn, file
   if result
@@ -126,6 +129,7 @@ post '/slides' do
 
     redirect to("/#{un}/#{sn}")
   else
+    session[:attention] = 'ユーザーがいません。'
     redirect to('/new')
   end
 end

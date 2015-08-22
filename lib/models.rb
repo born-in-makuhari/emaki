@@ -10,6 +10,8 @@ class User
 
   property :slug, String, key: true
   property :name, String
+  property :password, String
+  property :email, String
 
   def initialize(data)
     @slug = data[:slug]

@@ -59,6 +59,7 @@ flush_testdb!
 # slidename: 上に同じ
 # file:      上に同じ
 shared_context 'slide posted with' do |un, sn, file|
+  un = un ? UN : '-'
   sn  = sn ? SN : '-'
   file = file ? PDF_FILE : nil
 

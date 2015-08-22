@@ -344,7 +344,7 @@ describe 'Emaki' do
   #
   describe 'GET /username/slidename' do
     context 'if target exists,' do
-      include_context 'signed in'
+      include_context 'signed in', nil, :all
       include_context 'slide posted with', true, true, true
       it_behaves_like 'an emaki page'
       it_behaves_like 'a slide page'
@@ -358,7 +358,7 @@ describe 'Emaki' do
     end
 
     context 'if target does not exist,' do
-      include_context 'signed in'
+      include_context 'signed in', nil, :all
       it_behaves_like 'common header'
 
       before(:all) { get '/testuser/testslide' }

@@ -183,6 +183,24 @@ describe 'SignIn page', type: :feature do
     end
     it { expect(page).to have_css 'form#signin input[type="submit"]' }
 
+    context 'when miss, ' do
+      before do
+        fill_in 'usernameOrEmail', with: 'eeeee'
+        fill_in 'password', with: 'ppppp'
+        find('form#signin input[type=submit]').click
+      end
+
+      it 'redirects to SignIn' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/signin'
+      end
+
+      it 'keeps values.' do
+        expect(find('#usernameOrEmail').value).to eq 'eeeee'
+        expect(find('#password').value).to eq 'ppppp'
+      end
+    end
+
     context 'when submit email/password' do
       before do
         fill_in 'usernameOrEmail', with: 'for.signin@test.com'

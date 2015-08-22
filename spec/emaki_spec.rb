@@ -263,6 +263,17 @@ describe 'Emaki' do
                     name: UN,
                     email: UN + '@test.com',
                     password: 'password'
+    context 'with miss, ' do
+      before do
+        post '/signin',
+             username_or_email: 'miss',
+             password: 'password'
+      end
+
+      it 'empty session[:user]' do
+        expect(session[:user]).to eq nil
+      end
+    end
     context 'with valid information,' do
       before do
         post '/signin',

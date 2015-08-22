@@ -7,6 +7,7 @@ gem 'rmagick'
 
 # for redis
 gem 'dm-core'
+gem 'dm-validations'
 gem 'dm-redis-adapter'
 gem 'redis-objects'
 

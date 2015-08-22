@@ -111,8 +111,25 @@ describe 'Emaki' do
   # /users
   #
   describe 'POST /users' do
-    before(:all) { post '/users' }
-    it_behaves_like 'redirect', '/'
+    context 'with invalid email' do
+      it
+    end
+    context 'with invalid password' do
+      it
+    end
+    context 'with invalid name' do
+      it
+    end
+    context 'with invalid username' do
+      it
+    end
+
+    context 'with valid user informations' do
+      before(:all) { post '/users' }
+      it_behaves_like 'redirect', '/'
+
+      it 'creates new User'
+    end
   end
 
   #

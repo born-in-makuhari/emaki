@@ -232,10 +232,8 @@ describe 'Emaki' do
   describe 'GET /new' do
     it_behaves_like 'an emaki page'
     let(:form) { 'form#newSlide' }
-    let(:uninput) { 'input#username' }
     let(:sninput) { 'input#slidename' }
     let(:slinput) { 'input#slide' }
-    let(:name) { 'input#name' }
     let(:title) { 'input#title' }
     let(:description) { 'textarea#description' }
     before(:all) { get '/new' }
@@ -243,14 +241,10 @@ describe 'Emaki' do
     it { expect(html).to desplay form, :action, '/slides' }
     it { expect(html).to desplay form, :method, 'post' }
     it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
-    it { expect(html).to desplay uninput, :type, 'text' }
-    it { expect(html).to desplay uninput, :name, 'username' }
     it { expect(html).to desplay sninput, :type, 'text' }
     it { expect(html).to desplay sninput, :name, 'slidename' }
     it { expect(html).to desplay slinput, :type, 'file' }
     it { expect(html).to desplay slinput, :name, 'slide' }
-    it { expect(html).to desplay name, :type, 'text' }
-    it { expect(html).to desplay name, :name, 'name' }
     it { expect(html).to desplay title, :type, 'text' }
     it { expect(html).to desplay title, :name, 'title' }
     it { expect(html).to desplay description, :name, 'description' }

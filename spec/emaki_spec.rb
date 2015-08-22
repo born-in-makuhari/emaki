@@ -86,6 +86,16 @@ describe 'Emaki' do
     it { expect(last_response['Location']).to eq "http://example.org#{path}" }
   end
 
+  # ユーザーがないこと
+  shared_examples "does not create user #{UN}" do
+    it { expect(User.exists?(UN)).to be false }
+  end
+
+  # スライドがないこと
+  shared_examples "does not create slide #{SN}" do
+    it { expect(Slide.exists?(UN, SN)).to be false }
+  end
+
   # ---------------------------------------------------------
   # 個別テストケース
   #
@@ -112,7 +122,18 @@ describe 'Emaki' do
   #
   describe 'POST /users' do
     context 'with invalid email' do
-      it
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: UN,
+             password: UN + 'password',
+             name: 'テスト用ユーザー',
+             email: 'test.user.email2testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/'
+      it_behaves_like "does not create user #{UN}"
     end
     context 'with invalid password' do
       it
@@ -126,13 +147,15 @@ describe 'Emaki' do
 
     context 'with valid user informations' do
       before(:all) do
-        post '/users', {
-          username: UN,
-          password: UN + 'password',
-          name: 'テスト用ユーザー',
-          email: 'test.user.email@testuser.com'
-        }
+        flush_testdb!
+        post '/users',
+             username: UN,
+             password: UN + 'password',
+             name: 'テスト用ユーザー',
+             email: 'test.user.email@testuser.com'
       end
+      after(:all) { flush_testdb! }
+
       it_behaves_like 'redirect', '/'
 
       it 'creates new User' do
@@ -238,12 +261,6 @@ describe 'Emaki' do
       it('slide exists') { expect(@s).not_to eq nil }
       it('slide has title') { expect(@s.title).not_to eq nil }
       it('slide has description') { expect(@s.description).not_to eq nil }
-    end
-    shared_examples "does not create user #{UN}" do
-      it { expect(User.exists?(UN)).to be false }
-    end
-    shared_examples "does not create slide #{SN}" do
-      it { expect(Slide.exists?(UN, SN)).to be false }
     end
 
     context 'if slidename is invalid,' do

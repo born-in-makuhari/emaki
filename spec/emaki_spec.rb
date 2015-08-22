@@ -136,7 +136,18 @@ describe 'Emaki' do
       it_behaves_like "does not create user #{UN}"
     end
     context 'with invalid password' do
-      it
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: UN,
+             password: '',
+             name: 'テスト用ユーザー',
+             email: 'test.user.email@testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/'
+      it_behaves_like "does not create user #{UN}"
     end
     context 'with invalid name' do
       it

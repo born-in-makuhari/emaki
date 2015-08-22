@@ -49,12 +49,33 @@ end
 # おまじないおわり
 
 # ----------------------------------------------------------------
-# Routes
+# Attention system
 #
-get '/' do
+
+before do
   @attention = session[:attention]
   session[:attention] = nil
+end
 
+# ----------------------------------------------------------------
+# Guest only
+#
+# ログインしているユーザーは
+# メッセージとともにTOPへリダイレクト
+
+before '*' do |path|
+  target = ['/users', '/register', '/signin']
+  if session[:user] && target.include?(path)
+    session[:attention] = slim :only_guest, layout: false
+    redirect to '/'
+  end
+end
+
+# ----------------------------------------------------------------
+# Routes
+#
+
+get '/' do
   # TODO: 全件表示しているけどそれでいいんですか？
   @slides = {}
   all_slides = Slide.all
@@ -72,14 +93,10 @@ get '/' do
 end
 
 get '/new' do
-  @attention = session[:attention]
-  session[:attention] = nil
   slim :new, layout: :layout
 end
 
 get '/register' do
-  @attention = session[:attention]
-  session[:attention] = nil
   slim :register, layout: :layout
 end
 

@@ -241,6 +241,7 @@ describe 'Emaki' do
       end
 
       it_behaves_like 'redirect', '/'
+      it { expect(User.first(slug: UN)).to eq nil }
     end
   end
 

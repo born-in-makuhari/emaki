@@ -7,6 +7,8 @@ Bundler.require
 # ----------------------------------------------------------------
 # Emaki::
 #
+# TODO: config.ruを使うべき
+# TODO: そろそろクラシックスタイルからモジュールに切り替えるべき
 EMAKI_ROOT = File.expand_path('../', __FILE__)
 EMAKI_VERSION = 'ver 0.0.0'
 EMAKI_ENV = ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development'

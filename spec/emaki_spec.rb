@@ -366,7 +366,7 @@ describe 'Emaki' do
   # /slides
   #
   describe 'POST /slides' do
-
+    include_context 'signed in'
     shared_examples "creates user #{UN}" do
       before do
         @u = User.first(slug: UN)
@@ -435,6 +435,13 @@ describe 'Emaki' do
         expect(Dir.entries(Binder.tmppath).join).to eq '...'
       end
 
+    end
+
+    context 'if signed out, ' do
+      include_context 'signed out'
+      include_context 'slide posted with', true, true, true
+      it_behaves_like 'redirect', '/'
+      it_behaves_like "does not create slide #{SN}"
     end
   end
   # ---------------------------------------------------------

@@ -121,3 +121,7 @@ shared_context 'signed in' do |info|
          password: info[:password]
   end
 end
+
+shared_context 'signed out' do
+  before { get '/signout' }
+end

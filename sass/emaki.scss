@@ -1,14 +1,5 @@
 @import "compass";
 
-// Import Bootstrap Compass integration
-@import "bootstrap-compass";
-
-// Import custom Bootstrap variables
-@import "bootstrap-variables";
-
-// Import Bootstrap for Sass
-@import "bootstrap";
-
 // ----------------------------------------------------------
 // common
 //
@@ -52,7 +43,7 @@ h3.text-muted {
 
   img {
     border-radius: $border-radius-base;
-    width: 100%;
+    width: 50%;
   }
   #slideControls {
     background: transparent;

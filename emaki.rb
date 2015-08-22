@@ -79,6 +79,10 @@ get '/register' do
   slim :register, layout: :layout
 end
 
+post '/users' do
+  redirect to '/'
+end
+
 get '/signin' do
   slim :signin, layout: :layout
 end

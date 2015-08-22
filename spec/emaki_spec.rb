@@ -458,7 +458,7 @@ describe 'Emaki' do
   # スライド画像へのルーティング
   #
   describe 'GET /:username/:slidename/:number.png' do
-    include_context 'signed in'
+    include_context 'signed in', nil, :all
     include_context 'slide posted with', true, true, true
 
     after :all do

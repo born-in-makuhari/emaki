@@ -90,14 +90,14 @@ describe 'Register page', type: :feature do
 
     context 'when submit valid informations,' do
       before do
-        fill_in 'username', 'emeria'
-        fill_in 'name', '最初のユーザー'
-        fill_in 'password', 'iona'
-        fill_in 'email', 'shield-of-emeria'
+        fill_in 'username', with: 'emeria'
+        fill_in 'name', with: '最初のユーザー'
+        fill_in 'password', with: 'iona'
+        fill_in 'email', with: 'shield-of-emeria'
         find('form#register input[type=submit]').click
       end
       it 'displays #welcomeUser' do
-        it { expect(page).to have_css '#welcomeUser' }
+        expect(page).to have_css '#welcomeUser'
       end
       it 'redirects to Top' do
         uri = URI.parse(current_url)

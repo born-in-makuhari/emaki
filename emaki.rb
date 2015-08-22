@@ -52,6 +52,7 @@ end
 # Routes
 #
 get '/' do
+  @attention = session[:attention]
 
   # TODO: 全件表示しているけどそれでいいんですか？
   @slides = {}
@@ -85,8 +86,13 @@ post '/users' do
   password = params[:password]
   email = params[:email]
   # ユーザーを登録
-  User.create(slug: slug, name: name, password: password, email: email)
-  redirect to '/'
+  @user = User.create(slug: slug, name: name, password: password, email: email)
+  if @user
+    session[:attention] = slim :welcome_user, layout: false
+    redirect to '/'
+  else
+    redirect to '/register'
+  end
 end
 
 get '/signin' do

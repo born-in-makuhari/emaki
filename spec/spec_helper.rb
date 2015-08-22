@@ -1,5 +1,6 @@
 require 'bundler'
 Bundler.require :test
+require 'capybara/rspec'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -16,6 +17,14 @@ end
 # For RSpec 2.x
 RSpec.configure { |c| c.include RSpecMixin }
 
+# ---------------------------------------------------------
+# For Capybara
+Capybara.app = Sinatra::Application
+Capybara.current_driver = :webkit
+Capybara::Webkit.configure do |config|
+  config.allow_url('ajax.googleapis.com')
+end
+# ---------------------------------------------------------
 # Test data
 UN = 'testuser'
 SN = 'testslide'
@@ -42,3 +51,38 @@ def flush_testdb!
   end
 end
 flush_testdb!
+
+# ---------------------------------------------------------
+# 共通の事前条件
+#
+# username:  trueの時は正しい形式
+# slidename: 上に同じ
+# file:      上に同じ
+shared_context 'slide posted with' do |un, sn, file|
+  un  = un ? UN : '-'
+  sn  = sn ? SN : '-'
+  file = file ? PDF_FILE : nil
+
+  let(:slide_path) { SLIDES_ROOT + "/#{un}/#{sn}" }
+
+  before :all do
+    flush_testdb!
+
+    post_data = {
+      name: 'ユーザーの表示名はどんな形式でもいい',
+      title: 'タイトルの表示名はどんな形式でもいい',
+      description: 'タイトルの説明はどんな形式でもいい',
+      username: un,
+      slidename: sn,
+      slide: file
+    }
+
+    post '/slides', post_data
+  end
+
+  after :all do
+    FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
+    FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
+    flush_testdb!
+  end
+end

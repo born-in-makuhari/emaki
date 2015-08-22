@@ -24,4 +24,6 @@ group :test do
   gem 'fuubar'
   gem 'oga'
   gem 'redis-namespace'
+  gem 'capybara'
+  gem 'capybara-webkit'
 end

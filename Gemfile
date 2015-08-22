@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # for application
 gem 'sinatra'
-gem 'dalli'
+gem 'redis-rack'
 gem 'json'
 gem 'slim'
 gem 'rmagick'

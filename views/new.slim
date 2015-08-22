@@ -25,6 +25,7 @@
             textarea#description.form-control.input-lg name="description" placeholder="スライドの説明"
       .form-group
         input.btn.btn-primary.btn-block.btn-lg type="submit"
+        input type="hidden" name="authenticity_token" value="#{session[:csrf]}"
       - if @attention
         #attention
           == @attention

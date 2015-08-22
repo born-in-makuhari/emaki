@@ -3,7 +3,6 @@
 #
 require 'bundler'
 Bundler.require
-require 'rack/session/dalli'
 
 # ----------------------------------------------------------------
 # Emaki::
@@ -25,8 +24,25 @@ EOS
 require EMAKI_ROOT + '/lib/binder.rb'
 require EMAKI_ROOT + '/lib/models.rb'
 
-use Rack::Session::Dalli, cache: Dalli::Client.new
-set :session_secret, 'emaki'
+set :protection, false
+set :protect_from_csrf, false
+disable :sessions
+
+expire_after = 30 * 24 * 60 * 60 # production keeps 1 month
+if EMAKI_ENV == 'development'
+  expire_after = 12 * 60 * 60  # for dev: 12 hours
+  use Rack::Protection
+  use Rack::Session::Cookie, secret: 'emaki'
+  use Rack::Protection::FormToken
+elsif EMAKI_ENV == 'test'
+  expire_after = 0.1 * 60 * 60 # for test: 6 minutes
+else # production
+  use Rack::Protection
+  use Rack::Session::Cookie, secret: 'emaki'
+  use Rack::Protection::FormToken
+end
+use Rack::Session::Redis, expire_after: expire_after
+
 configure :production, :development do
   enable :logging
   file = File.new("#{settings.root}/logs/#{settings.environment}.log", 'a+')
@@ -219,7 +235,8 @@ post '/slides' do
 
     redirect to("/#{un}/#{sn}")
   else
-    session[:attention] = 'ユーザーがいません。'
+    # TODO: もうちょっと親切にする
+    session[:attention] = '投稿に失敗しました'
     redirect to('/new')
   end
 end

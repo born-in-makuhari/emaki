@@ -8,3 +8,4 @@
         input#password.form-control.input-lg type="password" name="password" placeholder="パスワード"
       .form-group
         input.btn.btn-primary.btn-block.btn-lg type="submit"
+        input type="hidden" name="authenticity_token" value="#{session[:csrf]}"

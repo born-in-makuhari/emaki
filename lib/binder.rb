@@ -85,6 +85,7 @@ class Binder
     begin
       File.open(tmppath + '/' + key, 'wb') { |f| f.write file[:tempfile].read }
     rescue => e
+      tmpremove(key, logger)
       logger.error(e.message + e.backtrace[0])
       return nil
     end

@@ -1,4 +1,5 @@
 @import "compass";
+@import "styles";
 
 // ----------------------------------------------------------
 // common
@@ -43,7 +44,7 @@ h3.text-muted {
 
   img {
     border-radius: $border-radius-base;
-    width: 50%;
+    width: 100%;
   }
   #slideControls {
     background: transparent;

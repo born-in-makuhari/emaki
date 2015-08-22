@@ -80,6 +80,12 @@ get '/register' do
 end
 
 post '/users' do
+  slug = params[:username]
+  name = params[:name]
+  password = params[:password]
+  email = params[:email]
+  # ユーザーを登録
+  User.create(slug: slug, name: name, password: password, email: email)
   redirect to '/'
 end
 
@@ -88,9 +94,9 @@ get '/signin' do
 end
 
 post '/slides' do
+  # TODO: ユーザー登録はここじゃない
   un = params[:username]  # required
   sn = params[:slidename] # required
-  name = params[:name]
   title = params[:title]
   description = params[:description]
   file = params[:slide]
@@ -110,10 +116,7 @@ post '/slides' do
 
   result = save_slide un, sn, file
   if result
-    # TODO: ユーザー作成機能をしかるべき場所へ移す。
-    # ユーザーとスライドのレコードを作成する。
-    # アカウント機能ができたら、ユーザーはここで作るべきではない
-    User.create(slug: un, name: name)
+    # スライドを作成
     Slide.create(
       user_slug: un,
       slug: sn,

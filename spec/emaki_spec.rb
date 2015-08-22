@@ -224,42 +224,33 @@ describe 'Emaki' do
   #
   describe 'POST /slides' do
 
-    shared_examples "creates users & slides (#{UN}, #{SN})" do
+    shared_examples "creates user #{UN}" do
       before do
         @u = User.first(slug: UN)
-        @s = Slide.first(user_slug: UN, slug: SN)
       end
       it('user exists') { expect(@u).not_to eq nil }
       it('user has name') { expect(@u.name).not_to eq nil }
+    end
+    shared_examples "creates slide #{SN}" do
+      before do
+        @s = Slide.first(user_slug: UN, slug: SN)
+      end
       it('slide exists') { expect(@s).not_to eq nil }
       it('slide has title') { expect(@s.title).not_to eq nil }
       it('slide has description') { expect(@s.description).not_to eq nil }
     end
-    shared_examples "does not create users & slides (#{UN}, #{SN})" do
+    shared_examples "does not create user #{UN}" do
       it { expect(User.exists?(UN)).to be false }
-      it { expect(Slide.exists?(UN, SN)).to be false }
     end
-
-    context 'if username is invalid,' do
-      include_context 'slide posted with', false, true, true
-      it_behaves_like 'redirect', '/new'
-      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
-
-      context 'follow redirect,' do
-        let(:html) { Oga.parse_html(last_response.body) }
-        before { follow_redirect! }
-
-        it 'with slug rules' do
-          expect(html).to desplay '#attention #slugRule'
-        end
-      end
-
+    shared_examples "does not create slide #{SN}" do
+      it { expect(Slide.exists?(UN, SN)).to be false }
     end
 
     context 'if slidename is invalid,' do
       include_context 'slide posted with', true, false, true
       it_behaves_like 'redirect', '/new'
-      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
+      it_behaves_like "does not create user #{UN}"
+      it_behaves_like "does not create slide #{SN}"
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -275,7 +266,8 @@ describe 'Emaki' do
     context 'no file,' do
       include_context 'slide posted with', true, true, false
       it_behaves_like 'redirect', '/new'
-      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
+      it_behaves_like "does not create user #{UN}"
+      it_behaves_like "does not create slide #{SN}"
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -290,7 +282,8 @@ describe 'Emaki' do
     context do
       include_context 'slide posted with', true, true, true
       it_behaves_like 'redirect', "/#{UN}/#{SN}"
-      it_behaves_like "creates users & slides (#{UN}, #{SN})"
+      it_behaves_like "creates user #{UN}"
+      it_behaves_like "creates slide #{SN}"
 
       it "creates directory slides/#{UN}/#{SN}" do
         expect(FileTest.exist? slide_path).to be true

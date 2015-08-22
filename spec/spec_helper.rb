@@ -59,7 +59,6 @@ flush_testdb!
 # slidename: 上に同じ
 # file:      上に同じ
 shared_context 'slide posted with' do |un, sn, file|
-  un  = un ? UN : '-'
   sn  = sn ? SN : '-'
   file = file ? PDF_FILE : nil
 
@@ -69,10 +68,8 @@ shared_context 'slide posted with' do |un, sn, file|
     flush_testdb!
 
     post_data = {
-      name: 'ユーザーの表示名はどんな形式でもいい',
       title: 'タイトルの表示名はどんな形式でもいい',
       description: 'タイトルの説明はどんな形式でもいい',
-      username: un,
       slidename: sn,
       slide: file
     }

@@ -282,7 +282,7 @@ describe 'Emaki' do
     context do
       include_context 'slide posted with', true, true, true
       it_behaves_like 'redirect', "/#{UN}/#{SN}"
-      it_behaves_like "creates user #{UN}"
+      it_behaves_like "does not create user #{UN}"
       it_behaves_like "creates slide #{SN}"
 
       it "creates directory slides/#{UN}/#{SN}" do

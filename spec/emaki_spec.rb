@@ -308,6 +308,7 @@ describe 'Emaki' do
   #  /new
   #
   describe 'GET /new' do
+    include_context 'signed in'
     it_behaves_like 'an emaki page'
     let(:form) { 'form#newSlide' }
     let(:sninput) { 'input#slidename' }
@@ -327,6 +328,11 @@ describe 'Emaki' do
     it { expect(html).to desplay title, :name, 'title' }
     it { expect(html).to desplay description, :name, 'description' }
     it { expect(html).to desplay 'input[type="submit"]' }
+    context 'if signed out, ' do
+      include_context 'signed out'
+      before { get '/new' }
+      it_behaves_like 'redirect', '/'
+    end
   end
 
   #

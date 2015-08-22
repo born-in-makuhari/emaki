@@ -232,6 +232,7 @@ end
 #
 
 describe 'Slide page', type: :feature do
+  include_context 'signed in', nil, :all
   include_context 'slide posted with', true, true, true
 
   context 'if signed in' do

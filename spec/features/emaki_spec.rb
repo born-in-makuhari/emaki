@@ -7,6 +7,7 @@ require File.expand_path '../../spec_helper.rb', __FILE__
 #
 # TODO: 今spec/emaki_spec.rbに書いているフィーチャースペックはココに移す
 
+# ====================================================================
 # カスタムマッチャー
 # have_attr(key, value)
 #
@@ -18,6 +19,7 @@ RSpec::Matchers.define :have_attr do |key, value|
   end
 end
 
+# ====================================================================
 #
 # Top page
 #
@@ -42,14 +44,34 @@ describe 'Top page', type: :feature do
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/signin'
     end
+    it { expect(page).not_to have_css 'a#toNew' }
     it 'does not display userinfo' do
       expect(page).not_to have_css '#userinfo'
     end
   end
 
-  context 'if signed in' do
-    it
+  context 'if signed in, ' do
+    include_context 'user created',
+                    slug: 'for-signin',
+                    name: 'ログインテスト用',
+                    email: 'for.signin@test.com',
+                    password: 'for-signin'
+    before do
+      visit '/signin'
+      fill_in 'usernameOrEmail', with: 'for-signin'
+      fill_in 'password', with: 'for-signin'
+      find('form#signin input[type=submit]').click
+      visit '/'
+    end
+    it { expect(page).not_to have_css 'a#toRegister' }
+    it { expect(page).not_to have_css 'a#toSignIn' }
+    it 'links to New' do
+      click_link 'toNew'
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq '/new'
+    end
   end
+
 end
 
 #

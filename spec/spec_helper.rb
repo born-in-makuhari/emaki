@@ -1,7 +1,6 @@
 require 'bundler'
 Bundler.require :test
 require 'capybara/rspec'
-require 'rack_session_access/capybara'
 
 ENV['RACK_ENV'] = 'test'
 

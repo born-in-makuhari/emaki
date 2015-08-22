@@ -9,3 +9,4 @@ bootstrap/
 bootstrap*
 .sass-cache/
 public/css/styles.css
+sass/_bootstrap-variables.scss

@@ -121,7 +121,7 @@ describe 'Emaki' do
   # /users
   #
   describe 'POST /users' do
-    context 'with invalid email' do
+    context 'with email (@がない)' do
       before(:all) do
         flush_testdb!
         post '/users',
@@ -135,7 +135,8 @@ describe 'Emaki' do
       it_behaves_like 'redirect', '/'
       it_behaves_like "does not create user #{UN}"
     end
-    context 'with invalid password' do
+
+    context 'with empty password' do
       before(:all) do
         flush_testdb!
         post '/users',

@@ -104,16 +104,29 @@ describe 'Emaki' do
   #  /
   #
   describe 'GET /' do
-    it_behaves_like 'an emaki page'
     before(:all) { get '/' }
+    it_behaves_like 'an emaki page'
   end
 
   #
   # /register
   #
   describe 'GET /register' do
-    it_behaves_like 'an emaki page'
-    before(:all) { get '/register' }
+    context 'if not signed in,' do
+      it_behaves_like 'an emaki page'
+      before(:all) { get '/register' }
+    end
+
+    context 'if signed in,' do
+      include_context 'user created'
+      before(:all) do
+        get '/'
+        session[:user] = UN
+        get '/register'
+      end
+
+      it_behaves_like 'redirect', '/'
+    end
   end
 
   #
@@ -215,6 +228,20 @@ describe 'Emaki' do
         expect(User.first(slug: UN).email).to eq 'test.user.email@testuser.com'
       end
     end
+    context 'if signed in,' do
+      include_context 'user created'
+      before(:all) do
+        get '/'
+        session[:user] = UN
+        post '/users',
+             username: UN,
+             password: UN + 'password',
+             name: 'テスト用ユーザー',
+             email: 'test.user.email@testuser.com'
+      end
+
+      it_behaves_like 'redirect', '/'
+    end
   end
 
   #
@@ -223,6 +250,17 @@ describe 'Emaki' do
   describe 'GET /signin' do
     it_behaves_like 'an emaki page'
     before(:all) { get '/signin' }
+
+    context 'if signed in,' do
+      include_context 'user created'
+      before(:all) do
+        get '/'
+        session[:user] = UN
+        get '/signin'
+      end
+
+      it_behaves_like 'redirect', '/'
+    end
   end
 
   describe 'POST /signin' do
@@ -242,7 +280,18 @@ describe 'Emaki' do
         expect(session[:user]).to eq UN
       end
     end
+    context 'if signed in,' do
+      include_context 'user created'
+      before(:all) do
+        get '/'
+        session[:user] = UN
+        post '/signin',
+             username_or_email: UN,
+             password: 'password'
+      end
 
+      it_behaves_like 'redirect', '/'
+    end
   end
 
   describe 'GET /signout' do

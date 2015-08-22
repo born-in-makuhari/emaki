@@ -92,11 +92,18 @@ end
 #
 # info...UserモデルのプロパティをもつHash
 shared_context 'user created' do |info|
+  info ||= {
+    slug: UN,
+    name: UN,
+    email: UN + '@test.com',
+    password: 'password'
+  }
+
   before do
     User.create(info).save
   end
 
   after do
-    User.first(slug: info[:slug]).destroy
+    User.first(slug: info[:slug]).destroy if User.first(slug: info[:slug])
   end
 end

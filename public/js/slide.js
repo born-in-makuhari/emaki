@@ -3,17 +3,20 @@ var pageNumber = 0;
 
 function page(num) {
   nowNumber = num;
+  bar(num);
+
   for (var i = 0; i < pageNumber; i++) {
     var $page = $('#slideView section#page' + i);
-    var $dot = $('#slideControls #indicatorDot' + i)
     if (i == nowNumber) {
       $page.css('display', '');
-      $dot.addClass('active');
     } else {
       $page.css('display', 'none');
-      $dot.removeClass('active');
     }
   }
+}
+
+function bar(num) {
+  $('progress#pageIndicator').val(nowNumber);
 }
 
 function next() {

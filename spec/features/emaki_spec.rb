@@ -234,19 +234,6 @@ end
 describe 'Slide page', type: :feature do
   include_context 'slide posted with', true, true, true
 
-  context 'if not signed in, ' do
-    it 'links to Register' do
-      click_link 'toRegister'
-      uri = URI.parse(current_url)
-      expect(uri.path).to eq '/register'
-    end
-    it 'links to SignIn' do
-      click_link 'toSignIn'
-      uri = URI.parse(current_url)
-      expect(uri.path).to eq '/signin'
-    end
-  end
-
   context 'if signed in' do
     it
   end

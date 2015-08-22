@@ -58,6 +58,20 @@ before do
 end
 
 # ----------------------------------------------------------------
+# Named user only
+#
+# ログインしていないユーザーは
+# メッセージとともにTOPへリダイレクト
+
+before '*' do |path|
+  target = ['/new', '/slides']
+  if target.include?(path) && session[:user].nil?
+    session[:attention] = slim :only_named_user, layout: false
+    redirect to '/'
+  end
+end
+
+# ----------------------------------------------------------------
 # Guest only
 #
 # ログインしているユーザーは
@@ -65,7 +79,7 @@ end
 
 before '*' do |path|
   target = ['/users', '/register', '/signin']
-  if session[:user] && target.include?(path)
+  if target.include?(path) && session[:user]
     session[:attention] = slim :only_guest, layout: false
     redirect to '/'
   end
@@ -181,10 +195,8 @@ post '/slides' do
     return
   end
 
-  # TODO: ユーザー名はセッションから取得する
-  un = 'testuser'
-  User.create(slug: 'testuser') if User.first(slug: 'testuser').nil?
-  # TODO: ここまで
+  # ユーザー名はセッションから取得する
+  un = session[:user]
 
   result = save_slide un, sn, file
   if result

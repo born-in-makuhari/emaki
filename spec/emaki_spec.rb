@@ -26,7 +26,7 @@ end
 
 describe 'Emaki' do
 
-  # どんなサンプルでも、変数 html が lazy load で使える。
+  # 以降どんなサンプルでも、変数 html が lazy load で使える。
   let(:html) { Oga.parse_html(last_response.body) }
 
   before :all do
@@ -119,7 +119,7 @@ describe 'Emaki' do
 
     context 'if signed in,' do
       include_context 'signed in'
-      before(:all) do
+      before do
         get '/register'
       end
 
@@ -228,7 +228,7 @@ describe 'Emaki' do
     end
     context 'if signed in,' do
       include_context 'signed in'
-      before(:all) do
+      before do
         post '/users',
              username: UN,
              password: UN + 'password',
@@ -249,7 +249,7 @@ describe 'Emaki' do
 
     context 'if signed in,' do
       include_context 'signed in'
-      before(:all) do
+      before do
         get '/signin'
       end
 
@@ -308,26 +308,29 @@ describe 'Emaki' do
   #  /new
   #
   describe 'GET /new' do
-    include_context 'signed in'
-    it_behaves_like 'an emaki page'
-    let(:form) { 'form#newSlide' }
-    let(:sninput) { 'input#slidename' }
-    let(:slinput) { 'input#slide' }
-    let(:title) { 'input#title' }
-    let(:description) { 'textarea#description' }
-    before(:all) { get '/new' }
-    it { expect(html).to desplay form }
-    it { expect(html).to desplay form, :action, '/slides' }
-    it { expect(html).to desplay form, :method, 'post' }
-    it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
-    it { expect(html).to desplay sninput, :type, 'text' }
-    it { expect(html).to desplay sninput, :name, 'slidename' }
-    it { expect(html).to desplay slinput, :type, 'file' }
-    it { expect(html).to desplay slinput, :name, 'slide' }
-    it { expect(html).to desplay title, :type, 'text' }
-    it { expect(html).to desplay title, :name, 'title' }
-    it { expect(html).to desplay description, :name, 'description' }
-    it { expect(html).to desplay 'input[type="submit"]' }
+    context 'if signed in, ' do
+      include_context 'signed in'
+      it_behaves_like 'an emaki page'
+      let(:form) { 'form#newSlide' }
+      let(:sninput) { 'input#slidename' }
+      let(:slinput) { 'input#slide' }
+      let(:title) { 'input#title' }
+      let(:description) { 'textarea#description' }
+      before { get '/new' }
+      it { expect(html).to desplay form }
+      it { expect(html).to desplay form, :action, '/slides' }
+      it { expect(html).to desplay form, :method, 'post' }
+      it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
+      it { expect(html).to desplay sninput, :type, 'text' }
+      it { expect(html).to desplay sninput, :name, 'slidename' }
+      it { expect(html).to desplay slinput, :type, 'file' }
+      it { expect(html).to desplay slinput, :name, 'slide' }
+      it { expect(html).to desplay title, :type, 'text' }
+      it { expect(html).to desplay title, :name, 'title' }
+      it { expect(html).to desplay description, :name, 'description' }
+      it { expect(html).to desplay 'input[type="submit"]' }
+    end
+
     context 'if signed out, ' do
       include_context 'signed out'
       before { get '/new' }
@@ -341,6 +344,7 @@ describe 'Emaki' do
   #
   describe 'GET /username/slidename' do
     context 'if target exists,' do
+      include_context 'signed in'
       include_context 'slide posted with', true, true, true
       it_behaves_like 'an emaki page'
       it_behaves_like 'a slide page'
@@ -354,6 +358,7 @@ describe 'Emaki' do
     end
 
     context 'if target does not exist,' do
+      include_context 'signed in'
       it_behaves_like 'common header'
 
       before(:all) { get '/testuser/testslide' }
@@ -372,7 +377,6 @@ describe 'Emaki' do
   # /slides
   #
   describe 'POST /slides' do
-    include_context 'signed in'
     shared_examples "creates user #{UN}" do
       before do
         @u = User.first(slug: UN)
@@ -380,6 +384,7 @@ describe 'Emaki' do
       it('user exists') { expect(@u).not_to eq nil }
       it('user has name') { expect(@u.name).not_to eq nil }
     end
+
     shared_examples "creates slide #{SN}" do
       before do
         @s = Slide.first(user_slug: UN, slug: SN)
@@ -390,9 +395,9 @@ describe 'Emaki' do
     end
 
     context 'if slidename is invalid,' do
+      include_context 'signed in', nil, :all
       include_context 'slide posted with', true, false, true
       it_behaves_like 'redirect', '/new'
-      it_behaves_like "does not create user #{UN}"
       it_behaves_like "does not create slide #{SN}"
 
       context 'follow redirect,' do
@@ -403,13 +408,12 @@ describe 'Emaki' do
           expect(html).to desplay '#attention #slugRule'
         end
       end
-
     end
 
     context 'no file,' do
+      include_context 'signed in', nil, :all
       include_context 'slide posted with', true, true, false
       it_behaves_like 'redirect', '/new'
-      it_behaves_like "does not create user #{UN}"
       it_behaves_like "does not create slide #{SN}"
 
       context 'follow redirect,' do
@@ -419,10 +423,10 @@ describe 'Emaki' do
           expect(html).to desplay '#attention #noFile'
         end
       end
-
     end
 
     context 'with valid slide informations' do
+      include_context 'signed in', nil, :all
       include_context 'slide posted with', true, true, true
       it_behaves_like 'redirect', "/#{UN}/#{SN}"
       it_behaves_like "creates slide #{SN}"
@@ -444,7 +448,7 @@ describe 'Emaki' do
     end
 
     context 'if signed out, ' do
-      include_context 'signed out'
+      include_context 'signed out', :all
       include_context 'slide posted with', true, true, true
       it_behaves_like 'redirect', '/'
       it_behaves_like "does not create slide #{SN}"
@@ -454,6 +458,7 @@ describe 'Emaki' do
   # スライド画像へのルーティング
   #
   describe 'GET /:username/:slidename/:number.png' do
+    include_context 'signed in'
     include_context 'slide posted with', true, true, true
 
     after :all do

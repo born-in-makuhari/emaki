@@ -68,8 +68,6 @@ shared_context 'slide posted with' do |un, sn, file|
   let(:slide_path) { SLIDES_ROOT + "/#{un}/#{sn}" }
 
   before :all do
-    flush_testdb!
-
     post_data = {
       title: 'タイトルの表示名はどんな形式でもいい',
       description: 'タイトルの説明はどんな形式でもいい',
@@ -81,6 +79,7 @@ shared_context 'slide posted with' do |un, sn, file|
   end
 
   after :all do
+    Slide.first(slug: sn).destroy if Slide.first(slug: sn)
     FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
     FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
     flush_testdb!
@@ -100,28 +99,27 @@ def sample_user
   }
 end
 
-shared_context 'user created' do |info|
+shared_context 'user created' do |info, all|
+  all ||= :each
   info ||= sample_user
-
-  before do
-    User.create(info).save
-  end
-
-  after do
+  before(all) { User.create(info).save }
+  after all do
     User.first(slug: info[:slug]).destroy if User.first(slug: info[:slug])
   end
 end
 
-shared_context 'signed in' do |info|
+shared_context 'signed in' do |info, all|
+  all ||= :each
   info ||= sample_user
-  include_context 'user created', info
-  before do
+  include_context 'user created', info, all
+  before all do
     post '/signin',
          username_or_email: info[:slug],
          password: info[:password]
   end
 end
 
-shared_context 'signed out' do
-  before { get '/signout' }
+shared_context 'signed out' do |all|
+  all ||= :each
+  before(all) { get '/signout' }
 end

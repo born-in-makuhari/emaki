@@ -128,6 +128,11 @@ end
 describe 'SignIn page', type: :feature do
   let(:form) { find 'form#signin' }
   before { visit '/signin' }
+  include_context 'user created',
+                  slug: 'for-signin',
+                  name: 'ログインテスト用',
+                  email: 'for.signin@test.com',
+                  password: 'for-signin'
 
   context 'if not signed in' do
     it 'links to Top' do
@@ -153,6 +158,23 @@ describe 'SignIn page', type: :feature do
       expect('form#signin input#password').to have_attr 'type', 'password'
     end
     it { expect(page).to have_css 'form#signin input[type="submit"]' }
+
+    context 'when submit email/password' do
+      before do
+        fill_in 'usernameOrEmail', with: 'for.signin@test.com'
+        fill_in 'password', with: 'for-signin'
+        find('form#signin input[type=submit]').click
+      end
+
+      it 'redirects to Top' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/'
+      end
+
+      it 'displays userinfo' do
+        expect(page).to have_css '#userinfo'
+      end
+    end
   end
 
   context 'if signed in' do

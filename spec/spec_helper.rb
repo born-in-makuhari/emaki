@@ -84,3 +84,13 @@ shared_context 'slide posted with' do |un, sn, file|
     flush_testdb!
   end
 end
+
+shared_context 'user created' do |info|
+  before do
+    User.create(info).save
+  end
+
+  after do
+    User.first(slug: info[:slug]).destroy
+  end
+end

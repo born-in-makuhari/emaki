@@ -1,7 +1,0 @@
-FROM ruby:2.1-onbuild
-MAINTAINER Born in Makuhari
-
-# ruby & gems
-
-RUN echo "hello dockerfile (-'  )<|"
-

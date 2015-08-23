@@ -6,8 +6,6 @@ echo "[emaki] build start"
 mkdir /srv
 cd /srv
 
-echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
-
 #
 # install packages
 #
@@ -18,12 +16,12 @@ apt-get install -y build-essential
 apt-get install -y vim
 
 # for nokogiri
-apt-get install -y libxml2-dev libxslt1-dev
+# apt-get install -y libxml2-dev libxslt1-dev
 
 # for capybara-webkit
 # 106パッケージ。とても時間かかる。
 # テストしないならいらないのでは？
-apt-get install -y libqt4-webkit libqt4-dev xvfb
+# apt-get install -y libqt4-webkit libqt4-dev xvfb
 
 # for a JS runtime
 # 結構早い

@@ -12,4 +12,4 @@ EXPOSE 80
 ADD build /tmp/build/
 RUN bash /tmp/build/build.sh
 
-CMD ["ruby", "/srv/emaki/emaki.rb"]
+RUN nohup ruby /srv/emaki/emaki.rb &

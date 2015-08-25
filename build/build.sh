@@ -13,7 +13,6 @@ cd /srv
 # updateかなり時間かかる
 apt-get update 
 apt-get install -y build-essential
-apt-get install -y vim
 
 # for nokogiri
 # apt-get install -y libxml2-dev libxslt1-dev
@@ -51,11 +50,7 @@ compass create . -r bootstrap-sass --using bootstrap
 compass compile
 mkdir logs
 touch logs/development.log
-
-#
-# redis起動
-#
-nohup redis-server & # TODO: 本当は別サーバがいい
+touch logs/production.log
 
 #
 # テスト
@@ -65,5 +60,9 @@ nohup redis-server & # TODO: 本当は別サーバがいい
 # ruby: symbol lookup error: /usr/local/bundle/extensions/x86_64-linux/2.2.0-static/hiredis-0.4.5/hiredis/ext/hiredis_ext.so: undefined symbol: rb_thread_select
 #
 # bundle exec rspec
+
+mkdir /srv/redis/
+cp /etc/redis/redis.conf /srv/redis/
+sed -i -e "s/^daemonize no/daemonize yes/" /srv/redis/redis.conf
 
 echo "[emaki] build end"

@@ -47,7 +47,7 @@ end
 
 # おまじない
 #adapter = DataMapper.setup(:default, adapter: 'redis')
-require EMAKI_ROOT + '/RedisAccess.rb'
+require EMAKI_ROOT + '/redis_access.rb'
 redisAccess = RedisAccessControl.new
 adapter = redisAccess.access
 adapter.resource_naming_convention = lambda do |value|

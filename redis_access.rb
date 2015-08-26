@@ -18,8 +18,8 @@ class RedisAccessControl
     # Redisの接続を実行するメソッド
     #------------------------------------    
     def access
-        ad = DataMapper.setup(:default, adapter: 'redis', host: @redis_ip)
-   #     ad = DataMapper.setup(:default, adapter: 'redis', :host => '192.168.10.111')
+   #     ad = DataMapper.setup(:default, adapter: 'redis', host: @redis_ip)
+        ad = DataMapper.setup(:default, adapter: 'redis', :host => '192.168.10.111:6379')
    #     ad = DataMapper.setup(:default, adapter: 'redis', :host => '#{@redis_ip}')
     return ad
     end

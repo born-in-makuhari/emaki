@@ -1,7 +1,9 @@
 # ----------------------------------------------------------------
 # Gems
 #
-require 'bundler'
+
+
+require 'bundler' #←bundlerを読み込み
 Bundler.require
 
 # ----------------------------------------------------------------
@@ -11,6 +13,12 @@ EMAKI_ROOT = File.expand_path('../', __FILE__)
 EMAKI_VERSION = 'ver 0.0.0'
 EMAKI_ENV = ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development'
 DB_NAMESPACE = "emaki:#{EMAKI_ENV}"
+
+p "---------"
+p EMAKI_ROOT
+p ENV['RACK_ENV']
+p "---------"
+
 
 puts <<"EOS"
 +---------------------+
@@ -26,6 +34,7 @@ require EMAKI_ROOT + '/lib/models.rb'
 
 enable :sessions
 set :session_secret, 'emaki'
+
 configure :production, :development do
   enable :logging
   file = File.new("#{settings.root}/logs/#{settings.environment}.log", 'a+')
@@ -37,7 +46,10 @@ end
 #
 
 # おまじない
-adapter = DataMapper.setup(:default, adapter: 'redis')
+#adapter = DataMapper.setup(:default, adapter: 'redis')
+require EMAKI_ROOT + '/RedisAccess.rb'
+redisAccess = RedisAccessControl.new
+adapter = redisAccess.access
 adapter.resource_naming_convention = lambda do |value|
   [
     'emaki',

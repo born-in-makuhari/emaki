@@ -5,7 +5,23 @@
 // common
 //
 
-$emaki-color: #00a0e9;
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+}
+
 
 // ----------------------------------------------------------
 // layout.slim
@@ -22,22 +38,14 @@ h3.text-muted {
 // index.slim
 //
 .eyecatch {
-  color: $emaki-color;
+  color: $brand-primary;
   padding: 5em;
-
-  #logo {
-  }
 }
 
 #slides table.table {
   margin: 0;
 }
 
-@media screen and (max-width: $screen-xs-max) {
-  .jumbotron {
-    padding: 1em;
-  }
-}
 // ----------------------------------------------------------
 // slide.slim
 //

@@ -37,3 +37,7 @@ html
     script src="/js/bootstrap.min.js"
     / original scripts
     script src="/js/slide.js"
+    / original scripts (appointed in controller)
+    - if @js
+      - @js.each do |js|
+        script src="/js/#{js}.js"

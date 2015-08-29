@@ -66,6 +66,8 @@ get '/' do
   end
   # TODO: ここまで
 
+  # index.jsを読み込む
+  @js = [:index]
   slim :index, layout: :layout
 end
 

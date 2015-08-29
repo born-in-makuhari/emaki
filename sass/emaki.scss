@@ -7,10 +7,6 @@
 
 $emaki-color: #00a0e9;
 
-.emaki-text {
-  color: $emaki-color; // logo color
-}
-
 // ----------------------------------------------------------
 // layout.slim
 //
@@ -25,6 +21,15 @@ h3.text-muted {
 // ----------------------------------------------------------
 // index.slim
 //
+.eyecatch {
+  color: $emaki-color;
+  font-family: 'Open Sans', sans-serif;
+  padding: 5em;
+
+  #logo {
+  }
+}
+
 #slides table.table {
   margin: 0;
 }

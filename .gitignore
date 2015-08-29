@@ -1,6 +1,6 @@
 Gemfile.lock
 .bundle
-logs/development.log
+logs/
 slides/
 tmp/
 

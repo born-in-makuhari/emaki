@@ -3,7 +3,6 @@ echo "[emaki] build start"
 
 # Dockerfileがどうやってもうまくいかないので、
 # 以下の内容をスクリプト化し、bashで流す。
-mkdir /srv
 cd /srv
 
 #
@@ -35,6 +34,8 @@ aptitude install -y imagemagick libmagick++-dev
 # for redis
 apt-get install -y redis-server
 
+apt-get install -y ghostscript
+
 #
 # clone & install gems
 #
@@ -43,8 +44,9 @@ apt-get install -y redis-server
 git clone https://github.com/born-in-makuhari/emaki.git emaki
 cd emaki
 
-# ワーニング出るけど気にしない
 # qt並に時間かかるので覚悟する
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 bundle install --without test
 compass create . -r bootstrap-sass --using bootstrap
 compass compile

@@ -14,16 +14,20 @@ html
     link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'
     script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"
   body
-    .container
-      .header.clearfix
-        nav
+    nav.navbar.navbar-fixed-top.clearfix.navbar-default
+      .container
+        .navbar-header
+          .emaki-brand
+            a href="/" emaki
+          a.navbar-toggle.collapsed data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"
+            span.sr-only Toggle navigation
+            span.glyphicon.glyphicon-menu-down
+        #navbar.collapse.navbar-collapse
           ul.nav.nav-pills.pull-right
             li role="presentation"
               a#toTop href="/" Top
             li role="presentation"
               a#toNew href="/new"  + New slide
-        h3.text-muted
-          a href="/" emaki
     .container
       == yield
     .footer

@@ -4,7 +4,29 @@
 // ----------------------------------------------------------
 // common
 //
+//
+.emaki-brand {
+  display: inline-block;
+  width: 30%;
+  font-size: 1.6em;
+  padding-top: 10px;
+  padding-left: 10px;
+}
 
+.navbar-default {
+  background: rgba(255,255,255, 0.7);
+}
+
+nav a.navbar-toggle {
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  border: 0;
+  margin: 5px;
+}
+nav ul li {
+  padding-top: 0.3em;
+}
 
 /* Sticky footer styles
 -------------------------------------------------- */
@@ -22,6 +44,9 @@ body {
   height: 60px;
 }
 
+body > .container {
+  padding: 60px 15px 0;
+}
 
 // ----------------------------------------------------------
 // layout.slim

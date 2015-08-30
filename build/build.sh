@@ -45,8 +45,11 @@ git clone https://github.com/born-in-makuhari/emaki.git emaki
 cd emaki
 
 # qt並に時間かかるので覚悟する
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
+# localeを追加
+locale-gen en_EN.UTF-8
+# localeを設定
+/usr/sbin/update-locale LANG=en_EN.UTF-8
+
 bundle install --without test
 compass create . -r bootstrap-sass --using bootstrap
 compass compile

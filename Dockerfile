@@ -5,7 +5,7 @@ EXPOSE 4567
 EXPOSE 80
 
 ADD build /tmp/build/
-RUN bash /tmp/build/build.sh
+RUN bash /tmp/build/build.sh release-iteration-1
 
 WORKDIR /srv/emaki
 

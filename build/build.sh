@@ -1,5 +1,6 @@
 #!/bin/bash
 echo "[emaki] build start"
+echo "[emaki] branch: " $1
 
 # Dockerfileがどうやってもうまくいかないので、
 # 以下の内容をスクリプト化し、bashで流す。
@@ -43,6 +44,9 @@ apt-get install -y ghostscript
 # すごく遅い・・・
 git clone https://github.com/born-in-makuhari/emaki.git emaki
 cd emaki
+# TODO: あるブランチに切り替えている。本当はやりたくない
+git fetch origin
+git checkout -b $1 origin/$1
 
 # qt並に時間かかるので覚悟する
 # localeを追加

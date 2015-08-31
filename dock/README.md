@@ -1,58 +1,50 @@
 dockerでの起動手順
 ---
 
+〜はじめに〜
+
+emaki/ディレクトリから始めてください。  
+dockerコマンドにはsudoをつけない環境であること前提です。  
 環境に応じて sudo をつけてください。  
 明示しない場合、カレントディレクトリはemaki/です。  
 
-以下がめんどくさい場合はクイックスタートがあります。  
-初回のdocker build には時間がかかります。
+1. とにかくビルドして動かしたい！
 
-```
-. dock/quick-start.sh
-```
+    以下がめんどくさい場合はクイックスタートがあります。  
+    初回のdocker build には時間がかかります。  
+
+    ```
+    . dock/build.sh
+    . dock/quick-start.sh
+    ```
 
 1. docker build
 
-    以下を実行してください。
-    emaki:latest を上書きします。
-    ソースファイルが変わるだけなら、
+    以下を実行してください。  
+    emaki:latest を上書きします。  
+    ソースファイルが変わるだけなら、  
     buildし直す必要はありません。  
 
     ```
     docker build -t emaki .
     ```
 
-2. docker run
+1. サーバを起動
 
-    コンテナ「emaki」を起動します。
+    コンテナ「emaki」を起動し、  
+    必要ファイルをダウンロード＆コンパイルし、  
+    サーバ(とセッションストア)を起動します。
 
     ```
     docker run -dtP --name emaki -v $PWD:/srv/emaki emaki bash
+    docker exec emaki /bin/bash -c /srv/emaki/dock/compile.sh
+    docker exec emaki /bin/bash -c /srv/emaki/dock/start.sh
     ```
 
-3. 必要ファイルのコンパイル
+1. サーバの停止
 
-    ```
-    docker exec emaki /bin/bash source /srv/emaki/dock/compile.sh
-    ```
-
-4. サーバの起動
-
-    ```
-    docker exec emaki /bin/bash source /srv/emaki/dock/start.sh
-
-5. 再起動の方法
-
-    コンテナを削除します。
+    コンテナを削除します。  
 
     ```
     . dock/remove.sh
     ```
-
-    または
-
-    ```
-    docker stop emaki && docker rm emaki
-    ```
-
-    その後、起動手順を行ってください。

@@ -1,6 +1,6 @@
 Gemfile.lock
 .bundle
-logs/development.log
+logs/
 slides/
 tmp/
 
@@ -10,5 +10,4 @@ bootstrap*
 .sass-cache/
 public/css/styles.css
 public/css/
-sass/_bootstrap-variables.scss
 sass/styles.scss

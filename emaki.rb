@@ -3,10 +3,13 @@
 #
 require 'bundler'
 Bundler.require
+Encoding.default_external='UTF-8'
 
 # ----------------------------------------------------------------
 # Emaki::
 #
+# TODO: config.ruを使うべき
+# TODO: そろそろクラシックスタイルからモジュールに切り替えるべき
 EMAKI_ROOT = File.expand_path('../', __FILE__)
 EMAKI_VERSION = 'ver 0.0.0'
 EMAKI_ENV = ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development'
@@ -21,11 +24,28 @@ puts <<"EOS"
 |
 EOS
 
+require EMAKI_ROOT + '/lib/helpers.rb'
 require EMAKI_ROOT + '/lib/binder.rb'
 require EMAKI_ROOT + '/lib/models.rb'
 
-enable :sessions
-set :session_secret, 'emaki'
+set :protection, false
+set :protect_from_csrf, false
+disable :sessions
+
+expire_after = 30 * 24 * 60 * 60 # production keeps 1 month
+if EMAKI_ENV == 'development'
+  expire_after = 12 * 60 * 60  # for dev: 12 hours
+elsif EMAKI_ENV == 'test'
+  expire_after = 0.1 * 60 * 60 # for test: 6 minutes
+end
+use Rack::Session::Redis, expire_after: expire_after,
+                          secret: 'emaki'
+
+if EMAKI_ENV != 'test'
+  use Rack::Protection
+  use Rack::Protection::FormToken
+end
+
 configure :production, :development do
   enable :logging
   file = File.new("#{settings.root}/logs/#{settings.environment}.log", 'a+')
@@ -49,10 +69,53 @@ end
 # おまじないおわり
 
 # ----------------------------------------------------------------
+# Implicit functions
+#
+# 暗黙的な処理。
+# 最後の入力値をリダイレクト先に次に引き継いだり、
+# 注意書きをリダイレクト先に引き継いだり
+
+before do
+  load_attention
+end
+
+after do
+  save_last
+end
+
+# ----------------------------------------------------------------
+# Named user only
+#
+# ログインしていないユーザーは
+# メッセージとともにTOPへリダイレクト
+
+before '*' do |path|
+  target = ['/new', '/slides']
+  if target.include?(path) && session[:user].nil?
+    attention :only_named_user
+    redirect to '/'
+  end
+end
+
+# ----------------------------------------------------------------
+# Guest only
+#
+# ログインしているユーザーは
+# メッセージとともにTOPへリダイレクト
+
+before '*' do |path|
+  target = ['/users', '/register', '/signin']
+  if target.include?(path) && session[:user]
+    attention :only_guest
+    redirect to '/'
+  end
+end
+
+# ----------------------------------------------------------------
 # Routes
 #
-get '/' do
 
+get '/' do
   # TODO: 全件表示しているけどそれでいいんですか？
   @slides = {}
   all_slides = Slide.all
@@ -66,42 +129,108 @@ get '/' do
   end
   # TODO: ここまで
 
+  # index.jsを読み込む
+  @js = [:index]
   slim :index, layout: :layout
 end
 
 get '/new' do
-  @attention = session[:attention]
-  session[:attention] = nil
   slim :new, layout: :layout
 end
 
-post '/slides' do
-  un = params[:username]  # required
-  sn = params[:slidename] # required
+get '/register' do
+  slim :register, layout: :layout
+end
+
+post '/users' do
+  slug = params[:username]
   name = params[:name]
+  password = params[:password]
+  email = params[:email]
+  # スラグが不正だったらこの時点で終了
+  unless Binder.valid_slug? slug
+    attention :slug_rule
+    redirect to '/register'
+    return
+  end
+
+  # ユーザーを登録
+  @user = User.create(slug: slug, name: name, password: password, email: email)
+  if @user.save
+    attention :welcome_user
+    redirect to '/'
+  else
+    attention :user_rule
+    redirect to '/register'
+  end
+end
+
+get '/signin' do
+  slim :signin, layout: :layout
+end
+
+post '/signin' do
+  # emailかどうか、「＠」で判断する
+  u_o_e = params[:username_or_email]
+  password = params[:password]
+
+  user = nil
+  if u_o_e.include? '@'
+    user = User.first(email: u_o_e)
+  else
+    user = User.first(slug: u_o_e)
+  end
+
+  # ユーザーなかったら戻る
+  if user.nil?
+    attention :user_not_found
+    redirect to '/signin'
+    return
+  end
+
+  # パスワードあってなかったら戻る
+  if user.password != password
+    attention :user_not_found
+    redirect to '/signin'
+    return
+  end
+
+  # ユーザーあったらログイン状態
+  session[:user] = user.slug
+  redirect to '/'
+end
+
+get '/signout' do
+  session[:user] = nil
+  redirect to '/'
+end
+
+post '/slides' do
+  sn = params[:slidename] # required
   title = params[:title]
   description = params[:description]
   file = params[:slide]
+  ignore_last :slide
 
   # slugは正当か？
-  unless Binder.valid_slugs?(un, sn)
-    session[:attention] = slim :slug_rule, layout: false
+  unless Binder.valid_slug?(sn)
+    attention :slug_rule
     redirect to('/new')
     return
   end
 
   unless file
-    session[:attention] = slim :no_file, layout: false
+    attention :no_file
     redirect to('/new')
     return
   end
 
+  # ユーザー名はセッションから取得する
+  un = session[:user]
+
   result = save_slide un, sn, file
   if result
-    # TODO: ユーザー作成機能をしかるべき場所へ移す。
-    # ユーザーとスライドのレコードを作成する。
-    # アカウント機能ができたら、ユーザーはここで作るべきではない
-    User.create(slug: un, name: name)
+    # スライドを作成
     Slide.create(
       user_slug: un,
       slug: sn,
@@ -111,6 +240,8 @@ post '/slides' do
 
     redirect to("/#{un}/#{sn}")
   else
+    # TODO: もうちょっと親切にする
+    session[:attention] = '投稿に失敗しました'
     redirect to('/new')
   end
 end
@@ -121,7 +252,7 @@ get '/:username/:slidename' do
   unless Binder.exist?(params[:username], params[:slidename])
     status 404
     @slide_name = "#{params[:username]}/#{params[:slidename]}"
-    return slim :slide_not_found, layout: :layout
+    return slim :"attentions/slide_not_found", layout: :layout
   end
   @un = params[:username]
   @sn = params[:slidename]

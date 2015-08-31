@@ -10,20 +10,48 @@ html
     title emaki
     / load compiled css
     link rel="stylesheet" href="/css/emaki.css"
+    / google fonts より、Open sansの細いやつを使う
+    link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'
     script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"
   body
-    .container
-      .header.clearfix
-        nav
+    nav.navbar.navbar-fixed-top.clearfix.navbar-default
+      .container
+        .navbar-header
+          .emaki-brand
+            a href="/" emaki
+          a.navbar-toggle.collapsed data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"
+            span.sr-only Toggle navigation
+            span.glyphicon.glyphicon-menu-down
+        #navbar.collapse.navbar-collapse
           ul.nav.nav-pills.pull-right
             li role="presentation"
               a#toTop href="/" Top
-            li role="presentation"
-              a#toNew href="/new"  + New slide
-        h3.text-muted
-          a href="/" emaki
+            - if session[:user]
+              - user = User.first(slug: session[:user])
+              - name = user.name ? user.name : user.slug
+              li role="presentation"
+                a#toNew href="/new"  + New slide
+              li.active#userinfo role="presentation"
+                a href="#"
+                  span.glyphicon.glyphicon-user
+                  | &nbsp;
+                  | #{name}
+              li role="presentation"
+                a#toSignOut href="/signout"
+                  span.glyphicon.glyphicon-log-out
+            - else
+              li role="presentation"
+                a#toRegister href="/register"
+                  | +
+                  | &nbsp;
+                  | Register
+              li role="presentation"
+                a#toSignIn href="/signin"
+                  span.glyphicon.glyphicon-log-in
+    .container
       == yield
-      footer.footer
+    .footer
+      .container
         p
           | &copy; Born in Makuhari
           | &nbsp;
@@ -37,3 +65,8 @@ html
     script src="/js/bootstrap.min.js"
     / original scripts
     script src="/js/slide.js"
+    / original scripts (appointed in controller)
+    - if @js
+      - @js.each do |js|
+        script src="/js/#{js}.js"
+    script src="/js/register.js"

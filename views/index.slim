@@ -1,12 +1,17 @@
-.jumbotron
-  h1 emaki
-  p.lead = EMAKI_VERSION
-  p このバージョンはプレリリースです。
-  p
-    a.btn.btn-lg.btn-info href="https://github.com/born-in-makuhari/emaki" role="button" target="brank"
-      | emaki on Github
-      | &nbsp;
-      span.glyphicon.glyphicon-new-window
+.eyecatch
+  .row
+    .col-md-4.col-md-offset-4.col-xs-6.col-xs-offset-3
+      img#logo.img-responsive.center-block src="/images/emaki-logo.png"
+  .row
+    .col-lg-12.text-center
+      h1 emaki
+      p
+        | スライド共有を、もっとシンプルに。
+      hr
+- if attention?
+  .row#attention
+    .col-lg-12
+      == attention
 .row#slides
   .col-lg-12
     - if @slides

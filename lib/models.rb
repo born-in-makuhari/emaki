@@ -10,6 +10,8 @@ class User
 
   property :slug, String, key: true
   property :name, String
+  property :password, String, length: 1..50
+  property :email, String, format: :email_address
 
   def initialize(data)
     @slug = data[:slug]

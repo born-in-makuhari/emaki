@@ -26,7 +26,7 @@ end
 
 describe 'Emaki' do
 
-  # どんなサンプルでも、変数 html が lazy load で使える。
+  # 以降どんなサンプルでも、変数 html が lazy load で使える。
   let(:html) { Oga.parse_html(last_response.body) }
 
   before :all do
@@ -86,6 +86,16 @@ describe 'Emaki' do
     it { expect(last_response['Location']).to eq "http://example.org#{path}" }
   end
 
+  # ユーザーがないこと
+  shared_examples "does not create user #{UN}" do
+    it { expect(User.exists?(UN)).to be false }
+  end
+
+  # スライドがないこと
+  shared_examples "does not create slide #{SN}" do
+    it { expect(Slide.exists?(UN, SN)).to be false }
+  end
+
   # ---------------------------------------------------------
   # 個別テストケース
   #
@@ -94,40 +104,249 @@ describe 'Emaki' do
   #  /
   #
   describe 'GET /' do
-    it_behaves_like 'an emaki page'
     before(:all) { get '/' }
-    it { expect(html).to desplay 'a#toNew', 'href', '/new' }
+    it_behaves_like 'an emaki page'
+  end
+
+  #
+  # /register
+  #
+  describe 'GET /register' do
+    context 'if not signed in,' do
+      it_behaves_like 'an emaki page'
+      before(:all) { get '/register' }
+    end
+
+    context 'if signed in,' do
+      include_context 'signed in'
+      before do
+        get '/register'
+      end
+
+      it_behaves_like 'redirect', '/'
+    end
+  end
+
+  #
+  # /users
+  #
+  describe 'POST /users' do
+    context 'with email (@がない)' do
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: UN,
+             password: UN + 'password',
+             name: 'テスト用ユーザー',
+             email: 'test.user.email2testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/register'
+      it_behaves_like "does not create user #{UN}"
+    end
+
+    context 'with empty password' do
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: UN,
+             password: '',
+             name: 'テスト用ユーザー',
+             email: 'test.user.email@testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/register'
+      it_behaves_like "does not create user #{UN}"
+    end
+    context 'with password 51' do
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: UN,
+             password: 'p' * 51,
+             name: 'テ' * 50,
+             email: 'test.user.email@testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/register'
+      it_behaves_like "does not create user #{UN}"
+    end
+    context 'with name 51' do
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: UN,
+             password: UN + 'password',
+             name: 'テ' * 51,
+             email: 'test.user.email@testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/register'
+      it_behaves_like "does not create user #{UN}"
+    end
+    context 'with invalid username' do
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: '-',
+             password: UN + 'password',
+             name: 'テスト用ユーザー',
+             email: 'test.user.email@testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/register'
+      it_behaves_like "does not create user #{UN}"
+    end
+
+    context 'with valid user informations' do
+      before(:all) do
+        flush_testdb!
+        post '/users',
+             username: UN,
+             password: UN + 'password',
+             name: 'テスト用ユーザー',
+             email: 'test.user.email@testuser.com'
+      end
+      after(:all) { flush_testdb! }
+
+      it_behaves_like 'redirect', '/'
+
+      it 'creates new User' do
+        expect(User.first(slug: UN)).not_to be nil
+      end
+
+      it 'sets parameters to new User' do
+        expect(User.first(slug: UN).password).to eq(UN + 'password')
+        expect(User.first(slug: UN).name).to eq 'テスト用ユーザー'
+        expect(User.first(slug: UN).email).to eq 'test.user.email@testuser.com'
+      end
+    end
+    context 'if signed in,' do
+      include_context 'signed in'
+      before do
+        post '/users',
+             username: UN,
+             password: UN + 'password',
+             name: 'テスト用ユーザー',
+             email: 'test.user.email@testuser.com'
+      end
+
+      it_behaves_like 'redirect', '/'
+    end
+  end
+
+  #
+  # /signin
+  #
+  describe 'GET /signin' do
+    it_behaves_like 'an emaki page'
+    before(:all) { get '/signin' }
+
+    context 'if signed in,' do
+      include_context 'signed in'
+      before do
+        get '/signin'
+      end
+
+      it_behaves_like 'redirect', '/'
+    end
+  end
+
+  describe 'POST /signin' do
+    include_context 'user created',
+                    slug: UN,
+                    name: UN,
+                    email: UN + '@test.com',
+                    password: 'password'
+    context 'with miss, ' do
+      before do
+        post '/signin',
+             username_or_email: 'miss',
+             password: 'password'
+      end
+
+      it 'empty session[:user]' do
+        expect(session[:user]).to eq nil
+      end
+    end
+    context 'with valid information,' do
+      before do
+        post '/signin',
+             username_or_email: UN,
+             password: 'password'
+      end
+
+      it 'sets userslug in session[:user]' do
+        expect(session[:user]).to eq UN
+      end
+    end
+    context 'if signed in,' do
+      include_context 'signed in'
+      before(:all) do
+        post '/signin',
+             username_or_email: UN,
+             password: 'password'
+      end
+
+      it_behaves_like 'redirect', '/'
+    end
+  end
+
+  describe 'GET /signout' do
+    include_context 'user created',
+                    slug: UN,
+                    name: UN,
+                    email: UN + '@test.com',
+                    password: 'password'
+    before do
+      post '/signin',
+           username_or_email: UN,
+           password: 'password'
+      get '/signout'
+    end
+
+    it 'reset session[:user]' do
+      expect(session[:user]).to eq nil
+    end
   end
 
   #
   #  /new
   #
   describe 'GET /new' do
-    it_behaves_like 'an emaki page'
-    let(:form) { 'form#newSlide' }
-    let(:uninput) { 'input#username' }
-    let(:sninput) { 'input#slidename' }
-    let(:slinput) { 'input#slide' }
-    let(:name) { 'input#name' }
-    let(:title) { 'input#title' }
-    let(:description) { 'textarea#description' }
-    before(:all) { get '/new' }
-    it { expect(html).to desplay form }
-    it { expect(html).to desplay form, :action, '/slides' }
-    it { expect(html).to desplay form, :method, 'post' }
-    it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
-    it { expect(html).to desplay uninput, :type, 'text' }
-    it { expect(html).to desplay uninput, :name, 'username' }
-    it { expect(html).to desplay sninput, :type, 'text' }
-    it { expect(html).to desplay sninput, :name, 'slidename' }
-    it { expect(html).to desplay slinput, :type, 'file' }
-    it { expect(html).to desplay slinput, :name, 'slide' }
-    it { expect(html).to desplay name, :type, 'text' }
-    it { expect(html).to desplay name, :name, 'name' }
-    it { expect(html).to desplay title, :type, 'text' }
-    it { expect(html).to desplay title, :name, 'title' }
-    it { expect(html).to desplay description, :name, 'description' }
-    it { expect(html).to desplay 'input[type="submit"]' }
+    context 'if signed in, ' do
+      include_context 'signed in'
+      it_behaves_like 'an emaki page'
+      let(:form) { 'form#newSlide' }
+      let(:sninput) { 'input#slidename' }
+      let(:slinput) { 'input#slide' }
+      let(:title) { 'input#title' }
+      let(:description) { 'textarea#description' }
+      before { get '/new' }
+      it { expect(html).to desplay form }
+      it { expect(html).to desplay form, :action, '/slides' }
+      it { expect(html).to desplay form, :method, 'post' }
+      it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
+      it { expect(html).to desplay sninput, :type, 'text' }
+      it { expect(html).to desplay sninput, :name, 'slidename' }
+      it { expect(html).to desplay slinput, :type, 'file' }
+      it { expect(html).to desplay slinput, :name, 'slide' }
+      it { expect(html).to desplay title, :type, 'text' }
+      it { expect(html).to desplay title, :name, 'title' }
+      it { expect(html).to desplay description, :name, 'description' }
+      it { expect(html).to desplay 'input[type="submit"]' }
+    end
+
+    context 'if signed out, ' do
+      include_context 'signed out'
+      before { get '/new' }
+      it_behaves_like 'redirect', '/'
+    end
   end
 
   #
@@ -136,6 +355,7 @@ describe 'Emaki' do
   #
   describe 'GET /username/slidename' do
     context 'if target exists,' do
+      include_context 'signed in', nil, :all
       include_context 'slide posted with', true, true, true
       it_behaves_like 'an emaki page'
       it_behaves_like 'a slide page'
@@ -149,6 +369,7 @@ describe 'Emaki' do
     end
 
     context 'if target does not exist,' do
+      include_context 'signed in', nil, :all
       it_behaves_like 'common header'
 
       before(:all) { get '/testuser/testslide' }
@@ -167,43 +388,28 @@ describe 'Emaki' do
   # /slides
   #
   describe 'POST /slides' do
-
-    shared_examples "creates users & slides (#{UN}, #{SN})" do
+    shared_examples "creates user #{UN}" do
       before do
         @u = User.first(slug: UN)
-        @s = Slide.first(user_slug: UN, slug: SN)
       end
       it('user exists') { expect(@u).not_to eq nil }
       it('user has name') { expect(@u.name).not_to eq nil }
+    end
+
+    shared_examples "creates slide #{SN}" do
+      before do
+        @s = Slide.first(user_slug: UN, slug: SN)
+      end
       it('slide exists') { expect(@s).not_to eq nil }
       it('slide has title') { expect(@s.title).not_to eq nil }
       it('slide has description') { expect(@s.description).not_to eq nil }
     end
-    shared_examples "does not create users & slides (#{UN}, #{SN})" do
-      it { expect(User.exists?(UN)).to be false }
-      it { expect(Slide.exists?(UN, SN)).to be false }
-    end
-
-    context 'if username is invalid,' do
-      include_context 'slide posted with', false, true, true
-      it_behaves_like 'redirect', '/new'
-      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
-
-      context 'follow redirect,' do
-        let(:html) { Oga.parse_html(last_response.body) }
-        before { follow_redirect! }
-
-        it 'with slug rules' do
-          expect(html).to desplay '#attention #slugRule'
-        end
-      end
-
-    end
 
     context 'if slidename is invalid,' do
+      include_context 'signed in', nil, :all
       include_context 'slide posted with', true, false, true
       it_behaves_like 'redirect', '/new'
-      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
+      it_behaves_like "does not create slide #{SN}"
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -213,13 +419,13 @@ describe 'Emaki' do
           expect(html).to desplay '#attention #slugRule'
         end
       end
-
     end
 
     context 'no file,' do
+      include_context 'signed in', nil, :all
       include_context 'slide posted with', true, true, false
       it_behaves_like 'redirect', '/new'
-      it_behaves_like "does not create users & slides (#{UN}, #{SN})"
+      it_behaves_like "does not create slide #{SN}"
 
       context 'follow redirect,' do
         let(:html) { Oga.parse_html(last_response.body) }
@@ -228,13 +434,13 @@ describe 'Emaki' do
           expect(html).to desplay '#attention #noFile'
         end
       end
-
     end
 
-    context do
+    context 'with valid slide informations' do
+      include_context 'signed in', nil, :all
       include_context 'slide posted with', true, true, true
       it_behaves_like 'redirect', "/#{UN}/#{SN}"
-      it_behaves_like "creates users & slides (#{UN}, #{SN})"
+      it_behaves_like "creates slide #{SN}"
 
       it "creates directory slides/#{UN}/#{SN}" do
         expect(FileTest.exist? slide_path).to be true
@@ -251,11 +457,19 @@ describe 'Emaki' do
       end
 
     end
+
+    context 'if signed out, ' do
+      include_context 'signed out', :all
+      include_context 'slide posted with', true, true, true
+      it_behaves_like 'redirect', '/'
+      it_behaves_like "does not create slide #{SN}"
+    end
   end
   # ---------------------------------------------------------
   # スライド画像へのルーティング
   #
   describe 'GET /:username/:slidename/:number.png' do
+    include_context 'signed in', nil, :all
     include_context 'slide posted with', true, true, true
 
     after :all do

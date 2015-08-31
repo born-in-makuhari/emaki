@@ -2,6 +2,9 @@ require 'bundler'
 Bundler.require :test
 require 'capybara/rspec'
 
+headless = Headless.new
+headless.start
+
 ENV['RACK_ENV'] = 'test'
 
 require File.expand_path '../../emaki.rb', __FILE__

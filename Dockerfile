@@ -41,7 +41,7 @@ RUN sed -i -e "s/^daemonize no/daemonize yes/" /srv/redis/redis.conf
 WORKDIR /srv/for_bundle/
 RUN git clone https://github.com/born-in-makuhari/emaki.git
 WORKDIR /srv/for_bundle/emaki/
-RUN bundle install --without test
+RUN bundle install
 
 # ------------------------------------------------------------
 # 後処理

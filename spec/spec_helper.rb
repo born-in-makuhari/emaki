@@ -54,25 +54,23 @@ flush_testdb!
 
 # ---------------------------------------------------------
 # 共通の事前条件
+
+# スライドがある状態
 #
 # username:  trueの時は正しい形式
 # slidename: 上に同じ
 # file:      上に同じ
 shared_context 'slide posted with' do |un, sn, file|
-  un  = un ? UN : '-'
+  un = un ? UN : '-'
   sn  = sn ? SN : '-'
   file = file ? PDF_FILE : nil
 
   let(:slide_path) { SLIDES_ROOT + "/#{un}/#{sn}" }
 
   before :all do
-    flush_testdb!
-
     post_data = {
-      name: 'ユーザーの表示名はどんな形式でもいい',
       title: 'タイトルの表示名はどんな形式でもいい',
       description: 'タイトルの説明はどんな形式でもいい',
-      username: un,
       slidename: sn,
       slide: file
     }
@@ -81,8 +79,47 @@ shared_context 'slide posted with' do |un, sn, file|
   end
 
   after :all do
+    Slide.first(slug: sn).destroy if Slide.first(slug: sn)
     FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
     FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
     flush_testdb!
   end
+end
+
+#
+# ユーザーがある状態
+#
+# info...UserモデルのプロパティをもつHash
+def sample_user
+  {
+    slug: UN,
+    name: UN,
+    email: UN + '@test.com',
+    password: 'password'
+  }
+end
+
+shared_context 'user created' do |info, all|
+  all ||= :each
+  info ||= sample_user
+  before(all) { User.create(info).save }
+  after all do
+    User.first(slug: info[:slug]).destroy if User.first(slug: info[:slug])
+  end
+end
+
+shared_context 'signed in' do |info, all|
+  all ||= :each
+  info ||= sample_user
+  include_context 'user created', info, all
+  before all do
+    post '/signin',
+         username_or_email: info[:slug],
+         password: info[:password]
+  end
+end
+
+shared_context 'signed out' do |all|
+  all ||= :each
+  before(all) { get '/signout' }
 end

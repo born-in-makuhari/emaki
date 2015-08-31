@@ -3,15 +3,15 @@ require 'compass/import-once/activate'
 # Require any additional compass plugins here.
 
 # use UTF-8
-Encoding.default_external = "utf-8"
+Encoding.default_external = 'utf-8'
 
 # Set this to the root of your project when deployed:
-http_path = "/"
-css_dir = "public/css"
-sass_dir = "sass"
-images_dir = "public/imgs"
-javascripts_dir = "public/js"
-fonts_dir = "public/fonts"
+http_path = '/'
+css_dir = 'public/css'
+sass_dir = 'sass'
+images_dir = 'public/imgs'
+javascripts_dir = 'public/js'
+fonts_dir = 'public/fonts'
 
 # You can select your preferred output style here (can be overridden via the command line):
 output_style = :compressed

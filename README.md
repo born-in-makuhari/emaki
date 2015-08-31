@@ -1,4 +1,6 @@
-<img src="https://github.com/born-in-makuhari/emaki/raw/master/public/images/emaki-logo.png" width="240">
+<div style="text-align:center">
+  <img src="https://github.com/born-in-makuhari/emaki/raw/master/public/images/emaki-logo.png" width="240">
+</div>
 
 Emaki
 ---
@@ -6,29 +8,29 @@ Emaki is a simple slide sharing tool.
 
 ## Quick Start
 
-    It is easy to use Emaki with docker.  
+ ･･･It is easy to use Emaki with docker.  
 
 
-    ```
-    git clone https://github.com/born-in-makuhari/emaki.git
-    cd emaki
-    ./dock/build.sh
-    ./dock/quick-start.sh
-    ```
+ ･･･```
+ ･･･git clone https://github.com/born-in-makuhari/emaki.git
+ ･･･cd emaki
+ ･･･./dock/build.sh
+ ･･･./dock/quick-start.sh
+ ･･･```
 
-    which would result in:  
+ ･･･which would result in:  
 
-    ```
-    33333 -> 80:tcp
-    44444 -> 443:tcp
-    ```
+ ･･･```
+ ･･･33333 -> 80:tcp
+ ･･･44444 -> 443:tcp
+ ･･･```
 
-    Emaki is working in a container named "emaki".  
-    And then:  
+ ･･･Emaki is working in a container named "emaki".  
+ ･･･And then:  
 
-    ```
-    http://localhost:33333/
-    ```
+ ･･･```
+ ･･･http://localhost:33333/
+ ･･･```
 
 ## License
 

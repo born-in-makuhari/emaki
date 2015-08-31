@@ -2,11 +2,14 @@ source 'https://rubygems.org'
 
 # for application
 gem 'sinatra'
+gem 'redis-rack'
+gem 'json'
 gem 'slim'
 gem 'rmagick'
 
 # for redis
 gem 'dm-core'
+gem 'dm-validations'
 gem 'dm-redis-adapter'
 gem 'redis-objects'
 

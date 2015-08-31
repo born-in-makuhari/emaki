@@ -4,34 +4,32 @@
     form#newSlide method="post" action="/slides" enctype="multipart/form-data"
       .form-group
         .row
-          .col-xs-6
-            input#username.form-control.input-lg type="text" name="username" placeholder="ユーザーID *"
-          .col-xs-6
-            input#slidename.form-control.input-lg type="text" name="slidename" placeholder="スライドID *"
+          .col-xs-12
+            input#slidename.form-control.input-lg type="text" name="slidename" placeholder="スライドID *" value="#{ last :slidename }"
         .row
           .col-xs-12
             p.text-muted * アルファベット、「-」「_」が使えます
-      .form-group
-        .row
-          .col-xs-6
-            input#name.form-control.input-lg type="text" name="name" placeholder="ユーザー名(オプション)"
-          .col-xs-6
-            input#title.form-control.input-lg type="text" name="title" placeholder="スライド名(オプション)"
       .form-group
         .input-group
           .input-group-btn
             button#selectFile.btn.btn-info.btn-lg type="button" PDFファイルを選択
             input#slide.hidden type="file" name="slide"
           input#selectedFile.form-control.input-lg (type="text" readonly)
+      hr
       .form-group
         .row
           .col-xs-12
-            textarea#description.form-control.input-lg name="description" placeholder="スライドの説明"
+            input#title.form-control.input-lg type="text" name="title" placeholder="スライド名(オプション)" value="#{ last :title }"
+        .row
+          .col-xs-12
+            textarea#description.form-control.input-lg name="description" placeholder="スライドの説明(オプション)"
+              = last :description
       .form-group
         input.btn.btn-primary.btn-block.btn-lg type="submit"
-      - if @attention
+        input type="hidden" name="authenticity_token" value="#{session[:csrf]}"
+      - if attention?
         #attention
-          == @attention
+          == attention
 javascript:
     $(function() {
       $('#selectFile').on('click', function() {

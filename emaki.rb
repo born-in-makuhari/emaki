@@ -3,6 +3,7 @@
 #
 require 'bundler'
 Bundler.require
+Encoding.default_external='UTF-8'
 
 # ----------------------------------------------------------------
 # Emaki::

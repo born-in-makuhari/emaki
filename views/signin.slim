@@ -1,0 +1,15 @@
+.row
+  .col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1.col-xs-12
+    h1.text-muted ログイン
+    form#signin method="post" action="/signin"
+      .form-group
+        input#usernameOrEmail.form-control.input-lg type="text" name="username_or_email" placeholder="ユーザーID または メールアドレス" value="#{ last :username_or_email }"
+      .form-group
+        input#password.form-control.input-lg type="password" name="password" placeholder="パスワード" value="#{ last :password }"
+      .form-group
+        input.btn.btn-primary.btn-block.btn-lg type="submit"
+        input type="hidden" name="authenticity_token" value="#{session[:csrf]}"
+- if attention?
+  .row
+    .col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1.col-xs-12
+      == attention

@@ -26,8 +26,30 @@ html
           ul.nav.nav-pills.pull-right
             li role="presentation"
               a#toTop href="/" Top
-            li role="presentation"
-              a#toNew href="/new"  + New slide
+            - if session[:user]
+              - user = User.first(slug: session[:user])
+              - name = user.name ? user.name : user.slug
+              li role="presentation"
+                a#toNew href="/new"  + New slide
+              li.active#userinfo role="presentation"
+                a href="#"
+                  span.glyphicon.glyphicon-user
+                  | &nbsp;
+                  | #{name}
+              li role="presentation"
+                a#toSignOut href="/signout"
+                  span.glyphicon.glyphicon-log-out
+            - else
+              li role="presentation"
+                a#toRegister href="/register"
+                  | +
+                  | &nbsp;
+                  | Register
+              li role="presentation"
+                a#toSignIn href="/signin"
+                  span.glyphicon.glyphicon-log-in
+        h3.text-muted
+          a href="/" emaki
     .container
       == yield
     .footer
@@ -49,3 +71,4 @@ html
     - if @js
       - @js.each do |js|
         script src="/js/#{js}.js"
+    script src="/js/register.js"

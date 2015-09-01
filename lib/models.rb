@@ -11,6 +11,11 @@ class User
   property :email, String, format: :email_address
 
   has n, :slide
+
+  def self.exists?(slug)
+    return true if first(slug: slug)
+    false
+  end
 end
 
 # Slide
@@ -23,26 +28,14 @@ class Slide
   property :description, String, length: 0..50_000
 
   belongs_to :user
+
+  def self.exists?(user_slug, slug)
+    user = User.first(slug: user_slug)
+    return true if first(user: user, slug: slug)
+    false
+  end
 end
 
 DataMapper.finalize
 # it doesn't drop any columns.
 DataMapper.auto_upgrade!
-
-user = User.create(
-  slug: :user_sample,
-  name: 'ユーザ',
-  password: 'password',
-  email: 'kazu11518@gmail.com'
-)
-
-user.save
-
-slide = Slide.create(
-  user: user,
-  slug: :sample,
-  title: "これがタイトル",
-  description: "これが説明"
-)
-
-slide.save

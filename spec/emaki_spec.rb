@@ -398,7 +398,7 @@ describe 'Emaki' do
 
     shared_examples "creates slide #{SN}" do
       before do
-        @s = Slide.first(user_slug: UN, slug: SN)
+        @s = Slide.first(user: User.first(slug: UN), slug: SN)
       end
       it('slide exists') { expect(@s).not_to eq nil }
       it('slide has title') { expect(@s.title).not_to eq nil }

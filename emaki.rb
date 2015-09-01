@@ -126,7 +126,7 @@ get '/' do
   @slides = {}
   all_slides = Slide.all
   all_slides.each do |s|
-    u = User.first(slug: s.user_slug)
+    u = s.user
     next unless u
     k = u.name ? u.name : u.slug
     v = s.title ? s.title : s.slug
@@ -236,9 +236,10 @@ post '/slides' do
 
   result = save_slide un, sn, file
   if result
+    user = User.first(slug: un)
     # スライドを作成
     Slide.create(
-      user_slug: un,
+      user: user,
       slug: sn,
       title: title,
       description: description
@@ -264,7 +265,7 @@ get '/:username/:slidename' do
   @sn = params[:slidename]
 
   @user = User.first slug: @un
-  @slide = Slide.first user_slug: @un, slug: @sn
+  @slide = Slide.first user: @user, slug: @sn
 
   if @user.nil? || @slide.nil?
     status 404

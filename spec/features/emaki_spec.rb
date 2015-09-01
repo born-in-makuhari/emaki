@@ -129,13 +129,14 @@ describe 'Register page', type: :feature do
         fill_in 'email', with: 'shield-of-emeria@mtg.com'
         find('form#register input[type=submit]').click
       end
-      it 'displays #welcomeUser' do
-        expect(page).to have_css '#welcomeUser'
-      end
       it 'redirects to Top' do
         uri = URI.parse(current_url)
         expect(uri.path).to eq '/'
       end
+      it 'displays #welcomeUser' do
+        expect(page).to have_css '#welcomeUser'
+      end
+      after { User.first(slug: 'emeria').destroy }
     end
 
     it 'does not display userinfo' do

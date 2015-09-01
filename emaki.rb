@@ -158,6 +158,8 @@ post '/users' do
   # ユーザーを登録
   @user = User.create(slug: slug, name: name, password: password, email: email)
   if @user.save
+    # 自動でログイン
+    session[:user] = slug
     attention :welcome_user
     redirect to '/'
   else

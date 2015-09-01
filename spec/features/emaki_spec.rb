@@ -239,6 +239,41 @@ describe 'SignIn page', type: :feature do
 end
 
 #
+# SignOut page
+#
+
+describe 'SignOut page', type: :feature do
+  let(:form) { find 'form#signin' }
+  before { visit '/signin' }
+  include_context 'user created',
+                  slug: 'for-signin',
+                  name: 'ログインテスト用',
+                  email: 'for.signin@test.com',
+                  password: 'for-signin'
+
+  context 'if signed in, ' do
+    before do
+      fill_in 'usernameOrEmail', with: 'for.signin@test.com'
+      fill_in 'password', with: 'for-signin'
+      find('form#signin input[type=submit]').click
+    end
+
+    context 'when sign out, ' do
+      before { visit '/signout' }
+
+      it 'redirects to Top' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/'
+      end
+
+      it 'displays #goodbyeUser' do
+        expect(page).to have_css '#goodbyeUser'
+      end
+    end
+  end
+end
+
+#
 # New page
 #
 describe 'New page', type: :feature do

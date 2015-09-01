@@ -16,7 +16,13 @@ RUN aptitude install -y \
 RUN apt-get install -y \
             nodejs \
             ghostscript \
-            redis-server
+            redis-server \
+            postgresql-9.4 \
+            postgresql-server-dev-9.4 \
+            libpq-dev
+
+RUN echo "export PATH=/usr/lib/postgresql/9.4/bin/:$PATH" >> ~/.bash_profile
+RUN . ~/.bash_profile
 
 # ------------------------------------------------------------
 # 開発に必要なパッケージのインストール

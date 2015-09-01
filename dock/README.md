@@ -20,6 +20,7 @@ sudo をつける環境の場合、先に
 
     ```
     . dock/build.sh
+    . dock/db-start.sh
     . dock/quick-start.sh
     ```
 
@@ -33,6 +34,10 @@ sudo をつける環境の場合、先に
     ```
     docker build -t emaki .
     ```
+
+1. DBを起動
+
+    未実装
 
 1. サーバを起動
 

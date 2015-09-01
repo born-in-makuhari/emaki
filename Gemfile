@@ -13,6 +13,7 @@ gem 'dm-validations'
 gem 'dm-redis-adapter'
 gem 'redis-objects'
 gem 'dm-postgres-adapter'
+gem 'dm-migrations'
 
 
 # for styling

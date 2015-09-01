@@ -27,7 +27,6 @@ EOS
 
 require EMAKI_ROOT + '/lib/helpers.rb'
 require EMAKI_ROOT + '/lib/binder.rb'
-require EMAKI_ROOT + '/lib/models.rb'
 
 set :protection, false
 set :protect_from_csrf, false
@@ -58,17 +57,23 @@ end
 #
 
 # おまじない
-adapter = DataMapper.setup(:default, adapter: 'redis')
-adapter.resource_naming_convention = lambda do |value|
-  [
-    'emaki',
-    EMAKI_ENV,
-    DataMapper::Inflector.pluralize(
-      DataMapper::Inflector.underscore(value)).gsub('/', '_')
-  ].join(':')
+db_name = 'emaki'
+if EMAKI_ENV == 'test'
+  db_name = 'emaki_test'
 end
+adapter = DataMapper.setup(:default,
+                           "postgres://emaki:emakipostgres@db/#{db_name}")
+# adapter.resource_naming_convention = lambda do |value|
+#  [
+#    'emaki',
+#    EMAKI_ENV,
+#    DataMapper::Inflector.pluralize(
+#      DataMapper::Inflector.underscore(value)).gsub('/', '_')
+#  ].join(':')
+# end
 # おまじないおわり
 
+require EMAKI_ROOT + '/lib/models.rb'
 # ----------------------------------------------------------------
 # Implicit functions
 #

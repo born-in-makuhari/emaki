@@ -73,7 +73,7 @@ adapter = DataMapper.setup(:default,
 # end
 # おまじないおわり
 
-require EMAKI_ROOT + '/lib/models.rb'
+require EMAKI_ROOT + '/models/models.rb'
 # ----------------------------------------------------------------
 # Implicit functions
 #

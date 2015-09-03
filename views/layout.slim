@@ -37,7 +37,7 @@ html
                   | &nbsp;
                   | #{name}
               li role="presentation"
-                a#toSignOut href="/signout"
+                a#toSignOut href="/signout" data-toggle="tooltip" data-placement="bottom" title="ログアウト" data-container="body"
                   span.glyphicon.glyphicon-log-out
             - else
               li role="presentation"
@@ -46,7 +46,7 @@ html
                   | &nbsp;
                   | Register
               li role="presentation"
-                a#toSignIn href="/signin"
+                a#toSignIn href="/signin" data-toggle="tooltip" data-placement="bottom" title="ログイン" data-container="body"
                   span.glyphicon.glyphicon-log-in
     .container
       == yield
@@ -64,6 +64,7 @@ html
     / jquery & bootstrap
     script src="/js/bootstrap.min.js"
     / original scripts
+    script src="/js/tooltip.js"
     script src="/js/slide.js"
     / original scripts (appointed in controller)
     - if @js

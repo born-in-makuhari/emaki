@@ -9,6 +9,7 @@ Emaki is a simple slide sharing tool.
 ## Quick Start
 
   It is easy to use Emaki with docker.  
+  See also 'dock/README.md'.  
 
   ```
   git clone https://github.com/born-in-makuhari/emaki.git

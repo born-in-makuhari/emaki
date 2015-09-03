@@ -3,7 +3,7 @@
 #
 require 'bundler'
 Bundler.require
-Encoding.default_external='UTF-8'
+Encoding.default_external = 'UTF-8'
 set :bind, '0.0.0.0'
 
 # ----------------------------------------------------------------
@@ -205,6 +205,7 @@ end
 
 get '/signout' do
   session[:user] = nil
+  attention :goodbye_user
   redirect to '/'
 end
 

@@ -29,4 +29,5 @@ group :test do
   gem 'redis-namespace'
   gem 'capybara'
   gem 'capybara-webkit'
+  gem 'headless'
 end

@@ -1,6 +1,7 @@
 Gemfile.lock
 .bundle
 logs/
+out.log
 slides/
 tmp/
 

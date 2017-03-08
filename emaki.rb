@@ -38,7 +38,7 @@ if EMAKI_ENV == 'development'
 elsif EMAKI_ENV == 'test'
   expire_after = 0.1 * 60 * 60 # for test: 6 minutes
 end
-use Rack::Session::Redis, expire_after: expire_after,
+use Rack::Session::Pool, expire_after: expire_after,
                           secret: 'emaki'
 
 if EMAKI_ENV != 'test'

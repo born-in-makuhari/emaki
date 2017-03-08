@@ -1,5 +1,5 @@
 # emaki
-FROM ruby:2.0.0
+FROM ruby
 
 EXPOSE 4567
 EXPOSE 80

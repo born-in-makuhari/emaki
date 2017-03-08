@@ -27,7 +27,6 @@ EOS
 
 require EMAKI_ROOT + '/lib/helpers.rb'
 require EMAKI_ROOT + '/lib/binder.rb'
-require EMAKI_ROOT + '/lib/models.rb'
 
 set :protection, false
 set :protect_from_csrf, false
@@ -58,17 +57,23 @@ end
 #
 
 # おまじない
-adapter = DataMapper.setup(:default, adapter: 'redis')
-adapter.resource_naming_convention = lambda do |value|
-  [
-    'emaki',
-    EMAKI_ENV,
-    DataMapper::Inflector.pluralize(
-      DataMapper::Inflector.underscore(value)).gsub('/', '_')
-  ].join(':')
+db_name = 'emaki'
+if EMAKI_ENV == 'test'
+  db_name = 'emaki_test'
 end
+adapter = DataMapper.setup(:default,
+                           "postgres://emaki:emakipostgres@db/#{db_name}")
+# adapter.resource_naming_convention = lambda do |value|
+#  [
+#    'emaki',
+#    EMAKI_ENV,
+#    DataMapper::Inflector.pluralize(
+#      DataMapper::Inflector.underscore(value)).gsub('/', '_')
+#  ].join(':')
+# end
 # おまじないおわり
 
+require EMAKI_ROOT + '/models/models.rb'
 # ----------------------------------------------------------------
 # Implicit functions
 #
@@ -121,7 +126,7 @@ get '/' do
   @slides = {}
   all_slides = Slide.all
   all_slides.each do |s|
-    u = User.first(slug: s.user_slug)
+    u = s.user
     next unless u
     k = u.name ? u.name : u.slug
     v = s.title ? s.title : s.slug
@@ -232,9 +237,10 @@ post '/slides' do
 
   result = save_slide un, sn, file
   if result
+    user = User.first(slug: un)
     # スライドを作成
     Slide.create(
-      user_slug: un,
+      user: user,
       slug: sn,
       title: title,
       description: description
@@ -260,7 +266,7 @@ get '/:username/:slidename' do
   @sn = params[:slidename]
 
   @user = User.first slug: @un
-  @slide = Slide.first user_slug: @un, slug: @sn
+  @slide = Slide.first user: @user, slug: @sn
 
   if @user.nil? || @slide.nil?
     status 404

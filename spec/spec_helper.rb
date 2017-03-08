@@ -53,6 +53,9 @@ def flush_testdb!
   keys.each do |k|
     Redis.current.del(k)
   end
+
+  Slide.all.destroy
+  User.all.destroy
 end
 flush_testdb!
 

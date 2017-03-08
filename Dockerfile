@@ -7,8 +7,9 @@ EXPOSE 80
 # ------------------------------------------------------------
 # 動作に必要なパッケージのインストール
 #
-RUN apt-get update 
-RUN apt-get install -y aptitude
+RUN apt-get update && apt-get install -y \
+    aptitude
+
 RUN aptitude install -y \
              imagemagick \
              libmagick++-dev

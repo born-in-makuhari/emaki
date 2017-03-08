@@ -17,7 +17,17 @@ RUN aptitude install -y \
 RUN apt-get install -y \
             nodejs \
             ghostscript \
-            redis-server
+            redis-server \
+            postgresql-9.4 \
+            postgresql-server-dev-9.4 \
+            libpq-dev
+
+# postgres へのパスを通す
+RUN echo "export PATH=/usr/lib/postgresql/9.4/bin/:$PATH" >> ~/.bash_profile
+RUN . ~/.bash_profile
+# DB接続時、パスワードを要求されないための設定
+RUN echo "db:5432:*:emaki:emakipostgres" > ~/.pgpass
+RUN chmod 600 ~/.pgpass
 
 # ------------------------------------------------------------
 # 開発に必要なパッケージのインストール

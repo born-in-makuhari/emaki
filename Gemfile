@@ -7,11 +7,13 @@ gem 'json'
 gem 'slim'
 gem 'rmagick'
 
-# for redis
+# for database
 gem 'dm-core'
 gem 'dm-validations'
 gem 'dm-redis-adapter'
 gem 'redis-objects'
+gem 'dm-postgres-adapter'
+gem 'dm-migrations'
 
 
 # for styling

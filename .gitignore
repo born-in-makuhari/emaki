@@ -2,6 +2,7 @@ Gemfile.lock
 .bundle
 logs/
 out.log
+nohup.out
 slides/
 tmp/
 db/

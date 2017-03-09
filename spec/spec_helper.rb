@@ -47,13 +47,6 @@ end
 # 全てのテストデータを削除
 # TODO: もっといいやりかた
 def flush_testdb!
-  Redis.current ||= Redis::Namespace.new(
-    'emaki:test', host: '127.0.0.1', port: 6379)
-  keys = Redis.current.keys 'emaki:test:*'
-  keys.each do |k|
-    Redis.current.del(k)
-  end
-
   Slide.all.destroy
   User.all.destroy
 end

@@ -1,6 +1,6 @@
 Gemfile.lock
 .bundle
-logs/
+logs/*.log
 out.log
 nohup.out
 slides/

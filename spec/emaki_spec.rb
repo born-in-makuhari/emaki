@@ -9,6 +9,7 @@ require File.expand_path '../spec_helper.rb', __FILE__
 #          値が２つの場合はテキストが同じか確認
 #          値が３つの場合は要素の属性名・属性値が同じか確認
 RSpec::Matchers.define :desplay do |css, keyortext, value|
+  keyortext = keyortext.to_s unless keyortext.nil?
   match do |actual|
     if keyortext.nil?
       actual.at_css(css)

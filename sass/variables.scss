@@ -3,3 +3,20 @@
 // see sass/_bootstrap-variables.scss for your informations
 //
 
+// 角丸を緩和
+$border-radius-base:        1px;
+$border-radius-large:       1px;
+$border-radius-small:       1px;
+
+// かっこいいフォントを優先的に使う
+$font-family-sans-serif: 'Open Sans', "Helvetica Neue", Helvetica, Arial, "游ゴシック体", "Yu Gothic", YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+
+// 灰色を使用
+$gray-base:              #444;
+
+// 配色を変更
+$brand-primary:         #00a0e9;
+$brand-success:         #07b4ff;
+$brand-info:            #28bcfc;
+$brand-warning:         #ff8700;
+$brand-danger:          #ff8700;

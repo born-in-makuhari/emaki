@@ -1,5 +1,5 @@
 # emaki
-FROM ruby:2.0.0
+FROM ruby
 
 EXPOSE 4567
 EXPOSE 80
@@ -7,8 +7,9 @@ EXPOSE 80
 # ------------------------------------------------------------
 # 動作に必要なパッケージのインストール
 #
-RUN apt-get update 
-RUN apt-get install -y aptitude
+RUN apt-get update && apt-get install -y \
+    aptitude
+
 RUN aptitude install -y \
              imagemagick \
              libmagick++-dev
@@ -16,7 +17,17 @@ RUN aptitude install -y \
 RUN apt-get install -y \
             nodejs \
             ghostscript \
-            redis-server
+            redis-server \
+            postgresql-9.4 \
+            postgresql-server-dev-9.4 \
+            libpq-dev
+
+# postgres へのパスを通す
+RUN echo "export PATH=/usr/lib/postgresql/9.4/bin/:$PATH" >> ~/.bash_profile
+RUN . ~/.bash_profile
+# DB接続時、パスワードを要求されないための設定
+RUN echo "db:5432:*:emaki:emakipostgres" > ~/.pgpass
+RUN chmod 600 ~/.pgpass
 
 # ------------------------------------------------------------
 # 開発に必要なパッケージのインストール

@@ -14,22 +14,23 @@ Emaki is a simple slide sharing tool.
   ```
   git clone https://github.com/born-in-makuhari/emaki.git
   cd emaki
-  ./dock/build.sh
-  ./dock/quick-start.sh
+  alias docker="sudo docker" # if your 'docker' command needs 'sudo'
+  . dock/build.sh
+  . dock/db-start.sh
+  . dock/quick-start.sh
   ```
 
   which would result in:  
 
   ```
-  33333 -> 80:tcp
-  44444 -> 443:tcp
+  80:tcp --> 0.0.0.0:12321
   ```
 
   Emaki is working in a container named "emaki".  
   And then:  
 
   ```
-  http://localhost:33333/
+  http://localhost:12321/
   ```
 
 ## License

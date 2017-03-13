@@ -134,8 +134,8 @@ describe 'Emaki' do
   # /users/:username
   #
   describe 'GET /users/:username' do
-    context 'signed in as himself' do
-      include_context 'signed in'
+    context 'if user created, ' do
+      include_context 'user created'
       before(:all) { get "/users/#{UN}" }
       it_behaves_like 'an emaki page'
     end

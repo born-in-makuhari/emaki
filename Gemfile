@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 # for application
 gem 'sinatra'
+gem 'sinatra-contrib'
 gem 'json'
 gem 'slim'
 gem 'rmagick'

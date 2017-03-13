@@ -1,8 +1,14 @@
+# 引数がrandomならランダムにポート割り当て
+PORT_OPTION=" -p 12321:80 "
+
+if [ $1 -a $1 = "random" ]; then
+  PORT_OPTION=" -P "
+fi
 
 echo http_proxy:${http_proxy}
 echo https_proxy:${https_proxy}
 
-docker run -dti -P --name emaki \
+docker run -dti $PORT_OPTION --name emaki \
   --link emaki_pg:db \
   -e http_proxy=${http_proxy}\
   -e https_proxy=${https_proxy}\

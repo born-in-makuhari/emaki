@@ -6,6 +6,8 @@ Bundler.require
 Encoding.default_external = 'UTF-8'
 set :bind, '0.0.0.0'
 
+require 'sinatra/reloader' if development?
+
 # ----------------------------------------------------------------
 # Emaki::
 #

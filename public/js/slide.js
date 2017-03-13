@@ -16,6 +16,7 @@ function page(num) {
 }
 
 function bar(num) {
+  $('#slideView #nowNumber').val(nowNumber);
   $('progress#pageIndicator').val(nowNumber);
 }
 

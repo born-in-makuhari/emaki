@@ -1,6 +1,7 @@
 require 'bundler'
 Bundler.require :test
 require 'capybara/rspec'
+include Capybara::DSL
 
 headless = Headless.new
 headless.start

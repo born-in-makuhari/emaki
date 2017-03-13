@@ -73,11 +73,17 @@ describe 'Emaki' do
     it { expect(html).to desplay '#name' }
     it { expect(html).to desplay '#title' }
     it { expect(html).to desplay '#description' }
+    it { expect(html).to desplay '#nowNumber' }
     it 'desplays all pages, as <img>' do
       3.times do |i|
         expect(html).to desplay @page_css[i]
         expect(html).to desplay @img_css[i], :src, @img_href[i]
       end
+    end
+
+    it 'if click next button,' do
+      find('#controls #next').click
+      it { expect(html).to desplay '#nowNumber', '2' }
     end
   end
 

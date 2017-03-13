@@ -78,6 +78,14 @@ sudo をつける環境の場合、先に
 
 ## emaki を開発する場合
 
+1. 環境の指定
+
+    sinatraの環境指定は`quick-start.sh`の引数で行います。
+
+    ```
+    . dock/quick-start.sh development
+    ```
+
 1. ソースコードの編集
 
     たった今cloneしてきたお手元のソースを弄ってください。  

@@ -131,6 +131,15 @@ describe 'Emaki' do
   end
 
   #
+  # /users/:username
+  #
+  describe 'GET /users/:username' do
+    include_context 'user created'
+    before(:all) { get "/users/#{UN}" }
+    it_behaves_like 'an emaki page'
+  end
+
+  #
   # /users
   #
   describe 'POST /users' do

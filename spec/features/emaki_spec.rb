@@ -79,6 +79,11 @@ describe 'Top page', type: :feature do
       expect(uri.path).to eq '/'
       expect(page).not_to have_css '#userinfo'
     end
+    it 'links to user page' do
+      click_link 'toUser'
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq "/users/for-signin"
+    end
   end
 end
 

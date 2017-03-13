@@ -159,8 +159,15 @@ post '/users' do
     return
   end
 
+  # ユーザーID被ってたら警告して終了
+  if User.all(slug: slug).length != 0
+    attention :slug_dupl
+    redirect to '/register'
+  end
+
   # ユーザーを登録
   @user = User.create(slug: slug, name: name, password: password, email: email)
+
   if @user.save
     # 自動でログイン
     session[:user] = slug

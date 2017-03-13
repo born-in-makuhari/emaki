@@ -244,6 +244,32 @@ describe 'Emaki' do
 
       it_behaves_like 'redirect', '/'
     end
+
+    # ID重複時
+    context 'if already registered,' do
+      include_context 'user created'
+      before do
+        post '/users',
+             username: UN,
+             password: 'another_password',
+             name: 'IDが被っている人',
+             email: 'another.user.email@testuser.com'
+      end
+      it_behaves_like 'redirect', '/register'
+
+      context 'follow redirect,' do
+        let(:html) { Oga.parse_html(last_response.body) }
+        before { follow_redirect! }
+
+        it 'with slug dupl warning' do
+          expect(html).to desplay '#attention #slugDupl'
+        end
+
+        it 'without new user' do
+          expect(User.count).to eq 1
+        end
+      end
+    end
   end
 
   #

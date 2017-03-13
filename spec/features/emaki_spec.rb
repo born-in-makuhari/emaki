@@ -82,6 +82,7 @@ describe 'Top page', type: :feature do
   end
 end
 
+# ====================================================================
 #
 # Register page
 #
@@ -146,6 +147,7 @@ describe 'Register page', type: :feature do
 
 end
 
+# ====================================================================
 #
 # SignIn page
 #
@@ -239,6 +241,23 @@ describe 'SignIn page', type: :feature do
 
 end
 
+# ====================================================================
+#
+# User page
+#
+
+describe 'User page', type: :feature do
+  context 'if signed in, ' do
+    include_context 'signed in', nil, :all
+    before { visit "/users/#{UN}" }
+
+    it 'displays user page' do
+      expect(uri.path).to eq "/users/#{UN}"
+    end
+  end
+end
+
+# ====================================================================
 #
 # SignOut page
 #
@@ -274,6 +293,7 @@ describe 'SignOut page', type: :feature do
   end
 end
 
+# ====================================================================
 #
 # New page
 #
@@ -307,6 +327,7 @@ describe 'New page', type: :feature do
   end
 end
 
+# ====================================================================
 #
 # Slide page
 #

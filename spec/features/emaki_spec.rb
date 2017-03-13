@@ -252,6 +252,7 @@ describe 'User page', type: :feature do
     before { visit "/users/#{UN}" }
 
     it 'displays user page' do
+      uri = URI.parse(current_url)
       expect(uri.path).to eq "/users/#{UN}"
     end
   end

@@ -30,7 +30,6 @@ require EMAKI_ROOT + '/lib/binder.rb'
 
 set :protection, false
 set :protect_from_csrf, false
-disable :sessions
 
 expire_after = 30 * 24 * 60 * 60 # production keeps 1 month
 if EMAKI_ENV == 'development'

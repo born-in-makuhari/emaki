@@ -204,6 +204,7 @@ describe 'Emaki' do
       it_behaves_like "does not create user #{UN}"
     end
 
+    # ユーザー登録正常系
     context 'with valid user informations' do
       before(:all) do
         flush_testdb!
@@ -225,6 +226,10 @@ describe 'Emaki' do
         expect(User.first(slug: UN).password).to eq(UN + 'password')
         expect(User.first(slug: UN).name).to eq 'テスト用ユーザー'
         expect(User.first(slug: UN).email).to eq 'test.user.email@testuser.com'
+      end
+
+      it 'auto signin' do
+        expect(session[:user]).to eq UN
       end
     end
     context 'if signed in,' do

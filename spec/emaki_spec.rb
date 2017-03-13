@@ -28,7 +28,7 @@ end
 describe 'Emaki' do
 
   # 以降どんなサンプルでも、変数 html が lazy load で使える。
-  let(:html) { Oga.parse_html(last_response.body) }
+  let(:oga_html) { Oga.parse_html(last_response.body) }
 
   before :all do
     FileUtils.rm_rf(Binder.tmppath) if Binder.tmppath != '/'
@@ -41,7 +41,7 @@ describe 'Emaki' do
   # ヘッダ、タイトル
   shared_examples_for 'common header' do
     it 'displays "emaki" as a link to "/"' do
-      expect(html).to desplay 'a#toTop', 'href', '/'
+      expect(oga_html).to desplay 'a#toTop', 'href', '/'
     end
   end
 
@@ -67,18 +67,20 @@ describe 'Emaki' do
       end
     end
 
-    it { expect(html).to desplay @slide_css }
-    it { expect(html).to desplay '#next' }
-    it { expect(html).to desplay '#prev' }
-    it { expect(html).to desplay '#name' }
-    it { expect(html).to desplay '#title' }
-    it { expect(html).to desplay '#description' }
+    it { expect(oga_html).to desplay @slide_css }
+    it { expect(oga_html).to desplay '#next' }
+    it { expect(oga_html).to desplay '#prev' }
+    it { expect(oga_html).to desplay '#name' }
+    it { expect(oga_html).to desplay '#title' }
+    it { expect(oga_html).to desplay '#description' }
+    it { expect(oga_html).to desplay '#nowNumber' }
     it 'desplays all pages, as <img>' do
       3.times do |i|
-        expect(html).to desplay @page_css[i]
-        expect(html).to desplay @img_css[i], :src, @img_href[i]
+        expect(oga_html).to desplay @page_css[i]
+        expect(oga_html).to desplay @img_css[i], :src, @img_href[i]
       end
     end
+
   end
 
   # リダイレクト
@@ -258,11 +260,11 @@ describe 'Emaki' do
       it_behaves_like 'redirect', '/register'
 
       context 'follow redirect,' do
-        let(:html) { Oga.parse_html(last_response.body) }
+        let(:oga_html) { Oga.parse_html(last_response.body) }
         before { follow_redirect! }
 
         it 'with slug dupl warning' do
-          expect(html).to desplay '#attention #slugDupl'
+          expect(oga_html).to desplay '#attention #slugDupl'
         end
 
         it 'without new user' do
@@ -360,18 +362,18 @@ describe 'Emaki' do
       let(:title) { 'input#title' }
       let(:description) { 'textarea#description' }
       before { get '/new' }
-      it { expect(html).to desplay form }
-      it { expect(html).to desplay form, :action, '/slides' }
-      it { expect(html).to desplay form, :method, 'post' }
-      it { expect(html).to desplay form, :enctype, 'multipart/form-data' }
-      it { expect(html).to desplay sninput, :type, 'text' }
-      it { expect(html).to desplay sninput, :name, 'slidename' }
-      it { expect(html).to desplay slinput, :type, 'file' }
-      it { expect(html).to desplay slinput, :name, 'slide' }
-      it { expect(html).to desplay title, :type, 'text' }
-      it { expect(html).to desplay title, :name, 'title' }
-      it { expect(html).to desplay description, :name, 'description' }
-      it { expect(html).to desplay 'input[type="submit"]' }
+      it { expect(oga_html).to desplay form }
+      it { expect(oga_html).to desplay form, :action, '/slides' }
+      it { expect(oga_html).to desplay form, :method, 'post' }
+      it { expect(oga_html).to desplay form, :enctype, 'multipart/form-data' }
+      it { expect(oga_html).to desplay sninput, :type, 'text' }
+      it { expect(oga_html).to desplay sninput, :name, 'slidename' }
+      it { expect(oga_html).to desplay slinput, :type, 'file' }
+      it { expect(oga_html).to desplay slinput, :name, 'slide' }
+      it { expect(oga_html).to desplay title, :type, 'text' }
+      it { expect(oga_html).to desplay title, :name, 'title' }
+      it { expect(oga_html).to desplay description, :name, 'description' }
+      it { expect(oga_html).to desplay 'input[type="submit"]' }
     end
 
     context 'if signed out, ' do
@@ -408,7 +410,7 @@ describe 'Emaki' do
 
       it { expect(last_response.status).to eq 404 }
       it do
-        expect(html).to desplay(
+        expect(oga_html).to desplay(
           '#slideNotFound',
           '"testuser/testslide" Not Found.'
         )
@@ -444,11 +446,11 @@ describe 'Emaki' do
       it_behaves_like "does not create slide #{SN}"
 
       context 'follow redirect,' do
-        let(:html) { Oga.parse_html(last_response.body) }
+        let(:oga_html) { Oga.parse_html(last_response.body) }
         before { follow_redirect! }
 
         it 'with slug rules' do
-          expect(html).to desplay '#attention #slugRule'
+          expect(oga_html).to desplay '#attention #slugRule'
         end
       end
     end
@@ -460,10 +462,10 @@ describe 'Emaki' do
       it_behaves_like "does not create slide #{SN}"
 
       context 'follow redirect,' do
-        let(:html) { Oga.parse_html(last_response.body) }
+        let(:oga_html) { Oga.parse_html(last_response.body) }
         before { follow_redirect! }
         it 'with no file attention' do
-          expect(html).to desplay '#attention #noFile'
+          expect(oga_html).to desplay '#attention #noFile'
         end
       end
     end

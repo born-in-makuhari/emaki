@@ -16,7 +16,8 @@ function page(num) {
 }
 
 function bar(num) {
-  $('progress#pageIndicator').val(nowNumber);
+  $('#nowNumber').text(num + 1);
+  $('progress#pageIndicator').val(num);
 }
 
 function next() {

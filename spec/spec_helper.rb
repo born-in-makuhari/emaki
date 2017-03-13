@@ -24,6 +24,7 @@ RSpec.configure { |c| c.include RSpecMixin }
 # For Capybara
 Capybara.app = Sinatra::Application
 Capybara.current_driver = :webkit
+Capybara.javascript_driver = :webkit
 Capybara::Webkit.configure do |config|
   config.allow_url('ajax.googleapis.com')
   config.allow_url('fonts.googleapis.com')

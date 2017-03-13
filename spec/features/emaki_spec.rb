@@ -311,7 +311,7 @@ end
 # Slide page
 #
 
-describe 'Slide page', type: :feature do
+describe 'Slide page', { type: :feature, js: true } do
   include_context 'signed in', nil, :all
   include_context 'slide posted with', true, true, true
 
@@ -319,6 +319,7 @@ describe 'Slide page', type: :feature do
     visit "/#{UN}/#{SN}"
     @indicator = find 'progress#pageIndicator'
     @next_button = find 'button#next'
+    @now_number = find '#nowNumber'
   end
 
   describe 'has Page Indicator' do
@@ -327,6 +328,30 @@ describe 'Slide page', type: :feature do
     end
     it 'displays 0' do
       expect(@indicator.value).to eq '0'
+    end
+  end
+
+  describe 'if you click next button once,' do
+    it 'Page Number is 2' do
+      @next_button.click
+      expect(@now_number.text).to eq '2'
+    end
+  end
+
+  describe 'if you click next button twice,' do
+    it 'Page Number is 3' do
+      @next_button.click
+      @next_button.click
+      expect(@now_number.text).to eq '3'
+    end
+  end
+
+  describe 'if you click next button 3 times,' do
+    it 'Page Number is 3 (max)' do
+      @next_button.click
+      @next_button.click
+      @next_button.click
+      expect(@now_number.text).to eq '3'
     end
   end
 end

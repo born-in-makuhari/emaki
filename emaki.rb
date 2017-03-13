@@ -147,6 +147,10 @@ get '/register' do
   slim :register, layout: :layout
 end
 
+get '/users/:username' do
+  slim :user_page, layout: :layout
+end
+
 post '/users' do
   slug = params[:username]
   name = params[:name]

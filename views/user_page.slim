@@ -1,0 +1,31 @@
+.eyecatch
+  .row
+    .col-md-4.col-md-offset-4.col-xs-6.col-xs-offset-3
+      img#logo.img-responsive.center-block src="/images/emaki-logo.png"
+  .row
+    .col-lg-12.text-center
+      h1 emaki
+      p
+        | スライド共有を、もっとシンプルに。ああああああ
+      hr
+- if attention?
+  .row#attention
+    .col-lg-12
+      == attention
+/.row#slides
+  .col-lg-12
+    - if @slides
+      ul.list-group
+        - @slides.each do |un, user_slides|
+          - unless user_slides.empty?
+            .list-group-item.list-group-item-info
+              h4
+                span.glyphicon.glyphicon-user
+                | &nbsp;
+                = un
+            - user_slides.each do |slide|
+              .list-group-item
+                a href="/#{un}/#{slide[:slug]}"
+                  h4
+                    = "#{slide[:name]}/#{slide[:title]}"
+

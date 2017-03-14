@@ -251,14 +251,12 @@ end
 # User page
 #
 
-describe 'マイページ', type: :feature, focus: true do
-  context 'ログイン状態の場合' do
+describe 'マイページ', type: :feature do
 
-    context 'スライドがある場合' do
-      # TODO signed in は一つ上のcontextに配置したいが、何故か失敗する
-      #      all/eachが影響している？
-      #      spec/spec_helper.rbの内容を読み解く必要がある
-      include_context 'signed in', nil, :all
+  context 'ログイン状態の場合' do
+    include_context 'signed in', nil, :all
+
+    context 'スライドがある状態でアクセスした場合' do
       include_context 'slide posted with'
       before { visit "/users/#{UN}" }
 
@@ -281,8 +279,24 @@ describe 'マイページ', type: :feature, focus: true do
       end
     end
 
-    context 'スライドが無い場合' do
-      include_context 'signed in', nil, :all
+    context 'スライドが無い状態でアクセスした場合', focus: true do
+      # TODO signed in は一つ上のcontextにあるため、
+      #      ここからは削除したい…が削除すると何故か失敗する
+      #      all or eachが影響しているかもしれない
+      #      spec/spec_helper.rbの内容を読み解く必要がある
+      include_context 'user created',
+                      slug: UN,
+                      name: 'ログインテスト用',
+                      email: 'for.signin@test.com',
+                      password: 'for-signin'
+      before do
+        visit '/signin'
+        fill_in 'usernameOrEmail', with: UN
+        fill_in 'password', with: 'for-signin'
+        find('form#signin input[type=submit]').click
+        visit '/'
+      end
+
       before { visit "/users/#{UN}" }
 
       it 'マイページを表示する' do
@@ -299,17 +313,10 @@ describe 'マイページ', type: :feature, focus: true do
         expect(page).to have_content '新しいスライドを作成'
       end
 
-      context '「新しいスライドを作成」をクリックした場合' do
-        before { click_on '新しいスライドを作成' }
-
-        it 'スライド作成ページに遷移する' do
-          uri = URI.parse(current_url)
-          expect(uri.path).to eq "/new"
-        end
-
-        it 'aaaaaaaa' do
-          expect(page).to have_content 'aaaaaaaaaa'
-        end
+      it "「新しいスライドを作成」をクリックするとスライド作成ページに移動できる" do
+        click_on '新しいスライドを作成'
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq "/new"
       end
     end
   end

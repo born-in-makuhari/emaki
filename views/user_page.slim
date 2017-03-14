@@ -33,9 +33,9 @@ h3
                 button.close data-dismiss="modal"
                   span aria-hidden="true"
                     | &times;
-                h4.modal-title#modal-label = "スライド「#{slide[:title]}」"
+                h4.modal-title#modal-label = "警告"
               .modal-body
-                | このスライドを削除しますか？
+                = "スライド「#{slide[:title]}」を削除しますか？"
               .modal-footer
                 a.btn.btn-default data-dismiss="modal"
                   | キャンセル

@@ -295,7 +295,7 @@ describe 'マイページ', type: :feature do
       end
       before { visit "/users/#{UN}" }
 
-      it 'マイページを表示する', focus: true do
+      it 'マイページを表示する' do
         uri = URI.parse(current_url)
         expect(page).to have_content 'マイページ'
         expect(uri.path).to eq "/users/#{UN}"
@@ -310,6 +310,44 @@ describe 'マイページ', type: :feature do
         it 'スライドページに遷移する' do
           uri = URI.parse(current_url)
           expect(uri.path).to eq "/#{UN}/#{SN}"
+        end
+      end
+
+      context 'スライド横の「x」ボタンをクリックした場合' do
+        before { find("#confirm-delete-#{UN}-#{SN}").click }
+        it '「警告」と表示する' do
+          expect(page).to have_content '警告'
+        end
+        it '「スライド「xxx」を削除しますか？」と表示する' do
+          expect(page).to have_content "スライド「#{Slide.first.title}」を削除しますか？"
+        end
+
+        context 'さらに「削除」をクリックした場合' do
+          before { find("#delete-#{UN}-#{SN}").click }
+
+          it 'スライドが削除されている' do
+            expect(Slide.count).to be 0
+          end
+
+          it 'マイページを表示する' do
+            uri = URI.parse(current_url)
+            expect(page).to have_content 'マイページ'
+            expect(uri.path).to eq "/users/#{UN}"
+          end
+
+          it "「まだスライドがありません」と表示される" do
+            expect(page).to have_content 'まだスライドがありません'
+          end
+
+          it "「新しいスライドを作成」というボタンが表示される" do
+            expect(page).to have_content '新しいスライドを作成'
+          end
+
+          it "「新しいスライドを作成」をクリックするとスライド作成ページに移動できる" do
+            click_on '新しいスライドを作成'
+            uri = URI.parse(current_url)
+            expect(uri.path).to eq "/new"
+          end
         end
       end
     end

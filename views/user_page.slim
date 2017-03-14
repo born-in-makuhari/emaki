@@ -25,6 +25,7 @@ h3
             .clearfix
       - @slides.each do |slide|
         - delete_dialog_id = "confirm-delete-#{@user.slug}-#{slide[:slug]}"
+        - delete_button_id = "delete-#{@user.slug}-#{slide[:slug]}"
         .modal id="#{delete_dialog_id}" tabindex="-1"
           .modal-dialog
             .modal-content
@@ -38,7 +39,7 @@ h3
               .modal-footer
                 a.btn.btn-default data-dismiss="modal"
                   | キャンセル
-                a.btn.btn-danger
+                a.btn.btn-danger id="#{delete_button_id}"
                   | 削除
     - else
       p

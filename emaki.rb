@@ -155,6 +155,12 @@ get '/users/:username' do
     status 404
     return slim :"attentions/user_not_found", layout: :layout
   end
+  unless @user.slug == session[:user]
+    status 403
+    attention :only_named_user
+    redirect to '/'
+    return
+  end
 
   @slides = @user.slides
   slim :user_page, layout: :layout

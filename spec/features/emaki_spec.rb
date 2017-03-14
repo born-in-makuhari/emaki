@@ -251,7 +251,7 @@ end
 # User page
 #
 
-describe 'マイページ', type: :feature, focus: true do
+describe 'マイページ', type: :feature do
 
   context 'ログインしていない状態で、自分のページにアクセスした場合' do
     include_context 'user created'
@@ -287,12 +287,18 @@ describe 'マイページ', type: :feature, focus: true do
 
     context 'スライドがある状態でアクセスした場合' do
       include_context 'slide posted with'
+      before do
+        visit '/signin'
+        fill_in 'usernameOrEmail', with: UN
+        fill_in 'password', with: 'password'
+        find('form#signin input[type=submit]').click
+      end
       before { visit "/users/#{UN}" }
 
-      it 'マイページを表示する' do
+      it 'マイページを表示する', focus: true do
         uri = URI.parse(current_url)
-        expect(uri.path).to eq "/users/#{UN}"
         expect(page).to have_content 'マイページ'
+        expect(uri.path).to eq "/users/#{UN}"
       end
 
       it "そのユーザーのスライドを表示する" do

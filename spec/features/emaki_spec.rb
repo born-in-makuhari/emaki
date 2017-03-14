@@ -251,7 +251,36 @@ end
 # User page
 #
 
-describe 'マイページ', type: :feature do
+describe 'マイページ', type: :feature, focus: true do
+
+  context 'ログインしていない状態で、自分のページにアクセスした場合' do
+    include_context 'user created'
+    before { visit "/users/#{UN}" }
+    it '「ログインが必要です」と警告され、' do
+      expect(page).to have_content 'ログインが必要です'
+    end
+    it 'トップページへ移動する' do
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq "/"
+    end
+  end
+
+  context 'ログイン状態で、他人のページにアクセスした場合' do
+    include_context 'user created',
+                    slug: 'another',
+                    name: 'ログインテスト用',
+                    email: 'for.signin@test.com',
+                    password: 'for-signin'
+    include_context 'user created'
+    before { visit "/users/another" }
+    it '「ログインが必要です」と警告され、' do
+      expect(page).to have_content 'ログインが必要です'
+    end
+    it 'トップページへ移動する' do
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq "/"
+    end
+  end
 
   context 'ログイン状態の場合' do
     include_context 'signed in', nil, :all

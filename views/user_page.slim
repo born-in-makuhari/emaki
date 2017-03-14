@@ -1,17 +1,18 @@
+h3
+  span.glyphicon.glyphicon-user
+  | マイページ
 - if attention?
   .row#attention
-    .col-lg-12
+    .col-xs-12
       == attention
 .row#slides
-  .col-lg-12
+  .col-xs-12
     - unless @slides.empty?
+      - name = @user.name != "" ? @user.name : @user.slug
       ul.list-group
         .list-group-item.list-group-item-info
           h4
-            span.glyphicon.glyphicon-user
-            | &nbsp;
-            - name = @user.name != "" ? @user.name : @user.slug
-            = name
+            | あなたのスライド
         - @slides.each do |slide|
           .list-group-item
             a href="/#{@user.slug}/#{slide[:slug]}"

@@ -8,7 +8,7 @@ class User
   property :password, String, length: 1..50
   property :email, String, format: :email_address
 
-  has n, :slide
+  has n, :slides
 
   def self.exists?(slug)
     return true if first(slug: slug)

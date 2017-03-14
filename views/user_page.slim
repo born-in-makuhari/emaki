@@ -2,19 +2,24 @@
   .row#attention
     .col-lg-12
       == attention
-/.row#slides
+.row#slides
   .col-lg-12
-    - if @slides
+    - unless @slides.empty?
       ul.list-group
-        - @slides.each do |un, user_slides|
-          - unless user_slides.empty?
-            .list-group-item.list-group-item-info
+        .list-group-item.list-group-item-info
+          h4
+            span.glyphicon.glyphicon-user
+            | &nbsp;
+            - name = @user.name != "" ? @user.name : @user.slug
+            = name
+        - @slides.each do |slide|
+          .list-group-item
+            a href="/#{@user.slug}/#{slide[:slug]}"
               h4
-                span.glyphicon.glyphicon-user
-                | &nbsp;
-                = un
-            - user_slides.each do |slide|
-              .list-group-item
-                a href="/#{un}/#{slide[:slug]}"
-                  h4
-                    = "#{slide[:name]}/#{slide[:title]}"
+                = "#{name}/#{slide[:title]}"
+    - else
+      p
+        h4 まだスライドがありません。
+      p
+        a.btn.btn-primary.btn-block.btn-lg href="/new"
+          | 新しいスライドを作成

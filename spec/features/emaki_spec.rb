@@ -252,13 +252,32 @@ end
 #
 
 describe 'User page', type: :feature do
-  context 'if signed in, ' do
-    include_context 'signed in', nil, :all
+  context 'if signed in & slide created, ' do
+    include_context 'signed in'
+    include_context 'slide posted with'
     before { visit "/users/#{UN}" }
 
     it 'displays user page' do
       uri = URI.parse(current_url)
       expect(uri.path).to eq "/users/#{UN}"
+    end
+
+    it "displays user's slides" do
+      pending "not impl"
+    end
+  end
+
+  context 'if signed in & no slide, ' do
+    include_context 'signed in'
+    before { visit "/users/#{UN}" }
+
+    it 'displays user page' do
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq "/users/#{UN}"
+    end
+
+    it "displays link to create-slide" do
+      pending "not impl"
     end
   end
 end

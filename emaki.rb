@@ -150,6 +150,13 @@ get '/register' do
 end
 
 get '/users/:username' do
+  @user = User.first(slug: params[:username])
+  unless @user
+    status 404
+    return slim :"attentions/user_not_found", layout: :layout
+  end
+
+  @slides = @user.slides
   slim :user_page, layout: :layout
 end
 

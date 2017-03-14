@@ -247,7 +247,7 @@ post '/slides' do
     return
   end
 
-  unless file
+  unless file.class == Hash
     attention :no_file
     redirect to('/new')
     return

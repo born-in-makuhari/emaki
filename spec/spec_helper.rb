@@ -58,13 +58,13 @@ flush_testdb!
 
 # スライドがある状態
 #
-# username:  trueの時は正しい形式
-# slidename: 上に同じ
-# file:      上に同じ
+# username:  指定されなければ正しい形式(UN)
+# slidename: 指定されなければ正しい形式(SN)
+# file:      指定されなければ正しい形式(PDF_FILE)
 shared_context 'slide posted with' do |un, sn, file|
-  un = un ? UN : '-'
-  sn  = sn ? SN : '-'
-  file = file ? PDF_FILE : nil
+  un = un ? un : UN
+  sn  = sn ? sn : SN
+  file = file ? file : PDF_FILE
 
   let(:slide_path) { SLIDES_ROOT + "/#{un}/#{sn}" }
 

@@ -401,7 +401,7 @@ describe 'Emaki' do
   describe 'GET /username/slidename' do
     context 'if target exists,' do
       include_context 'signed in', nil, :all
-      include_context 'slide posted with', true, true, true
+      include_context 'slide posted with'
       it_behaves_like 'an emaki page'
       it_behaves_like 'a slide page'
 
@@ -452,7 +452,7 @@ describe 'Emaki' do
 
     context 'if slidename is invalid,' do
       include_context 'signed in', nil, :all
-      include_context 'slide posted with', true, false, true
+      include_context 'slide posted with', UN, '--'
       it_behaves_like 'redirect', '/new'
       it_behaves_like "does not create slide #{SN}"
 
@@ -468,7 +468,7 @@ describe 'Emaki' do
 
     context 'no file,' do
       include_context 'signed in', nil, :all
-      include_context 'slide posted with', true, true, false
+      include_context 'slide posted with', UN, SN, 'wrong_file'
       it_behaves_like 'redirect', '/new'
       it_behaves_like "does not create slide #{SN}"
 
@@ -483,7 +483,7 @@ describe 'Emaki' do
 
     context 'with valid slide informations' do
       include_context 'signed in', nil, :all
-      include_context 'slide posted with', true, true, true
+      include_context 'slide posted with'
       it_behaves_like 'redirect', "/#{UN}/#{SN}"
       it_behaves_like "creates slide #{SN}"
 
@@ -505,7 +505,7 @@ describe 'Emaki' do
 
     context 'if signed out, ' do
       include_context 'signed out', :all
-      include_context 'slide posted with', true, true, true
+      include_context 'slide posted with'
       it_behaves_like 'redirect', '/'
       it_behaves_like "does not create slide #{SN}"
     end
@@ -515,7 +515,7 @@ describe 'Emaki' do
   #
   describe 'GET /:username/:slidename/:number.png' do
     include_context 'signed in', nil, :all
-    include_context 'slide posted with', true, true, true
+    include_context 'slide posted with'
 
     after :all do
       FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")

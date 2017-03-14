@@ -251,19 +251,27 @@ end
 # User page
 #
 
-describe 'User page', type: :feature do
-  context 'if signed in & slide created, ' do
+describe 'マイページ', type: :feature do
+  context 'もしサインイン状態でスライドがある場合' do
     include_context 'signed in'
     include_context 'slide posted with'
     before { visit "/users/#{UN}" }
 
-    it 'displays user page' do
+    it 'マイページを表示する' do
       uri = URI.parse(current_url)
       expect(uri.path).to eq "/users/#{UN}"
     end
 
-    it "displays user's slides" do
-      pending "not impl"
+    it "そのユーザーのスライドを表示する" do
+      expect(page).to have_content SN
+    end
+
+    context "もしスライド名をクリックした場合" do
+      before { click_on SN }
+      it 'スライドページに遷移する' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq "/#{UN}/#{SN}"
+      end
     end
   end
 
@@ -359,7 +367,7 @@ end
 
 describe 'Slide page', { type: :feature, js: true } do
   include_context 'signed in', nil, :all
-  include_context 'slide posted with', true, true, true
+  include_context 'slide posted with'
 
   before :each do
     visit "/#{UN}/#{SN}"

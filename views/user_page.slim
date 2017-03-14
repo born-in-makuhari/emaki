@@ -5,19 +5,23 @@ h3
   .row#attention
     .col-xs-12
       == attention
-.row#slides
+.row
   .col-xs-12
     - unless @slides.empty?
       - name = @user.name != "" ? @user.name : @user.slug
-      ul.list-group
+      ul.list-group#slides
         .list-group-item.list-group-item-info
           h4
             | あなたのスライド
         - @slides.each do |slide|
           .list-group-item
-            a href="/#{@user.slug}/#{slide[:slug]}"
-              h4
+            .pull-left.float
+              a href="/#{@user.slug}/#{slide[:slug]}"
                 = "#{name}/#{slide[:title]}"
+            .pull-right.float
+              .btn-danger.btn-sm
+                span.glyphicon.glyphicon-remove
+            .clearfix
     - else
       p
         h4 まだスライドがありません。

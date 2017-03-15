@@ -32,6 +32,8 @@ require EMAKI_ROOT + '/lib/binder.rb'
 
 set :protection, false
 set :protect_from_csrf, false
+enable :method_override # deleteメソッドを使うため
+use Rack::MethodOverride
 
 expire_after = 30 * 24 * 60 * 60 # production keeps 1 month
 if EMAKI_ENV == 'development'
@@ -237,6 +239,30 @@ get '/signout' do
   session[:user] = nil
   attention :goodbye_user
   redirect to '/'
+end
+
+delete '/slides/:id' do
+  @slide = Slide.first(id: params[:id])
+  unless @slide
+    status 404
+    return slim :"attentions/slide_not_found", layout: :layout
+  end
+  @user = @slide.user
+  unless @user.slug == session[:user]
+    status 403
+    attention :only_named_user
+    redirect to '/'
+    return
+  end
+
+  if @slide.destroy
+    attention :slide_deleted
+    redirect to "/users/#{@user.slug}"
+  else
+    status 500
+    attention :slide_delete_error
+    redirect to "/users/#{@user.slug}"
+  end
 end
 
 post '/slides' do

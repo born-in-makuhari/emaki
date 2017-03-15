@@ -286,13 +286,13 @@ describe 'マイページ', type: :feature do
     include_context 'signed in', nil, :all
 
     context 'スライドがある状態でアクセスした場合' do
-      include_context 'slide posted with'
       before do
         visit '/signin'
         fill_in 'usernameOrEmail', with: UN
         fill_in 'password', with: 'password'
         find('form#signin input[type=submit]').click
       end
+      include_context 'slide posted with'
       before { visit "/users/#{UN}" }
 
       it 'マイページを表示する' do
@@ -302,11 +302,11 @@ describe 'マイページ', type: :feature do
       end
 
       it "そのユーザーのスライドを表示する" do
-        expect(page).to have_content 'タイトルの表示名はどんな形式でもいい'
+        expect(page).to have_content 'タイトルの表示名'
       end
 
       context "スライド名をクリックした場合" do
-        before { click_on 'タイトルの表示名はどんな形式でもいい' }
+        before { click_on 'タイトルの表示名' }
         it 'スライドページに遷移する' do
           uri = URI.parse(current_url)
           expect(uri.path).to eq "/#{UN}/#{SN}"
@@ -314,19 +314,31 @@ describe 'マイページ', type: :feature do
       end
 
       context 'スライド横の「x」ボタンをクリックした場合' do
-        before { find("#confirm-delete-#{UN}-#{SN}").click }
+        before do
+          find("#confirm-delete-#{UN}-#{SN}").click
+        end
+
         it '「警告」と表示する' do
           expect(page).to have_content '警告'
         end
+
         it '「スライド「xxx」を削除しますか？」と表示する' do
           expect(page).to have_content "スライド「#{Slide.first.title}」を削除しますか？"
         end
 
         context 'さらに「削除」をクリックした場合' do
-          before { find("#delete-#{UN}-#{SN}").click }
+          before do
+            click_on '削除'
+          end
 
-          it 'スライドが削除されている' do
+          it 'スライドが削除されている', focus: true do
+            puts page.body
             expect(Slide.count).to be 0
+          end
+
+          it "「スライド「xxx」を削除しました」と表示される", focus: true do
+            puts page.body
+            expect(page).to have_content "スライド「タイトルの表示名はどんな形式でもいい」を削除しました"
           end
 
           it 'マイページを表示する' do
@@ -352,7 +364,8 @@ describe 'マイページ', type: :feature do
       end
     end
 
-    context 'スライドが無い状態でアクセスした場合', focus: true do
+    context 'スライドが無い状態でアクセスした場合' do
+      include_context 'slide posted with'
       # TODO signed in は一つ上のcontextにあるため、
       #      ここからは削除したい…が削除すると何故か失敗する
       #      all or eachが影響しているかもしれない

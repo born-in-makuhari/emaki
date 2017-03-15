@@ -20,8 +20,8 @@ h3
               a href="/#{@user.slug}/#{slide[:slug]}"
                 = "#{name}/#{slide[:title]}"
             .pull-right.float
-              .btn-danger.btn-sm data-toggle="modal" data-target="##{delete_dialog_id}"
-                span.glyphicon.glyphicon-remove
+              .btn-danger.btn-xs data-toggle="modal" data-target="##{delete_dialog_id}"
+                | &times;
             .clearfix
       - @slides.each do |slide|
         - delete_dialog_id = "confirm-delete-#{@user.slug}-#{slide[:slug]}"
@@ -39,8 +39,10 @@ h3
               .modal-footer
                 a.btn.btn-default data-dismiss="modal"
                   | キャンセル
-                a.btn.btn-danger id="#{delete_button_id}"
-                  | 削除
+                form action="/slides/#{slide.id}" method="post"
+                  input type="hidden" name="authenticity_token" value="#{session[:csrf]}"
+                  input type="hidden" name="_method" value="delete"
+                  input.btn.btn-danger type="submit" id="#{delete_button_id}" value="削除"
     - else
       p
         h4 まだスライドがありません。

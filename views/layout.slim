@@ -28,11 +28,11 @@ html
               a#toTop href="/" Top
             - if session[:user]
               - user = User.first(slug: session[:user])
-              - name = user.name ? user.name : user.slug
+              - name = user.name != "" ? user.name : user.slug
               li role="presentation"
                 a#toNew href="/new"  + New slide
               li.active#userinfo role="presentation"
-                a href="#"
+                a#toUser href="/users/#{user.slug}"
                   span.glyphicon.glyphicon-user
                   | &nbsp;
                   | #{name}

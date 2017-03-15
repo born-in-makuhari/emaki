@@ -79,9 +79,15 @@ describe 'Top page', type: :feature do
       expect(uri.path).to eq '/'
       expect(page).not_to have_css '#userinfo'
     end
+    it 'links to user page' do
+      click_link 'toUser'
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq "/users/for-signin"
+    end
   end
 end
 
+# ====================================================================
 #
 # Register page
 #
@@ -146,6 +152,7 @@ describe 'Register page', type: :feature do
 
 end
 
+# ====================================================================
 #
 # SignIn page
 #
@@ -239,6 +246,171 @@ describe 'SignIn page', type: :feature do
 
 end
 
+# ====================================================================
+#
+# User page
+#
+
+describe 'マイページ', type: :feature do
+
+  context 'ログインしていない状態で、自分のページにアクセスした場合' do
+    include_context 'user created'
+    before { visit "/users/#{UN}" }
+    it '「ログインが必要です」と警告され、' do
+      expect(page).to have_content 'ログインが必要です'
+    end
+    it 'トップページへ移動する' do
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq "/"
+    end
+  end
+
+  context 'ログイン状態で、他人のページにアクセスした場合' do
+    include_context 'user created',
+                    slug: 'another',
+                    name: 'ログインテスト用',
+                    email: 'for.signin@test.com',
+                    password: 'for-signin'
+    include_context 'user created'
+    before { visit "/users/another" }
+    it '「ログインが必要です」と警告され、' do
+      expect(page).to have_content 'ログインが必要です'
+    end
+    it 'トップページへ移動する' do
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq "/"
+    end
+  end
+
+  context 'ログイン状態の場合' do
+    include_context 'signed in', nil, :all
+
+    context 'スライドがある状態でアクセスした場合' do
+      include_context 'user created'
+      before do
+        visit '/signin'
+        fill_in 'usernameOrEmail', with: UN
+        fill_in 'password', with: 'password'
+        find('form#signin input[type=submit]').click
+      end
+      include_context 'slide posted with each case'
+      before { visit "/users/#{UN}" }
+
+      it 'マイページを表示する' do
+        uri = URI.parse(current_url)
+        expect(page).to have_content 'マイページ'
+        expect(uri.path).to eq "/users/#{UN}"
+      end
+
+      it "そのユーザーのスライドを表示する" do
+        expect(page).to have_content 'タイトルの表示名'
+      end
+
+      context "スライド名をクリックした場合" do
+        before { click_on 'タイトルの表示名' }
+        it 'スライドページに遷移する' do
+          uri = URI.parse(current_url)
+          expect(uri.path).to eq "/#{UN}/#{SN}"
+        end
+      end
+
+      context 'スライド横の「x」ボタンをクリックした場合' do
+        before do
+          find("#confirm-delete-#{UN}-#{SN}").click
+        end
+
+        it '「警告」と表示する' do
+          expect(page).to have_content '警告'
+        end
+
+        it '「スライド「xxx」を削除しますか？」と表示する' do
+          expect(page).to have_content "スライド「#{Slide.first.title}」を削除しますか？"
+        end
+
+        context 'さらに「削除」をクリックした場合' do
+          before do
+            click_on '削除'
+          end
+
+          it 'スライドが削除されている', focus: true do
+            expect(Slide.count).to be 0
+            expect(Binder.exist?(UN, SN)).to be false
+          end
+
+          it "「スライド「xxx」を削除しました」と表示される", focus: true do
+            expect(page).to have_content "スライド「タイトルの表示名はどんな形式でもいい」を削除しました"
+          end
+
+          it 'マイページを表示する' do
+            uri = URI.parse(current_url)
+            expect(page).to have_content 'マイページ'
+            expect(uri.path).to eq "/users/#{UN}"
+          end
+
+          it "「まだスライドがありません」と表示される" do
+            expect(page).to have_content 'まだスライドがありません'
+          end
+
+          it "「新しいスライドを作成」というボタンが表示される" do
+            expect(page).to have_content '新しいスライドを作成'
+          end
+
+          it "「新しいスライドを作成」をクリックするとスライド作成ページに移動できる" do
+            click_on '新しいスライドを作成'
+            uri = URI.parse(current_url)
+            expect(uri.path).to eq "/new"
+          end
+        end
+      end
+    end
+
+    context 'スライドが無い状態でアクセスした場合' do
+      # include_context 'slide posted with'
+
+      # TODO signed in は一つ上のcontextにあるため、
+      #      ここからは削除したい…が削除すると何故か失敗する
+      #      all or eachが影響しているかもしれない
+      #      spec/spec_helper.rbの内容を読み解く必要がある
+      include_context 'user created',
+                      slug: UN,
+                      name: 'ログインテスト用',
+                      email: 'for.signin@test.com',
+                      password: 'for-signin'
+      before do
+        visit '/signin'
+        fill_in 'usernameOrEmail', with: UN
+        fill_in 'password', with: 'for-signin'
+        find('form#signin input[type=submit]').click
+        visit '/'
+      end
+
+      before { visit "/users/#{UN}" }
+
+      it 'マイページを表示する' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq "/users/#{UN}"
+        expect(page).to have_content 'マイページ'
+      end
+
+      it "「まだスライドがありません」と表示される" do
+        expect(page).to have_content 'まだスライドがありません'
+      end
+
+      it "「新しいスライドを作成」というボタンが表示される" do
+        expect(page).to have_content '新しいスライドを作成'
+      end
+
+      it "「新しいスライドを作成」をクリックするとスライド作成ページに移動できる" do
+        click_on '新しいスライドを作成'
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq "/new"
+      end
+    end
+  end
+
+end
+
+# ====================================================================
 #
 # SignOut page
 #
@@ -274,6 +446,7 @@ describe 'SignOut page', type: :feature do
   end
 end
 
+# ====================================================================
 #
 # New page
 #
@@ -307,13 +480,14 @@ describe 'New page', type: :feature do
   end
 end
 
+# ====================================================================
 #
 # Slide page
 #
 
 describe 'Slide page', { type: :feature, js: true } do
   include_context 'signed in', nil, :all
-  include_context 'slide posted with', true, true, true
+  include_context 'slide posted with'
 
   before :each do
     visit "/#{UN}/#{SN}"

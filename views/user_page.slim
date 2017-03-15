@@ -1,0 +1,51 @@
+h3
+  span.glyphicon.glyphicon-user
+  | マイページ
+- if attention?
+  .row#attention
+    .col-xs-12
+      == attention
+.row
+  .col-xs-12
+    - unless @slides.empty?
+      - name = @user.name != "" ? @user.name : @user.slug
+      ul.list-group#slides
+        .list-group-item.list-group-item-info
+          h4
+            | あなたのスライド
+        - @slides.each do |slide|
+          - delete_dialog_id = "confirm-delete-#{@user.slug}-#{slide[:slug]}"
+          .list-group-item
+            .pull-left.float
+              a href="/#{@user.slug}/#{slide[:slug]}"
+                = "#{name}/#{slide[:title]}"
+            .pull-right.float
+              .btn-danger.btn-xs data-toggle="modal" data-target="##{delete_dialog_id}"
+                | &times;
+            .clearfix
+      - @slides.each do |slide|
+        - delete_dialog_id = "confirm-delete-#{@user.slug}-#{slide[:slug]}"
+        - delete_button_id = "delete-#{@user.slug}-#{slide[:slug]}"
+        .modal id="#{delete_dialog_id}" tabindex="-1"
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close data-dismiss="modal"
+                  span aria-hidden="true"
+                    | &times;
+                h4.modal-title#modal-label = "警告"
+              .modal-body
+                = "スライド「#{slide[:title]}」を削除しますか？"
+              .modal-footer
+                a.btn.btn-default data-dismiss="modal"
+                  | キャンセル
+                form action="/slides/#{slide.id}" method="post"
+                  input type="hidden" name="authenticity_token" value="#{session[:csrf]}"
+                  input type="hidden" name="_method" value="delete"
+                  input.btn.btn-danger type="submit" id="#{delete_button_id}" value="削除"
+    - else
+      p
+        h4 まだスライドがありません。
+      p
+        a.btn.btn-primary.btn-block.btn-lg href="/new"
+          | 新しいスライドを作成

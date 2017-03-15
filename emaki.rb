@@ -32,6 +32,8 @@ require EMAKI_ROOT + '/lib/binder.rb'
 
 set :protection, false
 set :protect_from_csrf, false
+enable :method_override # deleteメソッドを使うため
+use Rack::MethodOverride
 
 expire_after = 30 * 24 * 60 * 60 # production keeps 1 month
 if EMAKI_ENV == 'development'
@@ -149,6 +151,23 @@ get '/register' do
   slim :register, layout: :layout
 end
 
+get '/users/:username' do
+  @user = User.first(slug: params[:username])
+  unless @user
+    status 404
+    return slim :"attentions/user_not_found", layout: :layout
+  end
+  unless @user.slug == session[:user]
+    status 403
+    attention :only_named_user
+    redirect to '/'
+    return
+  end
+
+  @slides = @user.slides
+  slim :user_page, layout: :layout
+end
+
 post '/users' do
   slug = params[:username]
   name = params[:name]
@@ -222,6 +241,37 @@ get '/signout' do
   redirect to '/'
 end
 
+delete '/slides/:id' do
+  @slide = Slide.first(id: params[:id])
+  unless @slide
+    status 404
+    return slim :"attentions/slide_not_found", layout: :layout
+  end
+  @user = @slide.user
+  unless @user.slug == session[:user]
+    status 403
+    attention :only_named_user
+    redirect to '/'
+    return
+  end
+
+  # スライドの実態ファイル削除
+  unless Binder.rmdir(@user.slug, @slide.slug)
+    status 500
+    attention :slide_delete_error
+    redirect to "/users/#{@user.slug}"
+  end
+
+  if @slide.destroy
+    attention :slide_deleted
+    redirect to "/users/#{@user.slug}"
+  else
+    status 500
+    attention :slide_delete_error
+    redirect to "/users/#{@user.slug}"
+  end
+end
+
 post '/slides' do
   sn = params[:slidename] # required
   title = params[:title]
@@ -236,7 +286,7 @@ post '/slides' do
     return
   end
 
-  unless file
+  unless file.class == Hash
     attention :no_file
     redirect to('/new')
     return
@@ -281,7 +331,7 @@ get '/:username/:slidename' do
   if @user.nil? || @slide.nil?
     status 404
     @slide_name = "#{params[:username]}/#{params[:slidename]}"
-    return slim :slide_not_found, layout: :layout
+    return slim :"attentions/slide_not_found", layout: :layout
   end
 
   @page_number = Binder.page_number @un, @sn

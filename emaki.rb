@@ -255,6 +255,13 @@ delete '/slides/:id' do
     return
   end
 
+  # スライドの実態ファイル削除
+  unless Binder.rmdir(@user.slug, @slide.slug)
+    status 500
+    attention :slide_delete_error
+    redirect to "/users/#{@user.slug}"
+  end
+
   if @slide.destroy
     attention :slide_deleted
     redirect to "/users/#{@user.slug}"
@@ -324,7 +331,7 @@ get '/:username/:slidename' do
   if @user.nil? || @slide.nil?
     status 404
     @slide_name = "#{params[:username]}/#{params[:slidename]}"
-    return slim :slide_not_found, layout: :layout
+    return slim :"attentions/slide_not_found", layout: :layout
   end
 
   @page_number = Binder.page_number @un, @sn

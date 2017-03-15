@@ -334,6 +334,7 @@ describe 'マイページ', type: :feature do
 
           it 'スライドが削除されている', focus: true do
             expect(Slide.count).to be 0
+            expect(Binder.exist?(UN, SN)).to be false
           end
 
           it "「スライド「xxx」を削除しました」と表示される", focus: true do

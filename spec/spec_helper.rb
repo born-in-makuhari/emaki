@@ -61,14 +61,15 @@ flush_testdb!
 # username:  指定されなければ正しい形式(UN)
 # slidename: 指定されなければ正しい形式(SN)
 # file:      指定されなければ正しい形式(PDF_FILE)
-shared_context 'slide posted with' do |un, sn, file|
+shared_context 'slide posted with' do |un, sn, file, all|
   un = un ? un : UN
   sn  = sn ? sn : SN
   file = file ? file : PDF_FILE
+  all ||= :all
 
   let(:slide_path) { SLIDES_ROOT + "/#{un}/#{sn}" }
 
-  before :all do
+  before all do
     post_data = {
       title: 'タイトルの表示名はどんな形式でもいい',
       description: 'タイトルの説明はどんな形式でもいい',
@@ -79,12 +80,16 @@ shared_context 'slide posted with' do |un, sn, file|
     post '/slides', post_data
   end
 
-  after :all do
+  after all do
     Slide.first(slug: sn).destroy if Slide.first(slug: sn)
     FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
     FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
     flush_testdb!
   end
+end
+
+shared_context 'slide posted with each case' do |un, sn, file|
+  include_context 'slide posted with', un, sn, file, :each
 end
 
 #

@@ -286,13 +286,14 @@ describe 'マイページ', type: :feature do
     include_context 'signed in', nil, :all
 
     context 'スライドがある状態でアクセスした場合' do
+      include_context 'user created'
       before do
         visit '/signin'
         fill_in 'usernameOrEmail', with: UN
         fill_in 'password', with: 'password'
         find('form#signin input[type=submit]').click
       end
-      include_context 'slide posted with'
+      include_context 'slide posted with each case'
       before { visit "/users/#{UN}" }
 
       it 'マイページを表示する' do
@@ -332,12 +333,10 @@ describe 'マイページ', type: :feature do
           end
 
           it 'スライドが削除されている', focus: true do
-            puts page.body
             expect(Slide.count).to be 0
           end
 
           it "「スライド「xxx」を削除しました」と表示される", focus: true do
-            puts page.body
             expect(page).to have_content "スライド「タイトルの表示名はどんな形式でもいい」を削除しました"
           end
 
@@ -365,7 +364,8 @@ describe 'マイページ', type: :feature do
     end
 
     context 'スライドが無い状態でアクセスした場合' do
-      include_context 'slide posted with'
+      # include_context 'slide posted with'
+
       # TODO signed in は一つ上のcontextにあるため、
       #      ここからは削除したい…が削除すると何故か失敗する
       #      all or eachが影響しているかもしれない

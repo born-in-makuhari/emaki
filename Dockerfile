@@ -55,8 +55,12 @@ WORKDIR /srv/for_bundle/emaki/
 RUN bundle install
 
 # ------------------------------------------------------------
-# 後処理
+# サーバ起動前の準備
 # docker exec コマンドを正常に動作させるため、
 # デフォルトのカレントディレクトリを/srv/emaki直下とする。
 #
 WORKDIR /srv/emaki/
+
+# compass compile
+RUN compass create . -r bootstrap-sass --using bootstrap
+RUN compass compile --force

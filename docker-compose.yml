@@ -1,0 +1,34 @@
+version: '3'
+services:
+  emaki:
+    image: emaki
+    container_name: emaki
+    build:
+      image: emaki
+      context: .
+      args:
+        - http_proxy
+        - https_proxy
+    ports: 12321:80
+    volumes: .:/srv/emaki
+    depends_on: db
+    env_file: .env
+    environment:
+      - http_proxy=${http_proxy}
+      - https_proxy=${https_proxy}
+      - PGHOST=db
+      - PGPORT=5432
+      - PGUSER=emaki
+    links:
+      - db
+    stdin_open: true
+    tty: true
+    command: bash
+  db:
+    image: postgres
+    container_name: emaki_pg
+    ports: 5432:5432
+    volumes: ./db:/var/lib/postgresql
+    environment:
+      - POSTGRES_USER=emaki
+      - POSTGRES_PASSWORD=emakipostgres

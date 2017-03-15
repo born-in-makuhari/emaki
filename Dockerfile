@@ -35,8 +35,8 @@ RUN chmod 600 ~/.pgpass
 RUN apt-get install -y \
             libxml2-dev \
             libxslt1-dev \
-            libqt4-webkit \
-            libqt4-dev \
+            qt5-default \
+            libqt5webkit5-dev \
             xvfb
 # ------------------------------------------------------------
 # redis設定

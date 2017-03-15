@@ -14,14 +14,32 @@ h3
           h4
             | あなたのスライド
         - @slides.each do |slide|
+          - delete_dialog_id = "confirm-delete-#{@user.slug}-#{slide[:slug]}"
           .list-group-item
             .pull-left.float
               a href="/#{@user.slug}/#{slide[:slug]}"
                 = "#{name}/#{slide[:title]}"
             .pull-right.float
-              .btn-danger.btn-sm
+              .btn-danger.btn-sm data-toggle="modal" data-target="##{delete_dialog_id}"
                 span.glyphicon.glyphicon-remove
             .clearfix
+      - @slides.each do |slide|
+        - delete_dialog_id = "confirm-delete-#{@user.slug}-#{slide[:slug]}"
+        .modal id="#{delete_dialog_id}" tabindex="-1"
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close data-dismiss="modal"
+                  span aria-hidden="true"
+                    | &times;
+                h4.modal-title#modal-label = "スライド「#{slide[:title]}」"
+              .modal-body
+                | このスライドを削除しますか？
+              .modal-footer
+                a.btn.btn-default data-dismiss="modal"
+                  | キャンセル
+                a.btn.btn-danger
+                  | 削除
     - else
       p
         h4 まだスライドがありません。

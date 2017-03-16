@@ -25,7 +25,7 @@ services:
       - db
     stdin_open: true
     tty: true
-    command: bash
+    command: ./bin/start.sh
   db:
     image: postgres
     container_name: emaki_pg

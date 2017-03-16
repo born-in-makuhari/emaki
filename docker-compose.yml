@@ -14,10 +14,10 @@ services:
       - .:/srv/emaki
     depends_on:
       - db
-    env_file: .env
     environment:
-      - http_proxy=${http_proxy}
-      - https_proxy=${https_proxy}
+      - EMAKI_ENV=production
+      - http_proxy
+      - https_proxy
       - PGHOST=db
       - PGPORT=5432
       - PGUSER=emaki

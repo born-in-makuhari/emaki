@@ -1,4 +1,4 @@
 
       docker-compose up -d
-      docker-compose exec emaki bash -c ". bin/start.sh"
+      docker-compose exec -T emaki bash -c "bin/start.sh"
 

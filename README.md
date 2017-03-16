@@ -22,7 +22,7 @@ dockerでの利用に特化した、シンプルなスライド共有アプリ
 
 ## Tips
 
-- 起動確認
+起動確認
 
     $ docker-compose top
 
@@ -43,12 +43,12 @@ dockerでの利用に特化した、シンプルなスライド共有アプリ
     999   11230   11027   0   22:56   ?     00:00:00   postgres: autovacuum launcher process
     999   11231   11027   0   22:56   ?     00:00:00   postgres: stats collector process
 
-- 開発環境として使う場合
+開発環境として使う場合
 
     $ docker-compose up -d
     $ docker-compose exec -T emaki bash -c "bin/start.sh development"
 
-- テストの実行
+テストの実行
 
     $ docker-compose exec -T emaki rspec
 

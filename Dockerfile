@@ -49,17 +49,14 @@ RUN sed -i -e "s/^daemonize no/daemonize yes/" /srv/redis/redis.conf
 # ------------------------------------------------------------
 # emakiの依存するgemのインストール
 #
-WORKDIR /srv/for_bundle/
-RUN git clone https://github.com/born-in-makuhari/emaki.git
-WORKDIR /srv/for_bundle/emaki/
+WORKDIR /srv/emaki/
+ADD Gemfile ./Gemfile
+ADD Gemfile.lock ./Gemfile.lock
 RUN bundle install
 
 # ------------------------------------------------------------
-# サーバ起動前の準備
-# docker exec コマンドを正常に動作させるため、
-# デフォルトのカレントディレクトリを/srv/emaki直下とする。
+# css生成
 #
-WORKDIR /srv/emaki/
 
 # compass compile
 RUN compass create . -r bootstrap-sass --using bootstrap

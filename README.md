@@ -4,41 +4,54 @@
 
 Emaki
 ---
-Emaki is a simple slide sharing tool.
+dockerでの利用に特化した、シンプルなスライド共有アプリ
 
-## Quick Start
+## How to use
 
-  It is easy to use Emaki with docker.  
-  See also 'dock/README.md'.  
+[docker-compose](https://docs.docker.com/compose/)が最も簡単です。  
+以下のコマンドを順に実行してください。
 
-  ```
-  git clone https://github.com/born-in-makuhari/emaki.git
-  cd emaki
-  alias docker="sudo docker" # if your 'docker' command needs 'sudo'
-  . dock/build.sh
-  . dock/db-start.sh
-  . dock/quick-start.sh
-  ```
+    $ git clone https://github.com/born-in-makuhari/emaki.git
+    $ cd emaki
+    $ docker-compose up -d
+    $ docker-compose exec -T emaki bash -c "bin/start.sh"
 
-  which would result in:  
+ブラウザからアクセスしてください。
 
-  ```
-  80:tcp --> 0.0.0.0:12321
-  ```
+    http:// (Docker's host) :12321/
 
-  Emaki is working in a container named "emaki".  
-  And then:  
+## Tips
 
-  ```
-  http://localhost:12321/
-  ```
+起動確認
 
-## License
+    $ docker-compose top
 
-  Emaki is available as open source under the terms of the MIT License.  
+    emaki
+    UID     PID    PPID    C   STIME    TTY      TIME                    CMD
+    ----------------------------------------------------------------------------------------
+    root   11159   11148   0   22:55   pts/2   00:00:00   /bin/sh -c bash
+    root   11201   11159   0   22:55   pts/2   00:00:00   bash
+    root   11280   1       0   22:56   ?       00:00:00   ruby emaki.rb -p 80 -e production
+
+    emaki_pg
+    UID    PID    PPID    C   STIME   TTY     TIME                      CMD
+    ----------------------------------------------------------------------------------------
+    999   11027   11013   0   22:55   ?     00:00:00   postgres
+    999   11227   11027   0   22:56   ?     00:00:00   postgres: checkpointer process
+    999   11228   11027   0   22:56   ?     00:00:00   postgres: writer process
+    999   11229   11027   0   22:56   ?     00:00:00   postgres: wal writer process
+    999   11230   11027   0   22:56   ?     00:00:00   postgres: autovacuum launcher process
+    999   11231   11027   0   22:56   ?     00:00:00   postgres: stats collector process
+
+開発環境として使う場合
+
+    $ docker-compose up -d
+    $ docker-compose exec -T emaki bash -c "bin/start.sh development"
+
+テストの実行
+
+    $ docker-compose exec -T emaki rspec
 
 ## Emaki ?
 
-> Emakimono (絵巻物 emaki-mono, literally 'picture scroll'), often simply called emaki (絵巻?), is a horizontal, illustrated narrative form created during the 11th to 16th centuries in Japan. Emaki-mono combines both text and pictures, and is drawn, painted, or stamped on a handscroll. They depict battles, romance, religion, folk tales, and stories of the supernatural world.
-
-[Emakimono - Wikipedia](https://en.wikipedia.org/wiki/Emakimono)
+[絵巻物 - Wikipedia](https://ja.wikipedia.org/wiki/%E7%B5%B5%E5%B7%BB%E7%89%A9)

@@ -64,3 +64,4 @@ WORKDIR /srv/emaki/
 # compass compile
 RUN compass create . -r bootstrap-sass --using bootstrap
 RUN compass compile --force
+CMD bash

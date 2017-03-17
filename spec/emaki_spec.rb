@@ -262,59 +262,6 @@ describe 'Emaki' do
   #
   # /signin
   #
-  describe 'GET /signin' do
-    it_behaves_like 'an emaki page'
-    before(:all) { get '/signin' }
-
-    context 'if signed in,' do
-      include_context 'signed in'
-      before do
-        get '/signin'
-      end
-
-      it_behaves_like 'redirect', '/'
-    end
-  end
-
-  describe 'POST /signin' do
-    include_context 'user created',
-                    slug: UN,
-                    name: UN,
-                    email: UN + '@test.com',
-                    password: 'password'
-    context 'with miss, ' do
-      before do
-        post '/signin',
-             username_or_email: 'miss',
-             password: 'password'
-      end
-
-      it 'empty session[:user]' do
-        expect(session[:user]).to eq nil
-      end
-    end
-    context 'with valid information,' do
-      before do
-        post '/signin',
-             username_or_email: UN,
-             password: 'password'
-      end
-
-      it 'sets userslug in session[:user]' do
-        expect(session[:user]).to eq UN
-      end
-    end
-    context 'if signed in,' do
-      include_context 'signed in'
-      before(:all) do
-        post '/signin',
-             username_or_email: UN,
-             password: 'password'
-      end
-
-      it_behaves_like 'redirect', '/'
-    end
-  end
 
   describe 'GET /signout' do
     include_context 'user created',

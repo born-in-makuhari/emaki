@@ -159,92 +159,92 @@ describe 'ユーザー登録ページ', type: :feature, page: :register do
 end
 
 # ====================================================================
-#
-# SignIn page
+# ログインページ
+# SignIn
 #
 
-describe 'SignIn page', type: :feature do
+describe 'ログインページ', type: :feature, page: :signin do
   let(:form) { find 'form#signin' }
   before { visit '/signin' }
-  include_context 'user created',
-                  slug: 'for-signin',
-                  name: 'ログインテスト用',
-                  email: 'for.signin@test.com',
-                  password: 'for-signin'
+  include_context 'user created'
 
-  context 'if not signed in' do
-    it 'links to Top' do
-      click_link 'toTop'
+  context 'ログイン状態の場合' do
+    include_context 'ログイン状態の場合'
+    it 'トップページへリダイレクトする' do
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/'
     end
-    it 'links to Register' do
-      click_link 'toRegister'
-      uri = URI.parse(current_url)
-      expect(uri.path).to eq '/register'
-    end
-    it do
-      expect('form#signin').to have_attr 'method', 'post'
-      expect('form#signin').to have_attr 'action', '/signin'
-    end
-    it do
-      expect('form#signin input#usernameOrEmail')
-        .to have_attr 'name', 'username_or_email'
-    end
-    it do
-      expect('form#signin input#password').to have_attr 'name', 'password'
-      expect('form#signin input#password').to have_attr 'type', 'password'
-    end
-    it { expect(page).to have_css 'form#signin input[type="submit"]' }
+  end
 
-    context 'when miss, ' do
+  context 'ログインしていない場合' do
+    it_behaves_like 'ゲスト用ページ'
+
+    it 'ログインフォームを表示する' do
+      expect(page).to have_css 'form#signin[method="post"]'
+      expect(page).to have_css 'form#signin[action="/signin"]'
+      expect(page).to have_css(
+        'form#signin input#usernameOrEmail[name="username_or_email"]'
+      )
+      expect(page).to have_css(
+        'form#signin input#usernameOrEmail[type="text"]'
+      )
+      expect(page).to have_css(
+        'form#signin input#password[name="password"]'
+      )
+      expect(page).to have_css(
+        'form#signin input#password[type="password"]'
+      )
+      expect(page).to have_css 'form#signin input[type="submit"]'
+    end
+
+    context '誤った情報を入力した場合' do
       before do
         fill_in 'usernameOrEmail', with: 'eeeee'
         fill_in 'password', with: 'ppppp'
         find('form#signin input[type=submit]').click
       end
 
-      it 'redirects to SignIn' do
+      it 'ログインページにリダイレクト' do
         uri = URI.parse(current_url)
         expect(uri.path).to eq '/signin'
       end
 
-      it 'keeps values.' do
+      it '入力値は保持する' do
         expect(find('#usernameOrEmail').value).to eq 'eeeee'
         expect(find('#password').value).to eq 'ppppp'
       end
     end
 
-    context 'when submit email/password' do
+    context '正しい情報を入力した場合(ユーザーID)' do
       before do
-        fill_in 'usernameOrEmail', with: 'for.signin@test.com'
-        fill_in 'password', with: 'for-signin'
+        fill_in 'usernameOrEmail', with: UN
+        fill_in 'password', with: 'password'
         find('form#signin input[type=submit]').click
       end
 
-      it 'redirects to Top' do
+      it 'トップページにリダイレクト' do
         uri = URI.parse(current_url)
         expect(uri.path).to eq '/'
       end
 
-      it 'displays userinfo' do
+      it 'ログイン状態である' do
         expect(page).to have_css '#userinfo'
       end
     end
 
-    context 'when submit username/password' do
+    context '正しい情報を入力した場合(メールアドレス)' do
       before do
-        fill_in 'usernameOrEmail', with: 'for-signin'
-        fill_in 'password', with: 'for-signin'
+        fill_in 'usernameOrEmail', with: UN + '@test.com'
+        fill_in 'password', with: 'password'
         find('form#signin input[type=submit]').click
       end
 
-      it 'redirects to Top' do
+      it 'トップページにリダイレクト' do
         uri = URI.parse(current_url)
         expect(uri.path).to eq '/'
       end
 
-      it 'displays userinfo' do
+      it 'ログイン状態である' do
         expect(page).to have_css '#userinfo'
       end
     end

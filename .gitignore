@@ -1,8 +1,5 @@
-Gemfile.lock
-.bundle
 logs/*.log
 out.log
-nohup.out
 slides/
 tmp/
 db/*

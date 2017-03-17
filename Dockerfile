@@ -24,8 +24,8 @@ RUN apt-get update && apt-get install -y \
       libmagick++-dev \
  && rm -rf /var/lib/apt/lists/* \
  && echo "db:5432:*:emaki:emakipostgres" > ~/.pgpass \
- && chmod 600 ~/.pgpass
- && bundle install
+ && chmod 600 ~/.pgpass \
+ && bundle install \
  && compass create . -r bootstrap-sass --using bootstrap \
  && compass compile --force
 

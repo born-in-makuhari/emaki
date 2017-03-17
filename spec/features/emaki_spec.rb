@@ -19,15 +19,7 @@ RSpec::Matchers.define :have_attr do |key, value|
   end
 end
 
-# ====================================================================
-#
-# トップページ
-# Top
-#
-
-describe 'トップページ', type: :feature, page: :top do
-  before { visit '/' }
-
+shared_examples_for 'ゲスト用ページ' do
   it '左上の「emaki」をクリックすると、トップページに移動する' do
     click_link 'toTop'
     uri = URI.parse(current_url)
@@ -55,8 +47,10 @@ describe 'トップページ', type: :feature, page: :top do
       expect(page).not_to have_css 'a#toSignOut'
     end
   end
+end
 
-  context 'もしログインしていたら' do
+shared_examples_for 'ユーザー用ページ' do
+  context 'ユーザー作成済みで、ログイン状態の場合' do
     include_context 'user created'
     before do
       visit '/signin'
@@ -92,10 +86,24 @@ end
 
 # ====================================================================
 #
-# Register page
+# トップページ
+# Top
 #
 
-describe 'Register page', type: :feature do
+describe 'トップページ', type: :feature, page: :top do
+  before { visit '/' }
+
+  it_behaves_like 'ゲスト用ページ'
+  it_behaves_like 'ユーザー用ページ'
+end
+
+# ====================================================================
+#
+# ユーザー登録ページ
+# Register
+#
+
+describe 'Register page', type: :feature, page: :register do
   let(:form) { find 'form#register' }
   before { visit '/register' }
 

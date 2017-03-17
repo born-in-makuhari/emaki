@@ -19,6 +19,16 @@ RSpec::Matchers.define :have_attr do |key, value|
   end
 end
 
+shared_context 'ログイン状態の場合' do
+  include_context 'user created'
+  before do
+    visit '/signin'
+    fill_in 'usernameOrEmail', with: UN
+    fill_in 'password', with: 'password'
+    find('form#signin input[type=submit]').click
+  end
+end
+
 shared_examples_for 'ゲスト用ページ' do
   it '左上の「emaki」をクリックすると、トップページに移動する' do
     click_link 'toTop'
@@ -51,14 +61,8 @@ end
 
 shared_examples_for 'ユーザー用ページ' do
   context 'ユーザー作成済みで、ログイン状態の場合' do
-    include_context 'user created'
-    before do
-      visit '/signin'
-      fill_in 'usernameOrEmail', with: UN
-      fill_in 'password', with: 'password'
-      find('form#signin input[type=submit]').click
-      visit '/'
-    end
+    include_context 'ログイン状態の場合'
+
     it 'スライド登録ページへのリンクを表示する' do
       expect(page).not_to have_css 'a#toRegister'
     end
@@ -103,42 +107,27 @@ end
 # Register
 #
 
-describe 'Register page', type: :feature, page: :register do
-  let(:form) { find 'form#register' }
+describe 'ユーザー登録ページ', type: :feature, page: :register do
   before { visit '/register' }
 
-  it 'links to Top' do
-    click_link 'toTop'
-    uri = URI.parse(current_url)
-    expect(uri.path).to eq '/'
-  end
-  it 'links to Register' do
-    click_link 'toRegister'
-    uri = URI.parse(current_url)
-    expect(uri.path).to eq '/register'
-  end
-  it 'links to SignIn' do
-    click_link 'toSignIn'
-    uri = URI.parse(current_url)
-    expect(uri.path).to eq '/signin'
-  end
+  context 'ログインしていない場合、' do
+    it_behaves_like 'ゲスト用ページ'
 
-  context 'if not signed in' do
-    it do
-      expect('form#register').to have_attr 'method', 'post'
-      expect('form#register').to have_attr 'action', '/users'
+    it 'フォームを表示する' do
+      expect(page).to have_css 'form#register[method="post"]'
+      expect(page).to have_css 'form#register[action="/users"]'
+      expect(page).to have_css '#register input#username[type="text"]'
+      expect(page).to have_css '#register input#username[name="username"]'
+      expect(page).to have_css '#register input#name[type="text"]'
+      expect(page).to have_css '#register input#name[name="name"]'
+      expect(page).to have_css '#register input#email[type="text"]'
+      expect(page).to have_css '#register input#email[name="email"]'
+      expect(page).to have_css '#register input#password[type="password"]'
+      expect(page).to have_css '#register input#password[name="password"]'
+      expect(page).to have_css 'form#register input[type="submit"]'
     end
-    it { expect('#register input#username').to have_attr 'type', 'text' }
-    it { expect('#register input#username').to have_attr 'name', 'username' }
-    it { expect('#register input#name').to have_attr 'type', 'text' }
-    it { expect('#register input#name').to have_attr 'name', 'name' }
-    it { expect('#register input#email').to have_attr 'type', 'text' }
-    it { expect('#register input#email').to have_attr 'name', 'email' }
-    it { expect('#register input#password').to have_attr 'type', 'password' }
-    it { expect('#register input#password').to have_attr 'name', 'password' }
-    it { expect(page).to have_css 'form#register input[type="submit"]' }
 
-    context 'when submit valid informations,' do
+    context '正しい情報を入力して、送信ボタンをクリックした場合' do
       before do
         fill_in 'username', with: 'emeria'
         fill_in 'name', with: '最初のユーザー'
@@ -146,18 +135,24 @@ describe 'Register page', type: :feature, page: :register do
         fill_in 'email', with: 'shield-of-emeria@mtg.com'
         find('form#register input[type=submit]').click
       end
-      it 'redirects to Top' do
+      after do
+        User.first(slug: 'emeria').destroy
+      end
+      it 'トップページへ飛ぶ' do
         uri = URI.parse(current_url)
         expect(uri.path).to eq '/'
       end
-      it 'displays #welcomeUser' do
-        expect(page).to have_css '#welcomeUser'
+      it '「ようこそ、***」と表示する' do
+        expect(page).to have_content 'ようこそ、最初のユーザー'
       end
-      after { User.first(slug: 'emeria').destroy }
     end
+  end
 
-    it 'does not display userinfo' do
-      expect(page).not_to have_css '#userinfo'
+  context 'ログイン状態の場合' do
+    include_context 'ログイン状態の場合'
+    it 'トップページへリダイレクトする' do
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq '/'
     end
   end
 

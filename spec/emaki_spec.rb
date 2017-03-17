@@ -103,32 +103,6 @@ describe 'Emaki' do
   # 個別テストケース
   #
 
-  #
-  #  /
-  #
-  describe 'GET /' do
-    before(:all) { get '/' }
-    it_behaves_like 'an emaki page'
-  end
-
-  #
-  # /register
-  #
-  describe 'GET /register' do
-    context 'if not signed in,' do
-      it_behaves_like 'an emaki page'
-      before(:all) { get '/register' }
-    end
-
-    context 'if signed in,' do
-      include_context 'signed in'
-      before do
-        get '/register'
-      end
-
-      it_behaves_like 'redirect', '/'
-    end
-  end
 
   #
   # /users/:username

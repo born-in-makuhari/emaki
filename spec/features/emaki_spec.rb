@@ -21,68 +21,71 @@ end
 
 # ====================================================================
 #
-# Top page
+# トップページ
+# Top
 #
 
-describe 'Top page', type: :feature do
+describe 'トップページ', type: :feature, page: :top do
   before { visit '/' }
 
-  it 'links to Top' do
+  it '左上の「emaki」をクリックすると、トップページに移動する' do
     click_link 'toTop'
     uri = URI.parse(current_url)
     expect(uri.path).to eq '/'
   end
 
-  context 'if not signed in, ' do
-    it 'links to Register' do
+  context 'ログインしていない場合' do
+    it '「Register」をクリックすると、ユーザー登録ページへ飛ぶ' do
       click_link 'toRegister'
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/register'
     end
-    it 'links to SignIn' do
+    it 'ログインのロゴをクリックすると、ログインページへ飛ぶ' do
       click_link 'toSignIn'
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/signin'
     end
-    it { expect(page).not_to have_css 'a#toNew' }
-    it 'does not display userinfo' do
+    it 'スライド登録ページへのリンクを表示しない' do
+      expect(page).not_to have_css 'a#toNew'
+    end
+    it 'ユーザーページへのリンクを表示しない' do
       expect(page).not_to have_css '#userinfo'
     end
-    it 'does not display toSignOut' do
+    it 'ログアウトのリンクを表示しない' do
       expect(page).not_to have_css 'a#toSignOut'
     end
   end
 
-  context 'if signed in, ' do
-    include_context 'user created',
-                    slug: 'for-signin',
-                    name: 'ログインテスト用',
-                    email: 'for.signin@test.com',
-                    password: 'for-signin'
+  context 'もしログインしていたら' do
+    include_context 'user created'
     before do
       visit '/signin'
-      fill_in 'usernameOrEmail', with: 'for-signin'
-      fill_in 'password', with: 'for-signin'
+      fill_in 'usernameOrEmail', with: UN
+      fill_in 'password', with: 'password'
       find('form#signin input[type=submit]').click
       visit '/'
     end
-    it { expect(page).not_to have_css 'a#toRegister' }
-    it { expect(page).not_to have_css 'a#toSignIn' }
-    it 'links to New' do
+    it 'スライド登録ページへのリンクを表示する' do
+      expect(page).not_to have_css 'a#toRegister'
+    end
+    it 'ログインのリンクを表示しない' do
+      expect(page).not_to have_css 'a#toSignIn'
+    end
+    it 'スライド登録ページへのリンクを表示する' do
       click_link 'toNew'
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/new'
     end
-    it 'links to SignOut' do
+    it 'ログアウトのリンクをクリックすると、ログアウトする' do
       click_link 'toSignOut'
       uri = URI.parse(current_url)
       expect(uri.path).to eq '/'
       expect(page).not_to have_css '#userinfo'
     end
-    it 'links to user page' do
+    it 'マイページへのリンクを表示する' do
       click_link 'toUser'
       uri = URI.parse(current_url)
-      expect(uri.path).to eq "/users/for-signin"
+      expect(uri.path).to eq "/users/#{UN}"
     end
   end
 end
@@ -332,12 +335,12 @@ describe 'マイページ', type: :feature do
             click_on '削除'
           end
 
-          it 'スライドが削除されている', focus: true do
+          it 'スライドが削除されている' do
             expect(Slide.count).to be 0
             expect(Binder.exist?(UN, SN)).to be false
           end
 
-          it "「スライド「xxx」を削除しました」と表示される", focus: true do
+          it "「スライド「xxx」を削除しました」と表示される" do
             expect(page).to have_content "スライド「タイトルの表示名はどんな形式でもいい」を削除しました"
           end
 

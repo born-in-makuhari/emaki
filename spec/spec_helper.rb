@@ -61,6 +61,7 @@ flush_testdb!
 # username:  指定されなければ正しい形式(UN)
 # slidename: 指定されなければ正しい形式(SN)
 # file:      指定されなければ正しい形式(PDF_FILE)
+STITLE = 'タイトルの表示名はどんな形式でもいい'
 shared_context 'slide posted with' do |un, sn, file, all|
   un = un ? un : UN
   sn  = sn ? sn : SN
@@ -71,7 +72,7 @@ shared_context 'slide posted with' do |un, sn, file, all|
 
   before all do
     post_data = {
-      title: 'タイトルの表示名はどんな形式でもいい',
+      title: STITLE,
       description: 'タイトルの説明はどんな形式でもいい',
       slidename: sn,
       slide: file
@@ -84,7 +85,7 @@ shared_context 'slide posted with' do |un, sn, file, all|
     Slide.first(slug: sn).destroy if Slide.first(slug: sn)
     FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
     FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
-    flush_testdb!
+    # flush_testdb!
   end
 end
 

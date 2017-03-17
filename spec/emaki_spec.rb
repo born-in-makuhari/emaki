@@ -103,18 +103,6 @@ describe 'Emaki' do
   # 個別テストケース
   #
 
-
-  #
-  # /users/:username
-  #
-  describe 'GET /users/:username' do
-    context 'if signed in, ' do
-      include_context 'signed in'
-      before { get "/users/#{UN}" }
-      it_behaves_like 'an emaki page'
-    end
-  end
-
   #
   # /users
   #

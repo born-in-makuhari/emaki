@@ -7,8 +7,9 @@ COPY Gemfile ./Gemfile
 COPY Gemfile.lock ./Gemfile.lock
 
 RUN apt-get update && apt-get install -y \
-      aptitude \
       ghostscript \
+      imagemagick \
+      libmagick++-dev \
       libpq-dev \
       libqt5webkit5-dev \
       libxml2-dev \
@@ -19,9 +20,6 @@ RUN apt-get update && apt-get install -y \
       qt5-default \
       redis-server \
       xvfb \
- && aptitude install -y \
-      imagemagick \
-      libmagick++-dev \
  && rm -rf /var/lib/apt/lists/* \
  && echo "db:5432:*:emaki:emakipostgres" > ~/.pgpass \
  && chmod 600 ~/.pgpass \

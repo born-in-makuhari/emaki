@@ -260,28 +260,6 @@ describe 'Emaki' do
   end
 
   #
-  # /signin
-  #
-
-  describe 'GET /signout' do
-    include_context 'user created',
-                    slug: UN,
-                    name: UN,
-                    email: UN + '@test.com',
-                    password: 'password'
-    before do
-      post '/signin',
-           username_or_email: UN,
-           password: 'password'
-      get '/signout'
-    end
-
-    it 'reset session[:user]' do
-      expect(session[:user]).to eq nil
-    end
-  end
-
-  #
   #  /new
   #
   describe 'GET /new' do

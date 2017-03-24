@@ -540,33 +540,66 @@ describe 'マイページ', type: :feature, page: :user do
 end
 
 # ====================================================================
+# スライド登録ページ
+# New
 #
-# New page
-#
-describe 'New page', type: :feature do
-  include_context 'user created',
-                  slug: 'for-signin',
-                  name: 'ログインテスト用',
-                  email: 'for.signin@test.com',
-                  password: 'for-signin'
+describe 'スライド登録ページ', type: :feature do
+  include_context 'ログイン状態の場合'
+  before { visit '/new' }
 
-  context 'when miss values, ' do
+  context '正しい情報を入力して、送信した場合' do
     before do
-      visit '/signin'
-      fill_in 'usernameOrEmail', with: 'for-signin'
-      fill_in 'password', with: 'for-signin'
-      find('form#signin input[type=submit]').click
+      fill_in 'slidename', with: SN
+      fill_in 'title', with: STITLE
+      fill_in 'description', with: 'ddddd'
+      attach_file 'slide', PDF_PATH
+      find('input[type=submit]').click
+    end
+    after do
+      Slide.first(slug: SN).destroy if Slide.first(slug: SN)
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}/#{SN}")
+      FileUtils.rm_rf(EMAKI_ROOT + "/slides/#{UN}")
+    end
 
-      visit '/new'
-      fill_in 'slidename', with: '-----'
+    it 'スライドページにリダイレクトする' do
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq "/#{UN}/#{SN}"
+    end
+
+    it 'スライドが登録されている' do
+      slide = Slide.first(slug: SN)
+      expect(slide.title).to eq STITLE
+      expect(slide.description).to eq 'ddddd'
+    end
+
+    it 'PNG画像が作成されている' do
+      slide_path = Binder.makepath(UN, SN)
+      expect(FileTest.exist? slide_path + '/0.png').to be true
+      expect(FileTest.exist? slide_path + '/1.png').to be true
+      expect(FileTest.exist? slide_path + '/2.png').to be true
+    end
+
+    it '一時ファイル /tmp が空になっている' do
+      expect(Dir.entries(Binder.tmppath).join).to eq '...'
+    end
+  end
+
+  context '「-」で始まるスライドIDの場合' do
+    before do
+      fill_in 'slidename', with: '-slidename'
       fill_in 'title', with: 'ttttt'
       fill_in 'description', with: 'ddddd'
-
+      attach_file 'slide', PDF_PATH
       find('input[type=submit]').click
     end
 
-    it 'keeps values.' do
-      expect(find('#slidename').value).to eq '-----'
+    it 'スライド登録ページにリダイレクトする' do
+      uri = URI.parse(current_url)
+      expect(uri.path).to eq "/new"
+    end
+
+    it '入力値を保持する' do
+      expect(find('#slidename').value).to eq '-slidename'
       expect(find('#title').value).to eq 'ttttt'
       expect(find('#description').value).to eq 'ddddd'
     end

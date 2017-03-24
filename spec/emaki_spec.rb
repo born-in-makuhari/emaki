@@ -104,40 +104,6 @@ describe 'Emaki' do
   #
 
   #
-  #  /new
-  #
-  describe 'GET /new' do
-    context 'if signed in, ' do
-      include_context 'signed in'
-      it_behaves_like 'an emaki page'
-      let(:form) { 'form#newSlide' }
-      let(:sninput) { 'input#slidename' }
-      let(:slinput) { 'input#slide' }
-      let(:title) { 'input#title' }
-      let(:description) { 'textarea#description' }
-      before { get '/new' }
-      it { expect(oga_html).to desplay form }
-      it { expect(oga_html).to desplay form, :action, '/slides' }
-      it { expect(oga_html).to desplay form, :method, 'post' }
-      it { expect(oga_html).to desplay form, :enctype, 'multipart/form-data' }
-      it { expect(oga_html).to desplay sninput, :type, 'text' }
-      it { expect(oga_html).to desplay sninput, :name, 'slidename' }
-      it { expect(oga_html).to desplay slinput, :type, 'file' }
-      it { expect(oga_html).to desplay slinput, :name, 'slide' }
-      it { expect(oga_html).to desplay title, :type, 'text' }
-      it { expect(oga_html).to desplay title, :name, 'title' }
-      it { expect(oga_html).to desplay description, :name, 'description' }
-      it { expect(oga_html).to desplay 'input[type="submit"]' }
-    end
-
-    context 'if signed out, ' do
-      include_context 'signed out'
-      before { get '/new' }
-      it_behaves_like 'redirect', '/'
-    end
-  end
-
-  #
   # SLIDE PAGE
   # /username/slidename
   #
@@ -172,87 +138,6 @@ describe 'Emaki' do
     end
   end
 
-  #
-  # /slides
-  #
-  describe 'POST /slides' do
-    shared_examples "creates user #{UN}" do
-      before do
-        @u = User.first(slug: UN)
-      end
-      it('user exists') { expect(@u).not_to eq nil }
-      it('user has name') { expect(@u.name).not_to eq nil }
-    end
-
-    shared_examples "creates slide #{SN}" do
-      before do
-        @s = Slide.first(user: User.first(slug: UN), slug: SN)
-      end
-      it('slide exists') { expect(@s).not_to eq nil }
-      it('slide has title') { expect(@s.title).not_to eq nil }
-      it('slide has description') { expect(@s.description).not_to eq nil }
-    end
-
-    context 'if slidename is invalid,' do
-      include_context 'signed in', nil, :all
-      include_context 'slide posted with', UN, '--'
-      it_behaves_like 'redirect', '/new'
-      it_behaves_like "does not create slide #{SN}"
-
-      context 'follow redirect,' do
-        let(:oga_html) { Oga.parse_html(last_response.body) }
-        before { follow_redirect! }
-
-        it 'with slug rules' do
-          expect(oga_html).to desplay '#attention #slugRule'
-        end
-      end
-    end
-
-    context 'no file,' do
-      include_context 'signed in', nil, :all
-      include_context 'slide posted with', UN, SN, 'wrong_file'
-      it_behaves_like 'redirect', '/new'
-      it_behaves_like "does not create slide #{SN}"
-
-      context 'follow redirect,' do
-        let(:oga_html) { Oga.parse_html(last_response.body) }
-        before { follow_redirect! }
-        it 'with no file attention' do
-          expect(oga_html).to desplay '#attention #noFile'
-        end
-      end
-    end
-
-    context 'with valid slide informations' do
-      include_context 'signed in', nil, :all
-      include_context 'slide posted with'
-      it_behaves_like 'redirect', "/#{UN}/#{SN}"
-      it_behaves_like "creates slide #{SN}"
-
-      it "creates directory slides/#{UN}/#{SN}" do
-        expect(FileTest.exist? slide_path).to be true
-      end
-
-      it 'creates png images in the directory' do
-        expect(FileTest.exist? slide_path + '/0.png').to be true
-        expect(FileTest.exist? slide_path + '/1.png').to be true
-        expect(FileTest.exist? slide_path + '/2.png').to be true
-      end
-
-      it 'cleanup /tmp' do
-        expect(Dir.entries(Binder.tmppath).join).to eq '...'
-      end
-
-    end
-
-    context 'if signed out, ' do
-      include_context 'signed out', :all
-      include_context 'slide posted with'
-      it_behaves_like 'redirect', '/'
-      it_behaves_like "does not create slide #{SN}"
-    end
-  end
   # ---------------------------------------------------------
   # スライド画像へのルーティング
   #

@@ -355,6 +355,19 @@ describe 'ログインページ', type: :feature, page: :signin do
       it 'ログイン状態である' do
         expect(page).to have_css '#userinfo'
       end
+
+      context 'ログアウトをクリックした場合' do
+        before do
+          find('#toSignOut').click
+        end
+        it 'トップページにリダイレクト' do
+          uri = URI.parse(current_url)
+          expect(uri.path).to eq '/'
+        end
+        it '「ログアウトしました」と表示する' do
+          expect(page).to have_content 'ログアウトしました'
+        end
+      end
     end
 
     context '正しい情報を入力した場合(メールアドレス)' do
@@ -524,42 +537,6 @@ describe 'マイページ', type: :feature, page: :user do
     end
   end
 
-end
-
-# ====================================================================
-# ログアウト
-# SignOut
-#
-
-describe 'SignOut page', type: :feature do
-  let(:form) { find 'form#signin' }
-  before { visit '/signin' }
-  include_context 'user created',
-                  slug: 'for-signin',
-                  name: 'ログインテスト用',
-                  email: 'for.signin@test.com',
-                  password: 'for-signin'
-
-  context 'if signed in, ' do
-    before do
-      fill_in 'usernameOrEmail', with: 'for.signin@test.com'
-      fill_in 'password', with: 'for-signin'
-      find('form#signin input[type=submit]').click
-    end
-
-    context 'when sign out, ' do
-      before { visit '/signout' }
-
-      it 'redirects to Top' do
-        uri = URI.parse(current_url)
-        expect(uri.path).to eq '/'
-      end
-
-      it 'displays #goodbyeUser' do
-        expect(page).to have_css '#goodbyeUser'
-      end
-    end
-  end
 end
 
 # ====================================================================

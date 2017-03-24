@@ -161,6 +161,115 @@ describe 'ユーザー登録ページ', type: :feature, page: :register do
       it '「ようこそ、***」と表示する' do
         expect(page).to have_content 'ようこそ、最初のユーザー'
       end
+      it 'ユーザーが作成されている' do
+        user = User.first(slug: 'emeria')
+        expect(user.name).to eq '最初のユーザー'
+        expect(user.password).to eq 'iona'
+        expect(user.email).to eq 'shield-of-emeria@mtg.com'
+      end
+    end
+
+    context 'emailに「@」をいれず、送信ボタンをクリックした場合' do
+      before do
+        fill_in 'username', with: 'gooduser'
+        fill_in 'name', with: '素敵なユーザー'
+        fill_in 'password', with: 'goodpassword'
+        fill_in 'email', with: 'gooduseremail.com'
+        find('form#register input[type=submit]').click
+      end
+      it 'ユーザー登録ページにリダイレクトする' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/register'
+      end
+      it 'ユーザーが作成されていない' do
+        expect(User.exists?('gooduser')).to be false
+      end
+    end
+
+    context 'パスワードが空欄のまま、送信ボタンをクリックした場合' do
+      before do
+        fill_in 'username', with: 'gooduser'
+        fill_in 'name', with: '素敵なユーザー'
+        fill_in 'password', with: ''
+        fill_in 'email', with: 'gooduser@email.com'
+        find('form#register input[type=submit]').click
+      end
+      it 'ユーザー登録ページにリダイレクトする' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/register'
+      end
+      it 'ユーザーが作成されていない' do
+        expect(User.exists?('gooduser')).to be false
+      end
+    end
+
+    context 'パスワードが51文字で、送信ボタンをクリックした場合' do
+      before do
+        fill_in 'username', with: 'gooduser'
+        fill_in 'name', with: '素敵なユーザー'
+        fill_in 'password', with: 'p' * 51
+        fill_in 'email', with: 'gooduser@email.com'
+        find('form#register input[type=submit]').click
+      end
+      it 'ユーザー登録ページにリダイレクトする' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/register'
+      end
+      it 'ユーザーが作成されていない' do
+        expect(User.exists?('gooduser')).to be false
+      end
+    end
+
+    context '名前が51文字で、送信ボタンをクリックした場合' do
+      before do
+        fill_in 'username', with: 'gooduser'
+        fill_in 'name', with: 'ユ' * 51
+        fill_in 'password', with: 'goodpassword'
+        fill_in 'email', with: 'gooduser@email.com'
+        find('form#register input[type=submit]').click
+      end
+      it 'ユーザー登録ページにリダイレクトする' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/register'
+      end
+      it 'ユーザーが作成されていない' do
+        expect(User.exists?('gooduser')).to be false
+      end
+    end
+
+    context 'ユーザーIDが「-」で始まる場合' do
+      before do
+        fill_in 'username', with: '-gooduser'
+        fill_in 'name', with: '素敵なユーザー'
+        fill_in 'password', with: 'goodpassword'
+        fill_in 'email', with: 'gooduser@email.com'
+        find('form#register input[type=submit]').click
+      end
+      it 'ユーザー登録ページにリダイレクトする' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/register'
+      end
+      it 'ユーザーが作成されていない' do
+        expect(User.exists?('gooduser')).to be false
+      end
+    end
+
+    context 'ユーザーIDが重複している場合' do
+      include_context 'user created'
+      before do
+        fill_in 'username', with: UN
+        fill_in 'name', with: '素敵なユーザー'
+        fill_in 'password', with: 'goodpassword'
+        fill_in 'email', with: 'gooduser@email.com'
+        find('form#register input[type=submit]').click
+      end
+      it 'ユーザー登録ページにリダイレクトする' do
+        uri = URI.parse(current_url)
+        expect(uri.path).to eq '/register'
+      end
+      it 'ユーザーが作成されていない' do
+        expect(User.count).to eq 1
+      end
     end
   end
 
@@ -418,8 +527,8 @@ describe 'マイページ', type: :feature, page: :user do
 end
 
 # ====================================================================
-#
-# SignOut page
+# ログアウト
+# SignOut
 #
 
 describe 'SignOut page', type: :feature do
